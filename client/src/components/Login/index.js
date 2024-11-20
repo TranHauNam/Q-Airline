@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const navigate = useNavigate();
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
@@ -18,9 +20,8 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/user/login', credentials);
-            localStorage.setItem('token', response.data.token);
-            window.location.href = '/';
+            //const response = await axios.post('http://localhost:5000/api/user/login', credentials);
+            navigate('/');
         } catch (err) {
             setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
         }

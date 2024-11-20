@@ -1,4 +1,4 @@
-module.exports.registerPost = (req, res, next) => {
+module.exports.register = (req, res, next) => {
     const errors = [];
     
     // Validate fullName

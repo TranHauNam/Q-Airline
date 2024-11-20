@@ -24,7 +24,8 @@ route(app);
 const database = require("../server/config/database.js");
 database.connect();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server đang chạy tại port ${PORT}`);
-});
+});   
+

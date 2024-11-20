@@ -1,7 +1,10 @@
 module.exports.index = (req, res) => {
-  res.json({
-      pageTitle: "Home",
-      message: "Welcome to the home page!",
-      users: ['John', 'Jane', 'Bob']
-  });
+    const user = res.locals.user;
+    console.log(user.token);
+    res.json({
+        user: user ? {
+            fullName: user.fullName,
+            email: user.email
+        } : null,
+    });
 };

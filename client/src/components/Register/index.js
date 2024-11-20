@@ -32,8 +32,8 @@ const Register = () => {
                 email: formData.email,
                 password: formData.password
             });
-            console.log('Register response:', response.data); // Thêm log để debug
-            navigate('/user/login');
+            console.log('Register response:', response.data); 
+            navigate('/');
         } catch (err) {
             console.error('Register error:', err); // Thêm log để debug
             if (err.response) {

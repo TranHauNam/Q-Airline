@@ -1,21 +1,13 @@
 const User = require("../../models/user.model");
 const md5 = require("md5");
-const jwt = require('jsonwebtoken');
+const generate = require("../../helpers/generate");
 
-// module.exports.register = (req, res) => {
-//     res.json({
-//         message: "Register page"
-//     }); 
-// };
-
-module.exports.registerPost = async (req, res) => {
+module.exports.register = async (req, res) => {
     try {
         const existEmail = await User.findOne({
             email: req.body.email,
             deleted: false
         });
-
-        console.log(existEmail);
 
         if (existEmail) {
             return res.status(400).json({
@@ -25,18 +17,28 @@ module.exports.registerPost = async (req, res) => {
 
         req.body.password = md5(req.body.password);
         const user = new User(req.body);
-        console.log(user);
+        const token = generate.generateRandomString(20);
+        user.token = token;
         await user.save();
+
+        console.log(user.token);
+
+        res.cookie("token", user.token, {
+            httpOnly: true, // Cookie chỉ có thể được truy cập qua HTTP
+            secure: process.env.NODE_ENV === 'production', // Chỉ gửi cookie qua HTTPS trong môi trường sản xuất
+            maxAge: 3600000 * 24 * 30 // Thời gian sống của cookie (1 giờ)
+        });
 
         res.status(201).json({
             message: "Đăng ký thành công",
+            token: user.token,
             user: {
                 fullName: user.fullName,
                 email: user.email
             }
         });
     } catch (error) {
-        console.error("Register error:", error); // Thêm log để debug
+        console.error("Register error:", error);
         if (error.name === 'ValidationError') {
             return res.status(400).json({ 
                 message: "Dữ liệu không hợp lệ" 
@@ -50,34 +52,42 @@ module.exports.registerPost = async (req, res) => {
 
 module.exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const email = req.body.email;
+        const password = req.body.password;
         const hashedPassword = md5(password);
 
         const user = await User.findOne({
-            email,
-            password: hashedPassword,
-            deleted: false,
-            status: "active"
+            email: email,
+            deleted: false
         });
 
         if (!user) {
             return res.status(401).json({ 
-                message: "Email hoặc mật khẩu không đúng" 
+                message: "Email không tồn tại!" 
             });
         }
 
-        const token = jwt.sign(
-            { 
-                id: user._id,
-                email: user.email 
-            }, 
-            process.env.JWT_SECRET,
-            { expiresIn: '1d' }
-        );
+        if (hashedPassword != user.password) {
+            return res.status(401).json({ 
+                message: "Sai mật khẩu" 
+            });
+        }
+
+        if (user.status == "inactive") {
+            return res.status(401).json({ 
+                message: "Tài khoản đang bị khóa" 
+            });
+        }
+
+        res.cookie("token", user.token, {
+            httpOnly: true, // Cookie chỉ có thể được truy cập qua HTTP
+            secure: process.env.NODE_ENV === 'production', // Chỉ gửi cookie qua HTTPS trong môi trường sản xuất
+            maxAge: 3600000 * 24 * 30 // Thời gian sống của cookie (30 ngày)
+        });
 
         res.json({
             message: "Đăng nhập thành công",
-            token: token,
+            token: user.token,
             user: {
                 id: user._id,
                 fullName: user.fullName,
