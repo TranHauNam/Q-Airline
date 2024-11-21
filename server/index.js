@@ -15,10 +15,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-const route = require("./routes/client/index.route.js");
-
 // API routes
-route(app);
+const routeClient = require("./routes/client/index.route.js");
+const routeAdmin = require("./routes/admin/index.route.js");
+routeClient(app);
+routeAdmin(app);
+
 
 //Khởi tạo và kết nối database
 const database = require("../server/config/database.js");
