@@ -1,5 +1,5 @@
-const User = require("../../models/user.model");
-const ForgotPassword = require("../../models/forgot-password.model");
+const User = require("../../models/client/user.model");
+const ForgotPassword = require("../../models/client/forgot-password.model");
 
 const md5 = require("md5");
 const generate = require("../../helpers/generate");
