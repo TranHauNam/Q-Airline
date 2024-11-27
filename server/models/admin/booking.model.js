@@ -20,6 +20,10 @@ const bookingSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
+    seatsBooked: {
+        type: Number,
+        required: true
+    },
     bookingDate: {
         type: Date,
         default: Date.now

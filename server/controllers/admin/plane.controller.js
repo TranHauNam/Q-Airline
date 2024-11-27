@@ -1,4 +1,6 @@
 const Plane = require('../../models/admin/plane.model');
+
+// [POST] /api/admin/plane/add
 module.exports.addPlane = async (req, res) => {
     try {
         const {code, manufacturer, seats} = req.body;
@@ -37,6 +39,7 @@ module.exports.addPlane = async (req, res) => {
     }
 }
 
+// [GET] /api/admin/plane/
 module.exports.getAllPlanes = async (req, res) => {
     try {
         const planes = await Plane.find({});

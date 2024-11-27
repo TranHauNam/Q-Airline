@@ -1,6 +1,7 @@
 const Flight = require('../../models/admin/flight.model');
 const Plane = require('../../models/admin/plane.model');
 
+// [POST] /api/admin/flight/add
 module.exports.addFlight = async (req, res) => {
     try {
         const { flightNumber, planeId, origin, destination, departureTime, arrivalTime, price } = req.body;
@@ -44,6 +45,7 @@ module.exports.addFlight = async (req, res) => {
     }
 };
 
+// [GET] /api/admin/flight/
 module.exports.getAllFlights = async (req, res) => {
     try {
         const flights = await Plane.find({});
@@ -59,10 +61,32 @@ module.exports.getAllFlights = async (req, res) => {
     }
 }
 
-module.exports.changeFlight = (req, res) => {
+module.exports.changeDepartureTime = async (req, res) => {
+    try {
+        const id = req.params.id;        
+        const newDepartureTime = req.body.newDepartureTime;
+        
+        if(!newDepartureTime) {
+            return res.status(404).json({
+                message: 'Please provide a new departure time.'
+            })
+        }
 
-};
+        await Flight.updateOne(
+            { _id: id },
+            { $set: {departureTime: newDepartureTime} }
+        );
 
-module.exports.deleteFlight = (req, res) => {
+        res.status(200).json({
+            message: 'Departure time updated successfully.'
+        });
 
+    } catch (error) {
+        console.log('Error changing departure time:', error);
+
+        res.status(500).json({
+            message: 'Failed to change departure time.',
+            error: error.message
+        });
+    }
 };

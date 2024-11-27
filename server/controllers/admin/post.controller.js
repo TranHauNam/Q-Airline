@@ -1,5 +1,6 @@
 const Post = require('../../models/admin/post.model');
 
+// [POST] /api/admin/post
 module.exports.createPost = async (req, res) => {
     try {
         const title = req.body.title;
@@ -10,8 +11,7 @@ module.exports.createPost = async (req, res) => {
                 message: "Tiêu đề và nội dung bài viết không được để trống!"
             });
         }
-
-        const newPost = await Post.create({
+                const newPost = await Post.create({
             title: title,
             content: content
         });

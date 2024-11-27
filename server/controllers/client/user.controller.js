@@ -4,6 +4,7 @@ const ForgotPassword = require("../../models/client/forgot-password.model");
 const md5 = require("md5");
 const generate = require("../../helpers/generate");
 
+// [POST] /api/user/register
 module.exports.register = async (req, res) => {
     try {
         const existEmail = await User.findOne({
@@ -52,6 +53,7 @@ module.exports.register = async (req, res) => {
     }
 };
 
+// [POST] /api/user/login
 module.exports.login = async (req, res) => {
     try {
         const email = req.body.email;
@@ -102,6 +104,7 @@ module.exports.login = async (req, res) => {
     }
 };
 
+// [POST] /api/user/logout
 module.exports.logout = async (req, res) => {
     try {
         res.clearCookie("token");    
@@ -112,6 +115,7 @@ module.exports.logout = async (req, res) => {
     }
 };
 
+// [POST] /api/user/forgot-password
 module.exports.forgotPassword = async (req, res) => {
     //Kiểm tra email
     const email = req.body.email;
@@ -144,6 +148,7 @@ module.exports.forgotPassword = async (req, res) => {
     })
 };
 
+// [POST] /api/user/otp-verification
 module.exports.otpVerification = async (req, res) => {
     try {
         const email = req.body.email;
@@ -177,6 +182,7 @@ module.exports.otpVerification = async (req, res) => {
     }
 };
 
+// [POST] /api/user/reset-password
 module.exports.resetPassword = async (req, res) => {
     const newPassword = req.body.newPassword;
     const hashedPassword = md5(newPassword);
