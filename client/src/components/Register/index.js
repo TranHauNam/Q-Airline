@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './Register.css';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -32,70 +33,98 @@ const Register = () => {
                 email: formData.email,
                 password: formData.password
             });
-            console.log('Register response:', response.data); 
             navigate('/');
         } catch (err) {
-            console.error('Register error:', err); // Thêm log để debug
             if (err.response) {
-                // Lỗi từ server (400, 401, 403, 500, etc.)
                 setError(err.response.data.message);
             } else if (err.request) {
-                // Lỗi không có response (network error)
                 setError('Không thể kết nối đến server');
             } else {
-                // Lỗi khác
                 setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
             }
         }
     };  
 
     return (
-        <div className="register-container">
-            <h2>Đăng ký</h2>
-            {error && <p className="error">{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Họ tên:</label>
-                    <input
-                        type="text"
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={handleChange}
-                        required
-                    />
+        <div className="register-page">
+            <div className="register-box">
+                <div className="register-header">
+                    <h2>Đăng Ký Tài Khoản</h2>
+                    <p>Tham gia cùng Q-Airline ngay hôm nay!</p>
                 </div>
-                <div className="form-group">
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Mật khẩu:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Xác nhận mật khẩu:</label>
-                    <input
-                        type="password"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <button type="submit">Đăng ký</button>
-            </form>
+
+                {error && <div className="error-message">{error}</div>}
+
+                <form onSubmit={handleSubmit} className="register-form">
+                    <div className="form-group">
+                        <label>
+                            <i className="fas fa-user"></i>
+                            Họ tên
+                        </label>
+                        <input
+                            type="text"
+                            name="fullName"
+                            value={formData.fullName}
+                            onChange={handleChange}
+                            placeholder="Nhập họ tên của bạn"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>
+                            <i className="fas fa-envelope"></i>
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="Nhập email của bạn"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>
+                            <i className="fas fa-lock"></i>
+                            Mật khẩu
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Nhập mật khẩu"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>
+                            <i className="fas fa-lock"></i>
+                            Xác nhận mật khẩu
+                        </label>
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            placeholder="Xác nhận mật khẩu"
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" className="register-button">
+                        Đăng ký
+                    </button>
+
+                    <div className="login-link">
+                        Đã có tài khoản? <a href="/user/login">Đăng nhập ngay</a>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

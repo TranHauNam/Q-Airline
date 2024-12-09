@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 //import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './Login.css';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -28,32 +29,50 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <h2>Đăng nhập</h2>
-            {error && <p className="error">{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={credentials.email}
-                        onChange={handleChange}
-                        required
-                    />
+        <div className="login-page">
+            <div className="login-box">
+                <div className="login-header">
+                    <h2>Đăng Nhập</h2>
+                    <p>Chào mừng bạn quay trở lại!</p>
                 </div>
-                <div>
-                    <label>Mật khẩu:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={credentials.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <button type="submit">Đăng nhập</button>
-            </form>
+                
+                {error && <div className="error-message">{error}</div>}
+                
+                <form onSubmit={handleSubmit} className="login-form">
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={credentials.email}
+                            onChange={handleChange}
+                            placeholder="Nhập email của bạn"
+                            required
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Mật khẩu</label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={credentials.password}
+                            onChange={handleChange}
+                            placeholder="Nhập mật khẩu"
+                            required
+                        />
+                    </div>
+                    
+                    <button type="submit" className="login-button">
+                        Đăng nhập
+                    </button>
+                    
+                    <div className="additional-links">
+                        <a href="/forgot-password">Quên mật khẩu?</a>
+                        <a href="/register">Đăng ký tài khoản mới</a>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };
