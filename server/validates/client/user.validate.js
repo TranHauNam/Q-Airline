@@ -1,4 +1,4 @@
-const User = require("../../models/client/user.model");
+const User = require("../../models/user.model");
 
 module.exports.register = (req, res, next) => {
     const errors = [];

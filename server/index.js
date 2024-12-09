@@ -7,7 +7,7 @@ const app = express();
 // Cấu hình CORS
 const corsOptions = {
   origin: 'http://localhost:3000', // URL của frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
