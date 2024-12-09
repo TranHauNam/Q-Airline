@@ -1,4 +1,4 @@
-const Post = require('../../models/admin/post.model');
+const Post = require('../../models/post.model');
 
 // [POST] /api/admin/post
 module.exports.createPost = async (req, res) => {

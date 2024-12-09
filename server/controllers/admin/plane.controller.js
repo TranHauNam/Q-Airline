@@ -1,4 +1,4 @@
-const Plane = require('../../models/admin/plane.model');
+const Plane = require('../../models/plane.model');
 
 // [POST] /api/admin/plane/add
 module.exports.addPlane = async (req, res) => {

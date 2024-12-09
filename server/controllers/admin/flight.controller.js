@@ -1,5 +1,5 @@
-const Flight = require('../../models/admin/flight.model');
-const Plane = require('../../models/admin/plane.model');
+const Flight = require('../../models/flight.model');
+const Plane = require('../../models/plane.model');
 
 // [POST] /api/admin/flight/add
 module.exports.addFlight = async (req, res) => {
@@ -30,7 +30,7 @@ module.exports.addFlight = async (req, res) => {
             price: price
         });
 
-        res.status(201).json({
+        res.status(200).json({
             message: 'Flight added successfully.',
             flight: newFlight
         });
@@ -45,25 +45,12 @@ module.exports.addFlight = async (req, res) => {
     }
 };
 
-// [GET] /api/admin/flight/
-module.exports.getAllFlights = async (req, res) => {
-    try {
-        const flights = await Plane.find({});
-        res.status(200).json({
-            flights: flights
-        });
-    } catch (error) {
-        console.error("Error getting all flights", error);
-        res.status(500).json({
-            message: 'Internal Server Error',
-            error: error.message
-        });
-    }
-}
 
+// [PATCH] /api/admin/flight/:id/departure-time
 module.exports.changeDepartureTime = async (req, res) => {
     try {
-        const id = req.params.id;        
+        console.log(req.params);
+        const flightNumber = req.params.flightNumber;      
         const newDepartureTime = req.body.newDepartureTime;
         
         if(!newDepartureTime) {
@@ -73,12 +60,13 @@ module.exports.changeDepartureTime = async (req, res) => {
         }
 
         await Flight.updateOne(
-            { _id: id },
+            { flightNumber: flightNumber },
             { $set: {departureTime: newDepartureTime} }
         );
 
         res.status(200).json({
-            message: 'Departure time updated successfully.'
+            message: 'Departure time updated successfully.',
+            departureTime: newDepartureTime
         });
 
     } catch (error) {
@@ -88,5 +76,5 @@ module.exports.changeDepartureTime = async (req, res) => {
             message: 'Failed to change departure time.',
             error: error.message
         });
-    }
+    }   
 };

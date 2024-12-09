@@ -1,5 +1,5 @@
-const User = require("../../models/client/user.model");
-const ForgotPassword = require("../../models/client/forgot-password.model");
+const User = require("../../models/user.model");
+const ForgotPassword = require("../../models/forgot-password.model");
 
 const md5 = require("md5");
 const generate = require("../../helpers/generate");
@@ -29,7 +29,7 @@ module.exports.register = async (req, res) => {
         res.cookie("token", user.token, {
             httpOnly: true, // Cookie chỉ có thể được truy cập qua HTTP
             secure: process.env.NODE_ENV === 'production', // Chỉ gửi cookie qua HTTPS trong môi trường sản xuất
-            maxAge: 3600000 * 24 * 30 // Thời gian sống của cookie (1 giờ)
+            maxAge: 3600000 * 24 * 30 // Thời gian sống của cookie (30 ngày)
         });
 
         res.status(200).json({

@@ -1,4 +1,4 @@
-const Booking = require('../../models/admin/booking.model');
+const Booking = require('../../models/booking.model');
 
 // [GET] /api/admin/booking/
 module.exports.getAllBookings = async (req, res) => {
