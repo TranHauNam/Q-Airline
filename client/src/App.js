@@ -5,7 +5,7 @@ import SignInPage from './pages/SignIn/SignInPage';
 import { AuthProvider } from './contexts/AuthContext';
 import { ShiftingDropDown } from './components/home-components/ShiftingDropDown';
 import Test from "./pages/Test"
-
+import SearchPage from './pages/SearchPage';
 
 function App() {
   return (
@@ -13,6 +13,7 @@ function App() {
       <Routes>
         <Route path="" homepage element={<HomePage />} />
         <Route path="/login" element={<Test />} />
+        <Route path="/search" element={<SearchPage />} />
       </Routes>
     </AuthProvider>
       
