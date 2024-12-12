@@ -25,6 +25,7 @@
    PORT = 5000
    MONGO_URL = mongodb://localhost:27017/q-airline
    NODE_ENV=production && node server/index.js
+   JWT_SECRET=225685cfb5bcd9f3ed229567ac8801e18a94c24b377ed9732daa54cfaeae0633
    ```
 
 4. Khởi động server:
