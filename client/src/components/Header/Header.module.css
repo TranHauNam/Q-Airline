@@ -1,0 +1,103 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logoContainer {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+  }
+  
+  .logoContainer:hover {
+    transform: scale(1.05);
+  }
+  
+  .logoIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    transform: rotate(-90deg);
+    color: #FF5A5F;
+    transition: color 0.2s ease;
+  }
+  
+  .logoContainer:hover .logoIcon {
+    color: #D63246;
+  }
+  
+  .logoText {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+    color: #333;
+    transition: color 0.2s ease;
+  }
+  
+  .logoContainer:hover .logoText {
+    color: #FF5A5F;
+  }
+  
+  .searchContainer {
+    display: flex;
+    align-items: center;
+  }
+  
+  .searchOptions {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .searchOptions:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  }
+  
+  .searchItem {
+    padding: 0 0.75rem;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .searchItem:hover {
+    color: #FF5A5F;
+  }
+  
+  .divider {
+    width: 1px;
+    height: 1.5rem;
+    background-color: #ddd;
+    margin: 0 0.5rem;
+  }
+  
+  .searchButton {
+    background-color: #FF5A5F;
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .searchButton:hover {
+    background-color: #D63246;
+  }
+  
+  .searchIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
