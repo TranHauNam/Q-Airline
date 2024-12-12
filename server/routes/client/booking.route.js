@@ -1,9 +1,10 @@
 const express = require('express');
 const route = express.Router();
 const controller = require('../../controllers/client/booking.controller');
-const userMiddleware = require('../../middlewares/user.middleware');
+//const userMiddleware = require('../../middlewares/user.middleware');
 
-route.post('/', userMiddleware.infoUser, controller.bookFlight);
-route.delete('/cancel/:bookingId', controller.cancelBooking)
+route.post('/', controller.bookFlight);
+route.delete('/cancel/:bookingId', controller.cancelBooking);
+route.get('/user/:userId', controller.getUserBookings);
 
 module.exports = route;

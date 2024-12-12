@@ -19,7 +19,7 @@ const bookingSchema = new mongoose.Schema(
         },
         seatClass: { 
             type: String, 
-            enum: ['Economy', 'Business'], 
+            enum: ['Economy', 'PremiumEconomy', 'Business', 'First'], 
             default: 'Economy' 
         },
         passengerName: { 

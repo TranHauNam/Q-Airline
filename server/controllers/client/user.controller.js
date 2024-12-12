@@ -1,6 +1,7 @@
 const User = require("../../models/user.model");
 const ForgotPassword = require("../../models/forgot-password.model");
 
+const jwt = require("jsonwebtoken");
 const md5 = require("md5");
 const generate = require("../../helpers/generate");
 
@@ -20,11 +21,11 @@ module.exports.register = async (req, res) => {
 
         req.body.password = md5(req.body.password);
         const user = new User(req.body);
-        const token = generate.generateRandomString(20);
+        console.log(user);
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
         user.token = token;
+        console.log(token);
         await user.save();
-
-        console.log(user.token);
 
         res.cookie("token", user.token, {
             httpOnly: true, // Cookie chỉ có thể được truy cập qua HTTP
@@ -83,10 +84,14 @@ module.exports.login = async (req, res) => {
             });
         }
 
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        user.token = token;
+        await user.save();
+
         res.cookie("token", user.token, {
             httpOnly: true, // Cookie chỉ có thể được truy cập qua HTTP
             secure: process.env.NODE_ENV === 'production', // Chỉ gửi cookie qua HTTPS trong môi trường sản xuất
-            maxAge: 3600000 * 24 * 30 // Thời gian sống của cookie (30 ngày)
+            maxAge: 3600000 * 24 * 1 // Thời gian sống của cookie (1 ngày)
         });
 
         res.status(200).json({
@@ -139,7 +144,7 @@ module.exports.forgotPassword = async (req, res) => {
         expireAt: Date.now()
     };
 
-    console.log(objectForgotPassword);
+    //console.log(objectForgotPassword);
 
     const forgotPassword = new ForgotPassword(objectForgotPassword);
     await forgotPassword.save();

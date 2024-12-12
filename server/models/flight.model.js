@@ -7,8 +7,8 @@ const flightSchema = new mongoose.Schema(
             required: true,
             unique: true
         },
-        planeId: {
-            type: mongoose.Schema.Types.ObjectId,
+        planeCode: {
+            type: String,
             ref: 'Plane',
             required: true
         },
@@ -24,15 +24,39 @@ const flightSchema = new mongoose.Schema(
             type: Date,
             required: true
         },
-        arrivalTime: {
-            type: Date,
+        duration: {
+            type: String,
             required: true
         },
-        price: {
+        priceEconomy: {
             type: Number,
             required: true
         },
-        availableSeats: {
+        pricePremiumEconomy: {
+            type: Number,
+            required: true
+        },
+        priceBusiness: {
+            type: Number,
+            required: true
+        },
+        priceFirst: {
+            type: Number,
+            required: true
+        },
+        availableSeatsEconomy: {
+            type: Number,
+            required: true
+        },
+        availableSeatsPremiumEconomy: {
+            type: Number,
+            required: true
+        },
+        availableSeatsBusiness: {
+            type: Number,
+            required: true
+        },
+        availableSeatsFirst: {
             type: Number,
             required: true
         }

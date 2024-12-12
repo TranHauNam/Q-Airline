@@ -3,11 +3,11 @@ const Plane = require('../../models/plane.model');
 // [POST] /api/admin/plane/add
 module.exports.addPlane = async (req, res) => {
     try {
-        const {code, manufacturer, seats} = req.body;
+        const {code, manufacturer} = req.body;
     
-        if(!code || !manufacturer || !seats) {
+        if(!code || !manufacturer) {
             return res.status(400).json({
-                message: 'Please provide all the required fields: code, manufacturer, seats'
+                message: 'Please provide all the required fields: code, manufacturer'
             });
         }
     
@@ -21,8 +21,7 @@ module.exports.addPlane = async (req, res) => {
     
         const newPlane = await Plane.create({
             code: code, 
-            manufacturer: manufacturer,
-            seats: seats
+            manufacturer: manufacturer
         });
     
         res.status(201).json({

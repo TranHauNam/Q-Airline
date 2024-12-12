@@ -3,6 +3,7 @@ const ForgotPassword = require("../../models/forgot-password.model");
 
 const md5 = require("md5");
 const generate = require("../../helpers/generate");
+const jwt = require('jsonwebtoken');
 
 // [POST] /api/admin/acount/create
 module.exports.create = async (req, res) => {
@@ -20,7 +21,7 @@ module.exports.create = async (req, res) => {
 
         req.body.password = md5(req.body.password);
         const admin = new Admin(req.body);
-        const adminToken = generate.generateRandomString(20);
+        const adminToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
         admin.adminToken = adminToken;
         await admin.save();
 
@@ -83,6 +84,10 @@ module.exports.login = async (req, res) => {
             });
         }
         
+        const adminToken = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        admin.adminToken = adminToken;
+        await admin.save();
+
         res.cookie("adminToken", admin.adminToken, {
             httpOnly: true, // Cookie chỉ có thể được truy cập qua HTTP
             secure: process.env.NODE_ENV === 'production', // Chỉ gửi cookie qua HTTPS trong môi trường sản xuất

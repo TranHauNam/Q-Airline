@@ -4,30 +4,33 @@ const Plane = require('../../models/plane.model');
 // [POST] /api/admin/flight/add
 module.exports.addFlight = async (req, res) => {
     try {
-        const { flightNumber, planeId, origin, destination, departureTime, arrivalTime, price } = req.body;
-
-        if(!flightNumber || !planeId || !origin || !destination || !departureTime || !arrivalTime || !price) {
-            return res.status(400).json({ message: 'All fields are required.' });
-        }
+        const { flightNumber, planeCode, origin, destination, departureTime, duration, priceEconomy, pricePremiumEconomy, priceBusiness, priceFirst, availableSeatsEconomy, availableSeatsPremiumEconomy, availableSeatsBusiness, availableSeatsFirst } = req.body;
 
         const existFlight = await Flight.findOne({flightNumber: flightNumber});
         if(existFlight) {
             return res.status(400).json({ message: 'Flight number already exists.' });
         }
 
-        const existPlane = await Plane.findById(planeId);
+        const existPlane = await Plane.findOne({code: planeCode});
         if(!existPlane) {
             return res.status(400).json({ message: 'Plane not found.' });
         }
 
         const newFlight = await Flight.create({
             flightNumber: flightNumber,
-            planeId: planeId,
+            planeCode: planeCode,
             origin: origin,
             destination: destination,
             departureTime: departureTime,
-            arrivalTime: arrivalTime,
-            price: price
+            duration: duration,
+            priceEconomy: priceEconomy,
+            pricePremiumEconomy: pricePremiumEconomy,
+            priceBusiness: priceBusiness,
+            priceFirst: priceFirst,
+            availableSeatsEconomy: availableSeatsEconomy,
+            availableSeatsPremiumEconomy: availableSeatsPremiumEconomy,
+            availableSeatsBusiness: availableSeatsBusiness,
+            availableSeatsFirst: availableSeatsFirst
         });
 
         res.status(200).json({
@@ -49,7 +52,6 @@ module.exports.addFlight = async (req, res) => {
 // [PATCH] /api/admin/flight/:id/departure-time
 module.exports.changeDepartureTime = async (req, res) => {
     try {
-        console.log(req.params);
         const flightNumber = req.params.flightNumber;      
         const newDepartureTime = req.body.newDepartureTime;
         

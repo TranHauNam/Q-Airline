@@ -16,7 +16,11 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
-        deletedAt: Date
+        deletedAt: Date,
+        balance: {
+            type: Number,
+            default: 10000000
+        }
     },
     {
         timestamps: true,
