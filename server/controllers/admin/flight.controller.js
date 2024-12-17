@@ -4,7 +4,7 @@ const Plane = require('../../models/plane.model');
 // [POST] /api/admin/flight/add
 module.exports.addFlight = async (req, res) => {
     try {
-        const { flightNumber, planeCode, origin, destination, departureTime, duration, priceEconomy, pricePremiumEconomy, priceBusiness, priceFirst, availableSeatsEconomy, availableSeatsPremiumEconomy, availableSeatsBusiness, availableSeatsFirst } = req.body;
+        const { flightNumber, planeCode, origin, destination, departureTime, duration, priceEconomy, pricePremiumEconomy, priceBusiness, priceFirst} = req.body;
 
         const existFlight = await Flight.findOne({flightNumber: flightNumber});
         if(existFlight) {
@@ -15,6 +15,11 @@ module.exports.addFlight = async (req, res) => {
         if(!existPlane) {
             return res.status(400).json({ message: 'Plane not found.' });
         }
+        
+        const seats = existPlane.seats.map(seat => ({
+            ...seat,
+            isBooked: false 
+        }));
 
         const newFlight = await Flight.create({
             flightNumber: flightNumber,
@@ -27,10 +32,11 @@ module.exports.addFlight = async (req, res) => {
             pricePremiumEconomy: pricePremiumEconomy,
             priceBusiness: priceBusiness,
             priceFirst: priceFirst,
-            availableSeatsEconomy: availableSeatsEconomy,
-            availableSeatsPremiumEconomy: availableSeatsPremiumEconomy,
-            availableSeatsBusiness: availableSeatsBusiness,
-            availableSeatsFirst: availableSeatsFirst
+            availableSeatsEconomy: existPlane.economySeats,
+            availableSeatsPremiumEconomy: existPlane.premiumEconomySeats,
+            availableSeatsBusiness: existPlane.businessSeats,
+            availableSeatsFirst: existPlane.firstSeats,
+            seats: seats
         });
 
         res.status(200).json({

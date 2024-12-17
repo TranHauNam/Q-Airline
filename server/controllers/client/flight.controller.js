@@ -1,4 +1,5 @@
 const Flight = require('../../models/flight.model');
+const TemporarySearch = require('../../models/temporary-search-flight.model');
 
 // [GET] /api/flight/all
 module.exports.getAllFlights = async (req, res) => {
@@ -82,6 +83,9 @@ module.exports.searchFlight = async (req, res) => {
     try {
         const {origin, destination, departureTime, returnTime, flightType, classType, adult, children, infant} = req.body; 
 
+        // Xóa các bản ghi cũ của người dùng
+        await TemporarySearch.deleteMany({});
+
         const departureFilter = {
             origin: { $regex: origin, $options: 'i' },
             destination: { $regex: destination, $options: 'i' },
@@ -95,6 +99,19 @@ module.exports.searchFlight = async (req, res) => {
 
         const arrClassType = classType.split(' ');
         const strClassType = arrClassType.join('');
+
+        const calculatePrice = (flight, strClassType, adult, children, infant) => {
+            const priceField = `price${strClassType}`;
+            const adultPrice = flight[priceField];
+            const childPrice = adultPrice * 0.75;
+            const infantPrice = adultPrice * 0.1;
+
+            return (
+                (adult || 0) * adultPrice +
+                (children || 0) * childPrice +
+                (infant || 0) * infantPrice
+            );
+        };
 
         if (flightType == 'one-way') {
             const flights = await Flight.find(departureFilter);
@@ -110,29 +127,29 @@ module.exports.searchFlight = async (req, res) => {
             }
 
             const response = availableFlights.map(flight => {
-                const priceField = `price${strClassType}`;
-
-                const adultPrice = flight[priceField];
-                const childPrice = adultPrice * 0.75;
-                const infantPrice = adultPrice * 0.1;
-    
-                const totalPrice =
-                    (adult || 0) * adultPrice +
-                    (children || 0) * childPrice +
-                    (infant || 0) * infantPrice;
-                
                 return {
                     flightNumber: flight.flightNumber,
                     origin: flight.origin,
                     destination: flight.destination,
                     departureTime: flight.departureTime,
                     duration: flight.duration,  
-                    price: totalPrice,
-                    availableSeats: flight[`availableSeats${strClassType}`],
+                    price: calculatePrice(flight, strClassType, adult, children, infant),
+                    availableSeats: flight.seats.filter(seat => seat.strClassType === strClassType && !seat.isBooked).length,
                     classType: classType,
+                    flightType: flightType
                 };
             });
     
+            // Lưu kết quả vào TemporaryBooking
+            await TemporarySearch.create({
+                userId: res.locals.user ? res.locals.user._id : null, 
+                flightData: response,
+                adult: adult,
+                children: children,
+                infant: infant,
+                expiresAt: Date.now()
+            });
+
             res.status(200).json({ flights: response });
         } else if (flightType == 'round-trip') {
             const returnFilter = {
@@ -167,16 +184,6 @@ module.exports.searchFlight = async (req, res) => {
 
             const response = availableDepartureFlights.flatMap(departureFlight => {
                 return availableReturnFlights.map(returnFlight => {
-                    const priceField = `price${strClassType}`;
-
-                    const adultPrice = departureFlight[priceField] + returnFlight[priceField];
-                    const childPrice = adultPrice * 0.75; 
-                    const infantPrice = adultPrice * 0.1;
-
-                    const totalPrice =
-                        (adult || 0) * adultPrice +
-                        (children || 0) * childPrice +
-                        (infant || 0) * infantPrice;
 
                     return {
                         departure: {
@@ -193,13 +200,27 @@ module.exports.searchFlight = async (req, res) => {
                             departureTime: returnFlight.departureTime,
                             duration: returnFlight.duration,
                         },
-                        totalPrice,
-                        classType,
+                        totalPrice: calculatePrice(departureFlight, classType, adult, children, infant) +
+                                    calculatePrice(returnFlight, classType, adult, children, infant),
+                        classType: classType,
+                        flightType: flightType
                     };
                 });
             });
+
+            // Lưu kết quả vào TemporaryBooking
+            await TemporarySearch.create({
+                userId: res.locals.user ? res.locals.user._id : null,
+                flightData: response,
+                adult: adult,
+                children: children,
+                infant: infant,
+                expiresAt: Date.now()
+            });
+
             res.status(200).json({ flights: response });
         }
+
     } catch (error) {
         console.error("Error searching flight", error);
 
