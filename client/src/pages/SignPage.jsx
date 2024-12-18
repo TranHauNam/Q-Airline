@@ -1,9 +1,9 @@
-import "./Test.css";
+import "./SignPage.css";
 import image from "../assets/images/background.jpg";
 
 import React, { useState } from "react";
 
-const Test = () => {
+const SignPage = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
 
   const handleSignUpClick = () => {
@@ -105,4 +105,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default SignPage;

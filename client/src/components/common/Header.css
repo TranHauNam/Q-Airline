@@ -1,0 +1,495 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.mega-menu-wrapper {
+  width: 100%;
+}
+
+.topbar {
+  background-color: #f8f9fa;
+  width: 100%;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.topbar-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.topbar-links {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 32px;
+  gap: 20px;
+}
+
+.topbar-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #555;
+  font-size: 12px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-weight: 500;
+}
+
+.topbar-link:hover {
+  color: #c41e3a;
+}
+
+.topbar-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .topbar {
+    display: none; /* Hide on mobile or show differently based on your needs */
+  }
+  
+  /* If you want to show it differently on mobile:
+  .topbar-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 8px 0;
+    height: auto;
+  }
+
+  .topbar-link {
+    font-size: 11px;
+  }
+  */
+}
+
+.navbar {
+  overflow: hidden;
+  background-color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  border-bottom: 1px solid #eaeaea;
+  height: 45px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.navbar-brand {
+  margin-right: auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-right: 1px solid #eaeaea;
+  padding-right: 24px;
+}
+
+.navbar-brand a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  height: 100%;
+  gap: 12px;
+}
+
+.navbar-brand img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  padding: 3px;
+}
+
+.navbar-menu {
+  display: flex;
+  gap: 4px;
+  height: 100%;
+  margin-left: 32px;
+}
+
+.dropdown {
+  float: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown .dropbtn {
+  font-size: 10px;
+  border: none;
+  outline: none;
+  color: #2c3e50;
+  padding: 0 8px;
+  background-color: inherit;
+  font: inherit;
+  margin: 0;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  height: 100%;
+  position: relative;
+}
+
+.dropdown .dropbtn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1.5px;
+  background-color: #c41e3a;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.dropdown:hover .dropbtn {
+  color: #c41e3a;
+  background: linear-gradient(to bottom, transparent 95%, rgba(196, 30, 58, 0.1) 100%);
+}
+
+.dropdown:hover .dropbtn::after {
+  width: 100%;
+}
+
+.dropdown .dropbtn.active {
+  color: #c41e3a;
+}
+
+.dropdown .dropbtn.active::after {
+  width: 100%;
+  background-color: #c41e3a;
+}
+
+.dropdown .dropbtn::before {
+  content: '▾';
+  margin-left: 3px;
+  font-size: 8px;
+  opacity: 0.7;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.dropdown:hover .dropbtn::before {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+.dropdown .dropbtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(196, 30, 58, 0.2);
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  color: #c41e3a;
+  background-color: transparent;
+  /* border-bottom: 3px solid #c41e3a; */
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  width: 100%;
+  left: 0;
+  top: 77px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  z-index: 1000;
+  border-top: 2px solid #c41e3a;
+}
+
+.dropdown-content .header {
+  background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+  padding: 8px 24px;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.dropdown-content .header h2 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.row {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  gap: 24px;
+}
+
+.column {
+  flex: 1;
+  padding: 0 16px;
+  min-height: 220px;
+  border-right: 1px solid #eaeaea;
+  position: relative;
+}
+
+.column:last-child {
+  border-right: none;
+}
+
+.column h3 {
+  color: #2c3e50;
+  font-size: 11px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.column a {
+  color: #555;
+  padding: 6px 0;
+  text-decoration: none;
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  position: relative;
+  padding-left: 0;
+}
+
+.column a:hover {
+  color: #c41e3a;
+  padding-left: 8px;
+  background: transparent;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.featured-content {
+  background-color: #f8f9fa;
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 4px;
+  border: 1px solid #eaeaea;
+}
+
+@media screen and (max-width: 1200px) {
+  .row {
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .column {
+    padding: 0 12px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .row {
+    flex-wrap: wrap;
+  }
+  
+  .column {
+    flex: 0 0 calc(50% - 10px);
+    min-height: 180px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    height: auto;
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .navbar-menu {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .dropdown {
+    width: 100%;
+  }
+
+  .dropdown .dropbtn {
+    width: 100%;
+    padding: 8px 16px;
+    text-align: left;
+    border-bottom: 1px solid #eaeaea;
+    font-size: 10px;
+  }
+
+  .dropdown .dropbtn::after {
+    display: none;
+  }
+
+  .dropdown .dropbtn::before {
+    float: right;
+    margin-top: 2px;
+  }
+
+  .dropdown:hover .dropbtn {
+    background-color: #f8f9fa;
+  }
+
+  .navbar-brand {
+    padding: 6px 12px;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .navbar-menu {
+    margin-left: 0;
+  }
+
+  .navbar-brand img {
+    height: 28px;
+  }
+
+  .brand-text {
+    font-size: 14px;
+  }
+  
+  .brand-slogan {
+    font-size: 8px;
+  }
+  
+  .navbar-brand a {
+    gap: 8px;
+  }
+} 
+
+/* Container cho brand name */
+.brand-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Style cho tên hãng */
+.brand-text {
+  color: #2c3e50;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+/* Style cho slogan */
+.brand-slogan {
+  color: #666;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .brand-text {
+    font-size: 14px;
+  }
+  
+  .brand-slogan {
+    font-size: 8px;
+  }
+  
+  .navbar-brand a {
+    gap: 8px;
+  }
+} 
+
+/* Featured cards */
+.destination-card,
+.service-card,
+.experience-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 180px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.destination-card:hover,
+.service-card:hover,
+.experience-card:hover {
+  transform: translateY(-2px);
+}
+
+.destination-card img,
+.service-card img,
+.experience-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Card info overlays */
+.destination-info,
+.service-info,
+.experience-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, 
+    rgba(0,0,0,0.8) 0%,
+    rgba(0,0,0,0.7) 20%,
+    rgba(0,0,0,0) 100%
+  );
+  color: white;
+}
+
+.destination-info p,
+.service-info p,
+.experience-info p {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+.destination-info h3,
+.service-info h3,
+.experience-info h3 {
+  color: white;
+  font-size: 14px;
+  margin-bottom: 8px;
+  border: none;
+  padding: 0;
+}
+
+/* Card buttons */
+.destination-info button,
+.service-info button,
+.experience-info button {
+  background-color: #c41e3a;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.destination-info button:hover,
+.service-info button:hover,
+.experience-info button:hover {
+  background-color: #8b0000;
+}

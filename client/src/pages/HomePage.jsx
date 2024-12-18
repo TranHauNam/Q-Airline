@@ -1,18 +1,16 @@
 import React from 'react'
-import Navbar from '../components/home-components/Navbar'
-import Slideshow from '../components/home-components/SlideShow'
-import Section from '../components/home-components/Section'
-import Review from '../components/home-components/Review'
-
-
+import Header from '../components/common/Header'
+import SlideShow from '../components/pages/home/SlideShow'
+import Heroes from '../components/pages/home/Heroes'
+import TabMenu from '../components/pages/home/TabMenu'
 
 const Homepage = () => {
   return (
     <div>
-      <Navbar/>
-      <Slideshow/>
-      <Section/>
-      <Review/>
+      <Header/>
+      <SlideShow/>
+      <TabMenu/>
+      <Heroes/>
     </div>
   )
 }
