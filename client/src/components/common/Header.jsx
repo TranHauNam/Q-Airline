@@ -1,10 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 import image1 from '../../assets/images/image1.jpg';
 import logo from '../../assets/logo192.png';
 
 const Header = () => {
+  // const navigate = useNavigate();
+
   return (
     <div className="mega-menu-wrapper">
       {/* Top Bar */}
@@ -35,7 +37,7 @@ const Header = () => {
               </svg>
               SUPPORT
             </Link>
-            <Link to="/" className="topbar-link">
+            <Link to="/sign" className="topbar-link">
               <svg xmlns="http://www.w3.org/2000/svg" className="topbar-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
@@ -118,7 +120,7 @@ const Header = () => {
                     <div className="destination-info">
                       <p>Fly nonstop to</p>
                       <h3>NEW YORK CITY</h3>
-                      <button>Book Now ��</button>
+                      <button>Book Now →</button>
                     </div>
                   </div>
                 </div>

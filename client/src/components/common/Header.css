@@ -493,3 +493,51 @@
 .experience-info button:hover {
   background-color: #8b0000;
 }
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.sign-in-btn, .sign-up-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sign-in-btn {
+  background-color: transparent;
+  border: 1px solid #18b7be;
+  color: #18b7be;
+}
+
+.sign-in-btn:hover {
+  background-color: #18b7be;
+  color: white;
+}
+
+.sign-up-btn {
+  background-color: #18b7be;
+  border: 1px solid #18b7be;
+  color: white;
+}
+
+.sign-up-btn:hover {
+  background-color: #149499;
+  border-color: #149499;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .auth-buttons {
+    gap: 0.5rem;
+  }
+
+  .sign-in-btn, .sign-up-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+
 import { FaPlane, FaCalendarAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import Navbar from '../components/common/Header';
+
+import Header from '../components/common/Header'
 import './SearchPage.css';
 
 const flightData = [
@@ -56,7 +58,7 @@ const SearchPage = () => {
 
   return (
     <div className="search-page">
-      <Navbar />
+      <Header />
       <div className="flight-results">
         <div className="flight-header">
           <div className="route-info">
