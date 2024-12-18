@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import Navbar from '../components/home-components/Navbar';
+import { FaPlane, FaCalendarAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import Navbar from '../components/common/Header';
 import './SearchPage.css';
 
 const SearchPage = () => {
@@ -25,18 +26,26 @@ const SearchPage = () => {
           <div className="route-info">
             <div className="cities">
               <span className="city">AMS</span>
-              <span className="arrow">→</span>
+              <span className="arrow">
+                <FaPlane />
+              </span>
               <span className="city">ATQ</span>
             </div>
             <div className="date-info">
-              SUN, 15 DEC 24
+              <FaCalendarAlt style={{ marginRight: '8px' }} />
+              Chủ nhật, 15 tháng 12, 2024
             </div>
+            <button className="modify-btn">
+            Thay đổi tìm kiếm
+          </button>
           </div>
-          <button className="modify-btn">Modify Booking</button>
+          
         </div>
 
         <div className="date-navigation">
-          <button className="nav-btn prev">←</button>
+          <button className="nav-btn prev">
+            <FaChevronLeft />
+          </button>
           <div className="date-options">
             {[...Array(7)].map((_, index) => (
               <div className={`date-option ${index === 3 ? 'selected' : ''}`} key={index}>
@@ -45,7 +54,9 @@ const SearchPage = () => {
               </div>
             ))}
           </div>
-          <button className="nav-btn next">→</button>
+          <button className="nav-btn next">
+            <FaChevronRight />
+          </button>
         </div>
 
         <div className="flight-filters">
