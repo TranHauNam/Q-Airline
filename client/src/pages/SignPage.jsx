@@ -120,25 +120,25 @@ const SignPage = () => {
   };
 
   return (
-    <div class="wrap">
+    <div className="sp-wrap">
       <div>
         <div
-          className={`container ${
+          className={`sp-container ${
             isRightPanelActive ? "right-panel-active" : ""
           }`}
           id="container"
         >
-          <div className="form-container sign-up-container">
-            <form class="form" onSubmit={handleSubmitSignUp}>
-              <h1 class="h1">Create Account</h1>
-              <div className="social-container">
-                <a class="a" href="#" className="social">
+          <div className="sp-form-container sp-sign-up-container">
+            <form className="sp-form" onSubmit={handleSubmitSignUp}>
+              <h1 className="sp-h1">Create Account</h1>
+              <div className="sp-social-container">
+                <a className="sp-a" href="#" className="social">
                   <i className="fab fa-facebook-f"></i>
                 </a>
-                <a class="a" href="#" className="social">
+                <a className="sp-a" href="#" className="social">
                   <i className="fab fa-google-plus-g"></i>
                 </a>
-                <a class="a" href="#" className="social">
+                <a className="sp-a" href="#" className="social">
                   <i className="fab fa-linkedin-in"></i>
                 </a>
               </div>
@@ -159,20 +159,20 @@ const SignPage = () => {
               onChange={handleChangeSignUp}
               required/>
               {error && <div className="error-message">{error}</div>}
-              <button class="sign-btn">Sign Up</button>
+              <button className="sp-sign-btn">Sign Up</button>
             </form>
           </div>
-          <div className="form-container sign-in-container">
-            <form class="form" onSubmit={handleSubmitSignIn}>
-              <h1 class="h1">Sign in</h1>
-              <div className="social-container">
-                <a class="a" href="#" className="social">
+          <div className="sp-form-container sp-sign-in-container">
+            <form className="sp-form" onSubmit={handleSubmitSignIn}>
+              <h1 className="sp-h1">Sign in</h1>
+              <div className="sp-social-container">
+                <a className="sp-a" href="#" className="social">
                   <i className="fab fa-facebook-f"></i>
                 </a>
-                <a class="a" href="#" className="social">
+                <a className="sp-a" href="#" className="social">
                   <i className="fab fa-google-plus-g"></i>
                 </a>
-                <a class="a" href="#" className="social">
+                <a className="sp-a" href="#" className="social">
                   <i className="fab fa-linkedin-in"></i>
                 </a>
               </div>
@@ -186,21 +186,21 @@ const SignPage = () => {
               onChange={handleChangeSignIn}
               required/>
               {error && <div className="error-message">{error}</div>}
-              <a class="a" href="#">
+              <a className="sp-a" href="#">
                 Forgot your password?
               </a>
-              <button class="sign-btn">Sign In</button>
+              <button className="sp-sign-btn">Sign In</button>
             </form>
           </div>
-          <div className="overlay-container">
-            <div className="overlay">
-              <div className="overlay-panel overlay-left">
-                <h1 class="h1">Welcome Back!</h1>
-                <p class="p">
+          <div className="sp-overlay-container">
+            <div className="sp-overlay">
+              <div className="sp-overlay-panel sp-overlay-left">
+                <h1 className="sp-h1">Welcome Back!</h1>
+                <p className="sp-p">
                   To keep connected with us please login with your personal info
                 </p>
                 <button
-                  class="sign-btn"
+                  className="sp-sign-btn"
                   className="ghost"
                   id="signIn"
                   onClick={handleSignInClick}
@@ -208,13 +208,13 @@ const SignPage = () => {
                   Sign In
                 </button>
               </div>
-              <div className="overlay-panel overlay-right">
-                <h1 class="h1">Hello, Friend!</h1>
-                <p class="p">
+              <div className="sp-overlay-panel sp-overlay-right">
+                <h1 className="sp-h1">Hello, Friend!</h1>
+                <p className="sp-p">
                   Enter your personal details and start journey with us
                 </p>
                 <button
-                  class="sign-btn"
+                  className="sp-sign-btn"
                   className="ghost"
                   id="signUp"
                   onClick={handleSignUpClick}
