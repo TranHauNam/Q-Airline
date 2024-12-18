@@ -132,13 +132,13 @@ const SignPage = () => {
             <form className="sp-form" onSubmit={handleSubmitSignUp}>
               <h1 className="sp-h1">Create Account</h1>
               <div className="sp-social-container">
-                <a className="sp-a" href="#" className="social">
+                <a class="sp-a" href="#" className="social">
                   <i className="fab fa-facebook-f"></i>
                 </a>
-                <a className="sp-a" href="#" className="social">
+                <a class="sp-a" href="#" className="social">
                   <i className="fab fa-google-plus-g"></i>
                 </a>
-                <a className="sp-a" href="#" className="social">
+                <a class="sp-a" href="#" className="social">
                   <i className="fab fa-linkedin-in"></i>
                 </a>
               </div>
@@ -159,20 +159,20 @@ const SignPage = () => {
               onChange={handleChangeSignUp}
               required/>
               {error && <div className="error-message">{error}</div>}
-              <button className="sp-sign-btn">Sign Up</button>
+              <button class="sp-sign-btn">Sign Up</button>
             </form>
           </div>
           <div className="sp-form-container sp-sign-in-container">
             <form className="sp-form" onSubmit={handleSubmitSignIn}>
               <h1 className="sp-h1">Sign in</h1>
               <div className="sp-social-container">
-                <a className="sp-a" href="#" className="social">
+                <a class="sp-a" href="#" className="social">
                   <i className="fab fa-facebook-f"></i>
                 </a>
-                <a className="sp-a" href="#" className="social">
+                <a class="sp-a" href="#" className="social">
                   <i className="fab fa-google-plus-g"></i>
                 </a>
-                <a className="sp-a" href="#" className="social">
+                <a class="sp-a" href="#" className="social">
                   <i className="fab fa-linkedin-in"></i>
                 </a>
               </div>
@@ -186,21 +186,21 @@ const SignPage = () => {
               onChange={handleChangeSignIn}
               required/>
               {error && <div className="error-message">{error}</div>}
-              <a className="sp-a" href="#">
+              <a class="sp-a" href="#">
                 Forgot your password?
               </a>
-              <button className="sp-sign-btn">Sign In</button>
+              <button class="sp-sign-btn">Sign In</button>
             </form>
           </div>
           <div className="sp-overlay-container">
             <div className="sp-overlay">
               <div className="sp-overlay-panel sp-overlay-left">
-                <h1 className="sp-h1">Welcome Back!</h1>
-                <p className="sp-p">
+                <h1 class="sp-h1">Welcome Back!</h1>
+                <p class="sp-p">
                   To keep connected with us please login with your personal info
                 </p>
                 <button
-                  className="sp-sign-btn"
+                  class="sp-sign-btn"
                   className="ghost"
                   id="signIn"
                   onClick={handleSignInClick}
@@ -209,12 +209,12 @@ const SignPage = () => {
                 </button>
               </div>
               <div className="sp-overlay-panel sp-overlay-right">
-                <h1 className="sp-h1">Hello, Friend!</h1>
-                <p className="sp-p">
+                <h1 class="sp-h1">Hello, Friend!</h1>
+                <p class="sp-p">
                   Enter your personal details and start journey with us
                 </p>
                 <button
-                  className="sp-sign-btn"
+                  class="sp-sign-btn"
                   className="ghost"
                   id="signUp"
                   onClick={handleSignUpClick}
