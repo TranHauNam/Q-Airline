@@ -3,6 +3,42 @@ import { FaPlane, FaCalendarAlt, FaChevronLeft, FaChevronRight } from 'react-ico
 import Navbar from '../components/common/Header';
 import './SearchPage.css';
 
+const flightData = [
+  {
+    airline: 'JetStar',
+    flightNumber: 'BL788',
+    departureTime: '20:25',
+    arrivalTime: '22:30',
+    departureCity: 'CL (Chu Lai)',
+    arrivalCity: 'HN (HaNoi)',
+    duration: '114 phút',
+    price: '1020568 VND',
+    logo: '/path/to/jetstar-logo.png'
+  },
+  {
+    airline: 'VietJet',
+    flightNumber: 'BL788',
+    departureTime: '20:25',
+    arrivalTime: '22:30',
+    departureCity: 'CL (Chu Lai)',
+    arrivalCity: 'HN (HaNoi)',
+    duration: '114 phút',
+    price: '1020568 VND',
+    logo: '/path/to/vietjet-logo.png'
+  },
+  {
+    airline: 'VietnamAirline',
+    flightNumber: 'BL788',
+    departureTime: '20:25',
+    arrivalTime: '22:30',
+    departureCity: 'CL (Chu Lai)',
+    arrivalCity: 'HN (HaNoi)',
+    duration: '114 phút',
+    price: '1020568 VND',
+    logo: '/path/to/vietnam-airline-logo.png'
+  }
+];
+
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useState({
     from: '',
@@ -80,41 +116,35 @@ const SearchPage = () => {
         </div>
 
         <div className="flight-list">
-          {[1, 2].map((flight) => (
-            <div className="flight-card" key={flight}>
+          {flightData.map((flight, index) => (
+            <div className="flight-card" key={index}>
               <div className="flight-info">
-                <div className="airline-details">
-                  <div className="flight-numbers">AI 156 + AI 491</div>
-                  <div className="flight-times">
-                    <div className="departure">
-                      <div className="time">20:35</div>
-                      <div className="city">AMS</div>
-                    </div>
-                    <div className="duration">
-                      <div className="line"></div>
-                      <div className="time">11H 10Min</div>
-                      <div className="stops">1 Stop DEL</div>
-                    </div>
-                    <div className="arrival">
-                      <div className="time">12:15</div>
-                      <div className="city">ATQ</div>
-                    </div>
+                <img 
+                  src={flight.logo} 
+                  alt={flight.airline} 
+                  className="airline-logo"
+                />
+                <div className="flight-number">
+                  {flight.flightNumber}
+                </div>
+                <div className="flight-details">
+                  <div className="departure">
+                    <div className="flight-time">{flight.departureTime}</div>
+                    <div className="flight-city">{flight.departureCity}</div>
+                  </div>
+                  <div className="duration-info">
+                    <span>Bay thẳng</span>
+                    <div>{flight.duration}</div>
+                  </div>
+                  <div className="arrival">
+                    <div className="flight-time">{flight.arrivalTime}</div>
+                    <div className="flight-city">{flight.arrivalCity}</div>
                   </div>
                 </div>
               </div>
               <div className="price-section">
-                <div className="fare-options">
-                  <div className="fare-type economy">
-                    <div className="label">ECONOMY</div>
-                    <div className="price">EUR 761.69</div>
-                    <div className="seats">3 seats left at this fare</div>
-                  </div>
-                  <div className="fare-type business">
-                    <div className="label">BUSINESS</div>
-                    <div className="price">EUR 2,236.33</div>
-                    <div className="seats">2 seats left at this fare</div>
-                  </div>
-                </div>
+                <div className="price">{flight.price}</div>
+                <button className="select-button">CHỌN</button>
               </div>
             </div>
           ))}

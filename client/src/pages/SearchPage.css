@@ -118,11 +118,13 @@
 .flight-card {
   background: white;
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   border: 1px solid #eee;
+  transition: all 0.2s ease;
 }
 
 .flight-card:hover {
@@ -131,77 +133,72 @@
 }
 
 .flight-info {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-}
-
-.flight-numbers {
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.flight-times {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 20px;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
-.duration {
-  text-align: center;
-  position: relative;
-  flex: 1;
-  margin: 0 20px;
+.airline-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 
-.duration .line {
-  height: 2px;
-  background: #1976d2;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-}
-
-.fare-options {
+.flight-details {
   display: flex;
+  align-items: center;
   gap: 20px;
 }
 
-.fare-type {
-  flex: 1;
-  padding: 15px;
-  border-radius: 4px;
-  text-align: center;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.fare-type:hover {
-  transform: translateY(-2px);
-}
-
-.fare-type.economy {
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-}
-
-.fare-type.business {
-  background: linear-gradient(135deg, #f3e5f5, #e1bee7);
-}
-
-.fare-type .label {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.fare-type .price {
-  font-size: 20px;
-  font-weight: bold;
-  color: #1976d2;
-  margin-bottom: 5px;
-}
-
-.fare-type .seats {
-  font-size: 12px;
+.flight-number {
+  font-size: 14px;
   color: #666;
+}
+
+.flight-time {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.flight-city {
+  font-size: 14px;
+  color: #666;
+}
+
+.duration-info {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+  padding: 0 20px;
+}
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f39c12;
+}
+
+.select-button {
+  background: #f39c12;
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.select-button:hover {
+  background: #e67e22;
 }
