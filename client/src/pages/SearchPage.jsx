@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Navbar from '../components/home-components/Navbar';
+import Header from '../components/common/Header'
 import './SearchPage.css';
 
 const SearchPage = () => {
@@ -19,7 +19,7 @@ const SearchPage = () => {
 
   return (
     <div className="search-page">
-      <Navbar />
+      <Header />
       <div className="flight-results">
         <div className="flight-header">
           <div className="route-info">
