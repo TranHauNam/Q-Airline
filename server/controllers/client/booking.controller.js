@@ -1,45 +1,231 @@
 const Booking = require('../../models/booking.model');
 const Flight = require('../../models/flight.model');
+const User = require('../../models/user.model');
+const TemporarySearch = require('../../models/temporary-search-flight.model');
 
 // [POST] /api/booking/
 module.exports.bookFlight = async (req, res) => {
-    // try {
-    //     const { flightNumber, passengerName, passengerEmail, passengerPhone, seatClass } = req.body;
+    try {
+        const { departureFlightNumber, returnFlightNumber, passengers, departureSeatsRequested, returnSeatsRequested  } = req.body;
+        const userId = res.locals.user ? res.locals.user._id : null;
+        const user = await User.findById(userId);
 
-    //     // if (!flightId || !passengerName || !passengerEmail || !passengerPhone) {
-    //     //     return res.status(400).json({ message: 'Tất cả các trường đều là bắt buộc.' });
-    //     // }
+        const searched = await TemporarySearch.findOne({ userId: userId });
+        if (!searched || !searched.flightData) {
+            return res.status(404).json({ message: 'Dữ liệu tìm kiếm đã hết hạn hoặc không tồn tại.' });
+        }
+        if (searched.flightData[0].flightType === 'one-way') {
+            const flightSearched = searched.flightData.find(f => f.flightNumber === departureFlightNumber);
+            const classType = flightSearched.classType;
+            const departureFlight = await Flight.findOne({flightNumber: departureFlightNumber});
 
-    //     const userId = res.locals.user ? res.locals.user._id : null;
+            if (!departureFlight) {
+                return res.status(400).json({ message: 'Không tìm thấy chuyến bay!' });       
+            }
+        
+            //Đánh dấu các ghế đã đặt
+            const depatureSeatsToBook = [];
+            console.log(departureFlight);
+            for (let i = 0; i < departureSeatsRequested.length; i++) {
+                const seatNumber = departureSeatsRequested[i];
+                const seatIndex = departureFlight.seats.findIndex(seat => {
+                    return seat.seatNumber === seatNumber && seat.classType === classType && !seat.isBooked
+                });
+                if (seatIndex === -1) {
+                    return res.status(400).json({
+                        message: `Ghế ${seatNumber} không khả dụng hoặc đã được đặt.`,
+                    });
+                }
 
-    //     const flight = await Flight.find({flightNumber: flightNumber});
+                // Đánh dấu ghế đã đặt
+                departureFlight.seats[seatIndex].isBooked = true;
+                depatureSeatsToBook.push(departureFlight.seats[seatIndex]);
+            }
 
-    //     if (flight.availableSeats <= 0) {
-    //         return res.status(400).json({ message: 'Không còn chỗ trống!' });       
-    //     }
+            const arrClassType = classType.split(' ');
+            const srtClassType = arrClassType.join('');
+            const seatField = `availableSeats${srtClassType}`;
 
-    //     const newBooking = await Booking.create({
-    //         userId: userId,
-    //         flightId: flightId,
-    //         passengerName: passengerName,
-    //         passengerEmail: passengerEmail,
-    //         passengerPhone: passengerPhone,
-    //         seatClass: seatClass
-    //     });
+            departureFlight[seatField] -= depatureSeatsToBook.length;
+            await departureFlight.save();
 
-    //     flight.availableSeats -= 1;
-    //     await flight.save();
+            const totalPrice = flightSearched.price;
 
-    //     res.status(201).json({
-    //         message: 'Đặt vé thành công!',
-    //         booking: newBooking
-    //     });
-    // } catch (error) {
-    //     console.error("Lỗi đặt vé:", error);
-    //     res.status(500).json({ message: 'Có lỗi xảy ra, vui lòng thử lại sau.' });
-    // }
+            //Tạo bản ghi đặt vé
+            const booking = await Booking.create({
+                userId: userId,
+                passengers: passengers,
+                classType: classType,
+                totalPrice: totalPrice,
+                departurePrivateInformation: {
+                    seatsBooked: depatureSeatsToBook.map(seat => seat.seatNumber),
+                    flightNumber: departureFlightNumber,
+                }
+            });
+
+            res.status(201).json({
+                message: 'Đặt vé thành công!',
+                booking: booking
+            });
+        } else if (searched.flightData[0].flightType === 'round-trip') {
+            console.log(searched.flightData);
+            const flightSearched = searched.flightData.find(f => f.departure.flightNumber === departureFlightNumber);
+            const classType = flightSearched.classType;
+            const departureFlight = await Flight.findOne({flightNumber: departureFlightNumber});
+            if (!departureFlight) {
+                return res.status(400).json({ message: 'Không tìm thấy chuyến bay!' });       
+            }
+
+            //Đánh dấu các ghế đã đặt
+            const depatureSeatsToBook = [];
+            for (let i = 0; i < departureSeatsRequested.length; i++) {
+                const seatNumber = departureSeatsRequested[i];
+                const seatIndex = departureFlight.seats.findIndex(seat => {
+                    return seat.seatNumber === seatNumber && seat.classType === classType && !seat.isBooked
+                });
+                if (seatIndex === -1) {
+                    return res.status(400).json({
+                        message: `Ghế ${seatNumber} không khả dụng hoặc đã được đặt.`,
+                    });
+                }
+
+                // Đánh dấu ghế đã đặt
+                departureFlight.seats[seatIndex].isBooked = true;
+                depatureSeatsToBook.push(departureFlight.seats[seatIndex]);
+            }
+
+            const arrClassType = classType.split(' ');
+            const srtClassType = arrClassType.join('');
+            const seatField = `availableSeats${srtClassType}`;
+
+            departureFlight[seatField] -= depatureSeatsToBook.length;
+            await departureFlight.save();
+
+            const returnFlight = await Flight.findOne({flightNumber: returnFlightNumber});
+
+            if (!returnFlight) {
+                return res.status(400).json({ message: 'Không tìm thấy chuyến bay!' });       
+            }
+
+            //Đánh dấu các ghế đã đặt
+            const returnSeatsToBook = [];
+            for (let i = 0; i < returnSeatsRequested.length; i++) {
+                const seatNumber = returnSeatsRequested[i];
+                const seatIndex = returnFlight.seats.findIndex(seat => {
+                    return seat.seatNumber === seatNumber && seat.classType === classType && !seat.isBooked
+                });
+                if (seatIndex === -1) {
+                    return res.status(400).json({
+                        message: `Ghế ${seatNumber} không khả dụng hoặc đã được đặt.`,
+                    });
+                }
+
+                // Đánh dấu ghế đã đặt
+                returnFlight.seats[seatIndex].isBooked = true;
+                returnSeatsToBook.push(returnFlight.seats[seatIndex]);
+            }
+
+            returnFlight[seatField] -= returnSeatsToBook.length;
+            await returnFlight.save();
+
+            const totalPrice = flightSearched.totalPrice;
+            //Tạo bản ghi đặt vé
+            const booking = await Booking.create({
+                userId: userId,
+                passengers: passengers,
+                classType: classType,
+                totalPrice: totalPrice,
+                departurePrivateInformation: {
+                    seatsBooked: depatureSeatsToBook.map(seat => seat.seatNumber),
+                    flightNumber: departureFlightNumber,
+                },
+                returnPrivateInformation: {
+                    seatsBooked: returnSeatsToBook.map(seat => seat.seatNumber),
+                    flightNumber: returnFlightNumber,
+                },
+            });
+
+            res.status(201).json({
+                message: 'Đặt vé thành công!',
+                booking: booking
+            });
+        }
+        
+    } catch (error) {
+        console.error("Lỗi đặt vé:", error);
+        res.status(500).json({ 
+            message: 'Có lỗi xảy ra, vui lòng thử lại sau.' ,
+            error: error.message
+        });
+    }
 };
 
+// [DELETE] /api/booking/cancel/:bookingId
 module.exports.cancelBooking = async (req, res) => {
-    
+    try {
+        const bookingId = req.params.bookingId;
+
+        const booking = await Booking.findById(bookingId);
+        if (!booking) {
+            return res.status(404).json({ message: 'Không tìm thấy vé.' });
+        }
+
+        const userId = res.locals.user ? res.locals.user._id : null;
+        const user = await User.findById(userId);
+
+        // Tìm thông tin chuyến bay tương ứng
+        const flight = await Flight.findOne({ flightNumber: booking.flightNumber });
+        if (!flight) {
+            return res.status(404).json({ message: 'Không tìm thấy chuyến bay tương ứng.' });
+        }
+
+        // Kiểm tra thời gian hiện tại và thời gian khởi hành
+        const currentTime = new Date();
+        const cancelDeadline = new Date(flight.departureTime);
+        cancelDeadline.setHours(cancelDeadline.getHours() - 12); // Giảm 12 tiếng
+
+        if (currentTime > cancelDeadline) {
+            return res.status(400).json({
+                message: 'Đã quá thời hạn hủy vé (12 tiếng trước giờ khởi hành).'
+            });
+        }
+
+        await Booking.deleteOne({_id: bookingId});
+
+        const arrClassType = booking.classType.split(' ');
+        const srtClassType = arrClassType.join('');
+        const seatField = `availableSeats${srtClassType}`;
+
+        flight[seatField] += booking.seatsBooked.length;
+        await flight.save();
+
+        res.status(200).json({
+            message: 'Hủy vé thành công.',
+            booking: {
+                bookingId: booking._id,
+                flightNumber: booking.flightNumber,
+                status: booking.status,
+                totalPrice: booking.totalPrice,
+            }
+        });
+    } catch (error) {
+        console.error("Lỗi hủy đặt vé:", error);
+        res.status(500).json({ message: 'Có lỗi xảy ra, vui lòng thử lại sau.' });
+    }
+};
+
+// [GET] /api/booking/user/:userId
+module.exports.getUserBookings = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const bookings = await Booking.find({ userId: userId });
+
+        res.status(200).json({
+            message: 'Lấy thông tin đặt vé thành công.',
+            bookings: bookings  
+        });
+    } catch (error) {
+        console.error("Lỗi lấy thông tin đặt vé:", error);
+        res.status(500).json({ message: 'Có lỗi xảy ra, vui lòng thử lại sau.' });
+    }
 };

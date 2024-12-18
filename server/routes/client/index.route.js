@@ -3,6 +3,7 @@ const userRoute = require("./user.route");
 const flightRoute = require("./flight.route");
 const bookingRoute = require("./booking.route");
 const userMiddleware = require("../../middlewares/user.middleware");
+const authClientMiddleware = require("../../middlewares/authClient.middleware");
 const cookieParser = require('cookie-parser');
 
 module.exports = (app) => {
@@ -11,5 +12,5 @@ module.exports = (app) => {
     app.use("/api/home", homeRoute);
     app.use("/api/user", userRoute);
     app.use("/api/flight", flightRoute);
-    app.use("/api/booking", bookingRoute);
+    app.use("/api/booking", authClientMiddleware.verifyToken, bookingRoute);
 }

@@ -9,11 +9,52 @@ const planeSchema = new mongoose.Schema(
         manufacturer: {
             type: String,
             required: true
-        }, 
-        seats: {
+        },
+        economySeats: {
             type: Number,
-            required: true
-        }
+            required: true,
+            validate: {
+                validator: (value) => value % 6 === 0,
+                message: 'economySeats must be divisible by 6'
+            }
+        },
+        premiumEconomySeats: {
+            type: Number,
+            required: true,
+            validate: {
+                validator: (value) => value % 6 === 0,
+                message: 'premiumEconomy must be divisible by 6'
+            }
+        },
+        businessSeats: {
+            type: Number,
+            required: true,
+            validate: {
+                validator: (value) => value % 4 === 0,
+                message: 'businessSeats must be divisible by 6'
+            }
+        },
+        firstSeats: {
+            type: Number,
+            required: true,
+            validate: {
+                validator: (value) => value % 6 === 0,
+                message: 'firstSeats must be divisible by 6'
+            }
+        },
+        seats: [
+            {
+                seatNumber: {
+                    type: String,
+                    required: true
+                },
+                classType: {
+                    type: String,
+                    required: true,
+                    enum: ['Economy', 'Premium Economy', 'Business', 'First']
+                }
+            }
+        ]
     },
     {
         timestamps: true

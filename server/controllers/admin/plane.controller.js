@@ -1,15 +1,15 @@
 const Plane = require('../../models/plane.model');
-
+const helpers = require('../../helpers/generateSeat')
 // [POST] /api/admin/plane/add
 module.exports.addPlane = async (req, res) => {
     try {
-        const {code, manufacturer, seats} = req.body;
+        const {code, manufacturer, economySeats, premiumEconomySeats, businessSeats, firstSeats} = req.body;
     
-        if(!code || !manufacturer || !seats) {
-            return res.status(400).json({
-                message: 'Please provide all the required fields: code, manufacturer, seats'
-            });
-        }
+        // if(!code || !manufacturer) {
+        //     return res.status(400).json({
+        //         message: 'Please provide all the required fields: code, manufacturer'
+        //     });
+        // }
     
         const existPlane = await Plane.findOne({code: code});
     
@@ -22,7 +22,11 @@ module.exports.addPlane = async (req, res) => {
         const newPlane = await Plane.create({
             code: code, 
             manufacturer: manufacturer,
-            seats: seats
+            economySeats: economySeats,
+            premiumEconomySeats: premiumEconomySeats,
+            businessSeats: businessSeats,
+            firstSeats: firstSeats,
+            seats: helpers.generateSeats(economySeats, premiumEconomySeats, businessSeats, firstSeats)
         });
     
         res.status(201).json({
