@@ -119,86 +119,86 @@ module.exports.logout = async (req, res) => {
     }
 };
 
-// [POST] /api/user/forgot-password
-module.exports.forgotPassword = async (req, res) => {
-    //Kiểm tra email
-    const email = req.body.email;
+// // [POST] /api/user/forgot-password
+// module.exports.forgotPassword = async (req, res) => {
+//     //Kiểm tra email
+//     const email = req.body.email;
 
-    const user = await User.findOne({
-       email: email,
-       deleted: false 
-    });
+//     const user = await User.findOne({
+//        email: email,
+//        deleted: false 
+//     });
 
-    if(!user) {
-        return res.status(401).json({ 
-            message: "Email không tồn tại!" 
-        });
-    }
+//     if(!user) {
+//         return res.status(401).json({ 
+//             message: "Email không tồn tại!" 
+//         });
+//     }
 
-    //Tạo mã OTP và lưu mã OTP và email vào collection forgot-password
-    const OTP = generate.generateRandomOTP(6);
-    const objectForgotPassword = {
-        email: email,
-        OTP: OTP,
-        expireAt: Date.now()
-    };
+//     //Tạo mã OTP và lưu mã OTP và email vào collection forgot-password
+//     const OTP = generate.generateRandomOTP(6);
+//     const objectForgotPassword = {
+//         email: email,
+//         OTP: OTP,
+//         expireAt: Date.now()
+//     };
 
-    console.log(objectForgotPassword);
+//     console.log(objectForgotPassword);
 
-    const forgotPassword = new ForgotPassword(objectForgotPassword);
-    await forgotPassword.save();
-    res.status(200).json({
-        message: "Gửi mã OTP lên database thành công"
-    })
-};
+//     const forgotPassword = new ForgotPassword(objectForgotPassword);
+//     await forgotPassword.save();
+//     res.status(200).json({
+//         message: "Gửi mã OTP lên database thành công"
+//     })
+// };
 
-// [POST] /api/user/otp-verification
-module.exports.otpVerification = async (req, res) => {
-    try {
-        const email = req.body.email;
-        const OTP = req.body.OTP;
+// // [POST] /api/user/otp-verification
+// module.exports.otpVerification = async (req, res) => {
+//     try {
+//         const email = req.body.email;
+//         const OTP = req.body.OTP;
 
-        const result = await ForgotPassword.findOne({
-            email: email,
-            OTP: OTP
-        });
+//         const result = await ForgotPassword.findOne({
+//             email: email,
+//             OTP: OTP
+//         });
 
-        const user = await User.findOne({
-            email: email
-        });
-        const token = user.token;
+//         const user = await User.findOne({
+//             email: email
+//         });
+//         const token = user.token;
 
-        if(result) {
-            res.cookie("token", token);
-            res.status(200).json({
-                message: "Thành công."
-            });
-        } else {
-            return res.status(401).json({
-                message: "Email hoặc mã OTP không đúng."
-            });
-        }
-    } catch (error) {
-        console.error("OTP Verification error:", error);
-        res.status(500).json({
-            message: "Có lỗi xảy ra, vui lòng thử lại sau"
-        });
-    }
-};
+//         if(result) {
+//             res.cookie("token", token);
+//             res.status(200).json({
+//                 message: "Thành công."
+//             });
+//         } else {
+//             return res.status(401).json({
+//                 message: "Email hoặc mã OTP không đúng."
+//             });
+//         }
+//     } catch (error) {
+//         console.error("OTP Verification error:", error);
+//         res.status(500).json({
+//             message: "Có lỗi xảy ra, vui lòng thử lại sau"
+//         });
+//     }
+// };
 
-// [POST] /api/user/reset-password
-module.exports.resetPassword = async (req, res) => {
-    const newPassword = req.body.newPassword;
-    const hashedPassword = md5(newPassword);
+// // [POST] /api/user/reset-password
+// module.exports.resetPassword = async (req, res) => {
+//     const newPassword = req.body.newPassword;
+//     const hashedPassword = md5(newPassword);
 
-    const token = req.cookies.token;
-    if (!token) {
-        return res.status(401).json({ message: "Token không hợp lệ" });
-    }
+//     const token = req.cookies.token;
+//     if (!token) {
+//         return res.status(401).json({ message: "Token không hợp lệ" });
+//     }
 
-    await User.updateOne(
-        {token: token},
-        {password: hashedPassword}
-    );
-    res.status(200).json({ message: "Cập nhật mật khẩu thành công" });
-};
+//     await User.updateOne(
+//         {token: token},
+//         {password: hashedPassword}
+//     );
+//     res.status(200).json({ message: "Cập nhật mật khẩu thành công" });
+// };

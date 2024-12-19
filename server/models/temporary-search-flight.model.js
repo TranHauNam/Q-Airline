@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const temporarySearchSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
     },
     flightData: {
         type: Object, // Lưu toàn bộ thông tin chuyến bay đã tìm kiếm
