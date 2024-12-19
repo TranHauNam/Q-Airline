@@ -18,39 +18,39 @@ const AdminHeader = ({ onLogout }) => {
   };
 
   return (
-    <div className="admin-header-wrapper">
-      <div className="admin-header">
-        <div className="admin-header-brand">
+    <div className="adm-header-wrapper">
+      <div className="adm-header-container">
+        <div className="adm-header-brand">
           <img src={logo} alt="Q-Airline Logo" />
-          <div className="brand-name">
-            <span className="brand-text">Q-AIRLINE</span>
-            <span className="brand-slogan">ADMINISTRATOR PANEL</span>
+          <div className="adm-header-brand-name">
+            <span className="adm-header-brand-text">Q-AIRLINE</span>
+            <span className="adm-header-brand-slogan">ADMINISTRATOR PANEL</span>
           </div>
         </div>
 
-        <div className="admin-header-right">
-          <div className={`profile-wrapper ${showProfileMenu ? 'active' : ''}`}>
+        <div className="adm-header-right">
+          <div className={`adm-header-profile-wrapper ${showProfileMenu ? 'active' : ''}`}>
             <div 
-              className="profile-trigger"
+              className="adm-header-profile-trigger"
               onClick={toggleMenu}
             >
-              <div className="profile-avatar">
+              <div className="adm-header-profile-avatar">
                 AD
               </div>
-              <div className="profile-icon">
+              <div className="adm-header-profile-icon">
                 <i className="fas fa-chevron-down"></i>
               </div>
-              <div className="profile-status"></div>
+              <div className="adm-header-profile-status"></div>
             </div>
             
             {showProfileMenu && (
-              <div className="profile-menu">
-                <div className="profile-info">
-                  <span className="user-name">Administrator</span>
-                  <span className="user-email">admin@qairline.com</span>
+              <div className="adm-header-profile-menu">
+                <div className="adm-header-profile-info">
+                  <span className="adm-header-user-name">Administrator</span>
+                  <span className="adm-header-user-email">admin@qairline.com</span>
                 </div>
-                <div className="menu-items">
-                  <button onClick={handleLogout} className="menu-item logout">
+                <div className="adm-header-menu-items">
+                  <button onClick={handleLogout} className="adm-header-menu-item logout">
                     <i className="fas fa-sign-out-alt"></i>
                     Đăng xuất
                   </button>
