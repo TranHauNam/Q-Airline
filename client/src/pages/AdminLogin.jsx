@@ -34,19 +34,19 @@ const AdminLogin = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      setError(error.response?.data?.message || 'Đăng nhập thất b��i');
+      setError(error.response?.data?.message || 'Đăng nhập thất bại');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="sp-wrap">
+    <div className="adm-login-wrap">
       <div>
-        <div className="sp-container">
-          <div className="sp-form-container sp-sign-in-container">
-            <form className="sp-form" onSubmit={handleSubmit}>
-              <h1 className="sp-h11">Đăng nhập bằng tài khoản Admin</h1>
+        <div className="adm-login-container">
+          <div className="adm-login-form-container adm-login-sign-in-container">
+            <form className="adm-login-form" onSubmit={handleSubmit}>
+              <h1 className="adm-login-h11">Đăng nhập bằng tài khoản Admin</h1>
 
               <span></span>
               
@@ -70,7 +70,7 @@ const AdminLogin = () => {
               />
               
               <button 
-                className="sp-sign-btn"
+                className="adm-login-btn"
                 disabled={loading}
               >
                 {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
@@ -78,13 +78,13 @@ const AdminLogin = () => {
             </form>
           </div>
           
-          <div className="sp-overlay-container">
-            <div className="sp-overlay">
-              <div className="sp-overlay-panel sp-overlay-right">
-                <h1 className="sp-h1">Xin chào Admin!</h1>
-                <p className="sp-p">
+          <div className="adm-login-overlay-container">
+            <div className="adm-login-overlay">
+              <div className="adm-login-overlay-panel adm-login-overlay-right">
+                <h1 className="adm-login-h1">Xin chào Admin!</h1>
+                <p className="adm-login-p">
                   Đăng nhập để quản lý hệ thống
-                  <p className="sp-p">
+                  <p className="adm-login-p">
                     Q-Airline
                   </p>
                 </p>
