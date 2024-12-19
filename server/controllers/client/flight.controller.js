@@ -52,7 +52,7 @@ module.exports.getAllFlights = async (req, res) => {
 //[GET] /api/flight/search
 module.exports.searchFlight = async (req, res) => {
     try {
-        const {origin, destination, departureTime, returnTime, flightType, classType, adult, children, infant} = req.body; 
+        const {origin, destination, departureTime, returnTime, flightType, classType, adult, children, infant} = req.query; 
 
         // Xóa các bản ghi cũ của người dùng
         await TemporarySearch.deleteMany({});
@@ -68,11 +68,12 @@ module.exports.searchFlight = async (req, res) => {
 
         const totalSeatsNeeded = (adult || 0) + (children || 0);
 
+        // console.log(origin);
         const arrClassType = classType.split(' ');
         const strClassType = arrClassType.join('');
 
         const calculatePrice = (flight, strClassType, adult, children, infant) => {
-            const priceField = price${strClassType};
+            const priceField = `price${strClassType}`;
             const adultPrice = flight[priceField];
             const childPrice = adultPrice * 0.75;
             const infantPrice = adultPrice * 0.1;
@@ -87,7 +88,7 @@ module.exports.searchFlight = async (req, res) => {
         if (flightType == 'one-way') {
             const flights = await Flight.find(departureFilter);
             const availableFlights = flights.filter(flight => {
-                const availableSeatsField = availableSeats${strClassType};
+                const availableSeatsField = `availableSeats${strClassType}`;
                 return flight[availableSeatsField] >= totalSeatsNeeded;
             });
 
@@ -146,12 +147,12 @@ module.exports.searchFlight = async (req, res) => {
             const returnFlights = await Flight.find(returnFilter);
 
             const availableDepartureFlights = departureFlights.filter(flight => {
-                const availableSeatsField = availableSeats${strClassType};
+                const availableSeatsField = `availableSeats${strClassType}`;
                 return flight[availableSeatsField] >= totalSeatsNeeded;
             });
 
             const availableReturnFlights = returnFlights.filter(flight => {
-                const availableSeatsField = availableSeats${strClassType};
+                const availableSeatsField = `availableSeats${strClassType}`;
                 return flight[availableSeatsField] >= totalSeatsNeeded;
             });
 
@@ -222,7 +223,7 @@ module.exports.searchFlight = async (req, res) => {
         console.error("Error searching flight", error);
 
         res.status(500).json({
-            message: 'Internal Server Error',
+            message: 'Lỗi server',
             error: error.message
         });
     }
