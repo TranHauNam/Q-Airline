@@ -1,54 +1,39 @@
 import Client from '../../client.api';
 
 const flightApi = {
+  // Tìm kiếm chuyến bay
   searchFlights: async (searchParams) => {
     try {
-      console.log('Original searchParams:', searchParams);
-
-      // Validate dữ liệu trước khi gửi
-      if (!searchParams.origin || !searchParams.destination || 
-          !searchParams.departureTime || !searchParams.flightType || 
-          !searchParams.classType) {
-        throw new Error('Thiếu thông tin tìm kiếm');
-      }
-
-      // Đảm bảo dữ liệu được gửi đúng format
-      const requestBody = {
+      console.log('Searching flights with params:', searchParams);
+      const response = await Client.post('/api/flight/search', {
         origin: searchParams.origin,
         destination: searchParams.destination,
         departureTime: searchParams.departureTime,
         returnTime: searchParams.returnTime,
-        flightType: searchParams.flightType,
-        classType: searchParams.classType,
-        adult: Number(searchParams.adult),
-        children: Number(searchParams.children),
-        infant: Number(searchParams.infant)
-      };
-
-      console.log('Request body:', requestBody);
-
-      const response = await Client.post('/flight/search', requestBody);
-      
-      console.log('Response:', response);
-
-      if (!response || !response.data) {
-        throw new Error('Không nhận được dữ liệu từ server');
+        flightType: searchParams.flightType || 'one-way',
+        classType: searchParams.classType || 'ECONOMY',
+        adult: searchParams.adult || 1,
+        children: searchParams.children || 0,
+        infant: searchParams.infant || 0
+      });
+      return response.data.flights;
+    } catch (error) {
+      console.error('Error searching flights:', error);
+      if (error.response?.status === 404) {
+        throw new Error(error.response.data.message);
       }
+      throw error;
+    }
+  },
 
+  // Lấy danh sách sân bay
+  searchAirports: async () => {
+    try {
+      const response = await Client.get('/api/airports');
       return response.data;
     } catch (error) {
-      console.error('API Error:', error);
-      if (error.response) {
-        console.error('Error response:', error.response.data);
-        if (error.response.status === 404) {
-          throw new Error('Không tìm thấy chuyến bay phù hợp');
-        }
-        throw new Error(error.response.data.message || 'Lỗi server');
-      } else if (error.request) {
-        throw new Error('Không thể kết nối đến server');
-      } else {
-        throw new Error(error.message || 'Có lỗi xảy ra khi tìm kiếm');
-      }
+      console.error('Error fetching airports:', error);
+      throw error;
     }
   }
 };

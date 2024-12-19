@@ -6,7 +6,6 @@ import Admin from "./pages/Admin";
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import { AuthProvider } from './contexts/AuthContext';
-import SearchPage from './pages/SearchPage';
 import FlightSearchPage from './pages/FlightSearchPage';
 import FlightResultPage from './pages/FlightResultPage';
 
@@ -19,9 +18,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign" element={<SignPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/flights/search" element={<FlightSearchPage />} />
-        <Route path="/flights/results" element={<FlightResultPage />} />
+        <Route path="/search" element={<FlightSearchPage />} />
+        <Route path="/flight-results" element={<FlightResultPage />} />
       </Routes>
     </AuthProvider>
   );

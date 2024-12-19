@@ -5,6 +5,6 @@ const controller = require('../../controllers/client/flight.controller');
 
 route.get('/all', controller.getAllFlights);
 route.get('/single/:flightNumber', controller.getSingleFlight);
-route.post('/search', controller.searchFlight);
+route.get('/search/', controller.searchFlight);
 
 module.exports = route;

@@ -1,24 +1,25 @@
 import flightApi from './flight.api';
 
 const flightService = {
-  searchFlights: async (searchData) => {
+  searchFlights: async (searchParams) => {
     try {
-      const searchParams = {
-        origin: searchData.origin,
-        destination: searchData.destination,
-        departureTime: searchData.departureTime,
-        returnTime: searchData.returnTime,
-        flightType: searchData.flightType,
-        classType: searchData.classType,
-        adult: searchData.adult,
-        children: searchData.children,
-        infant: searchData.infant
+      const apiParams = {
+        origin: searchParams.departureAirport,
+        destination: searchParams.arrivalAirport,
+        departureTime: searchParams.departureDate,
+        returnTime: searchParams.returnDate,
+        flightType: searchParams.isRoundTrip ? 'round-trip' : 'one-way',
+        classType: searchParams.seatClass || 'ECONOMY',
+        adult: searchParams.adultCount || 1,
+        children: searchParams.childCount || 0,
+        infant: searchParams.infantCount || 0
       };
-
-      console.log('Searching with params:', searchParams);
       
-      return await flightApi.searchFlights(searchParams);
+      console.log('Searching with params:', apiParams);
+      const response = await flightApi.searchFlights(apiParams);
+      return response;
     } catch (error) {
+      console.error('Error searching flights:', error);
       throw error;
     }
   },

@@ -1,74 +1,141 @@
 .flight-search-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: #f5f5f5;
 }
 
 .search-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .search-header {
-  text-align: center;
-  margin-bottom: 30px;
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
 .search-header h1 {
-  color: #333;
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 1rem;
 }
 
-.flight-type-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 30px;
+.search-header p {
+    color: #666;
+    font-size: 1.1rem;
 }
 
-.tab-btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 30px;
-  background-color: white;
-  color: #666;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
-.tab-btn.active {
-  background-color: #18b7be;
-  color: white;
-  box-shadow: 0 4px 8px rgba(24, 183, 190, 0.3);
+.form-row {
+    display: flex;
+    gap: 1rem;
 }
 
-.tab-btn:hover:not(.active) {
-  background-color: #f8f9fa;
-  transform: translateY(-1px);
+.form-group {
+    flex: 1;
 }
 
-.search-content {
-  background: white;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
+}
+
+.passenger-count {
+    display: flex;
+    gap: 1rem;
+}
+
+.passenger-type {
+    flex: 1;
+}
+
+.passenger-type label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.passenger-type input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.passenger-type input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
+}
+
+.search-button {
+    padding: 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-button:hover {
+    background: #0056b3;
+}
+
+.search-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
-  .search-container {
-    padding: 20px 15px;
-  }
+    .flight-search-page {
+        padding: 1rem;
+    }
 
-  .search-header h1 {
-    font-size: 2rem;
-  }
+    .search-container {
+        padding: 1rem;
+    }
 
-  .tab-btn {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
+    .form-row {
+        flex-direction: column;
+    }
+
+    .passenger-count {
+        flex-direction: column;
+    }
+
+    .search-button {
+        margin-top: 1rem;
+    }
 } 
