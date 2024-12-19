@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import accountService from '../services/modules/user/account';
 import './SignUpPage.css';
 
 const SignUpPage = () => {
@@ -12,6 +12,7 @@ const SignUpPage = () => {
     confirmPassword: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -23,27 +24,24 @@ const SignUpPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     // Kiểm tra mật khẩu xác nhận
     if (formData.password !== formData.confirmPassword) {
       setError('Mật khẩu xác nhận không khớp');
+      setLoading(false);
       return;
     }
 
     try {
-      axios.defaults.baseURL = 'http://localhost:5000';
-      axios.defaults.withCredentials = true;
-
-      const response = await axios.post('/api/user/register', {
+      const response = await accountService.register({
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password
       });
 
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+      if (response.token) {
+        // Đăng ký thành công và tự động đăng nhập
         navigate('/');
       } else {
         setError('Đăng ký không thành công');
@@ -57,6 +55,8 @@ const SignUpPage = () => {
       } else {
         setError('Có lỗi xảy ra, vui lòng thử lại');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,6 +77,7 @@ const SignUpPage = () => {
               onChange={handleChange}
               required
               placeholder="Nhập họ và tên của bạn"
+              disabled={loading}
             />
           </div>
 
@@ -89,6 +90,7 @@ const SignUpPage = () => {
               onChange={handleChange}
               required
               placeholder="Nhập email của bạn"
+              disabled={loading}
             />
           </div>
 
@@ -102,6 +104,7 @@ const SignUpPage = () => {
               required
               placeholder="Nhập mật khẩu"
               minLength="6"
+              disabled={loading}
             />
           </div>
 
@@ -115,18 +118,40 @@ const SignUpPage = () => {
               required
               placeholder="Nhập lại mật khẩu"
               minLength="6"
+              disabled={loading}
             />
           </div>
 
-          <button type="submit" className="signup-button">
-            Đăng Ký
+          <button 
+            type="submit" 
+            className={`signup-button ${loading ? 'loading' : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'Đang đăng ký...' : 'Đăng Ký'}
           </button>
         </form>
 
         <div className="signup-footer">
-          <p>
+          <div className="social-signup">
+            <p>Hoặc đăng ký với</p>
+            <div className="social-buttons">
+              <button className="social-button google">
+                <i className="fab fa-google"></i>
+                Google
+              </button>
+              <button className="social-button facebook">
+                <i className="fab fa-facebook-f"></i>
+                Facebook
+              </button>
+            </div>
+          </div>
+
+          <p className="login-text">
             Đã có tài khoản? 
-            <span onClick={() => navigate('/login')} className="login-link">
+            <span 
+              onClick={() => navigate('/login')} 
+              className="login-link"
+            >
               Đăng nhập
             </span>
           </p>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import accountService from '../services/modules/user/account';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -10,6 +10,7 @@ const LoginPage = () => {
     password: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,19 +22,14 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
-      // Cấu hình axios cho backend port 5000
-      axios.defaults.baseURL = 'http://localhost:5000';
-      axios.defaults.withCredentials = true;
-
-      const response = await axios.post('/api/user/login', formData);
+      const response = await accountService.login(formData);
       
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-        navigate('/');
+      if (response.token) {
+        // Đăng nhập thành công
+        window.location.href = '/';
       } else {
         setError('Đăng nhập không thành công');
       }
@@ -46,7 +42,13 @@ const LoginPage = () => {
       } else {
         setError('Có lỗi xảy ra, vui lòng thử lại');
       }
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleForgotPassword = () => {
+    navigate('/forgot-password');
   };
 
   return (
@@ -66,6 +68,7 @@ const LoginPage = () => {
               onChange={handleChange}
               required
               placeholder="Nhập email của bạn"
+              disabled={loading}
             />
           </div>
 
@@ -78,24 +81,55 @@ const LoginPage = () => {
               onChange={handleChange}
               required
               placeholder="Nhập mật khẩu"
+              disabled={loading}
             />
           </div>
 
-          <button type="submit" className="login-button">
-            Đăng nhập
+          <button 
+            type="submit" 
+            className={`login-button ${loading ? 'loading' : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </button>
         </form>
 
         <div className="login-footer">
-          <p>
+          <div className="remember-forgot">
+            <label className="remember-me">
+              <input type="checkbox" /> Ghi nhớ đăng nhập
+            </label>
+            <span 
+              className="forgot-password"
+              onClick={handleForgotPassword}
+            >
+              Quên mật khẩu?
+            </span>
+          </div>
+
+          <div className="social-login">
+            <p>Hoặc đăng nhập với</p>
+            <div className="social-buttons">
+              <button className="social-button google">
+                <i className="fab fa-google"></i>
+                Google
+              </button>
+              <button className="social-button facebook">
+                <i className="fab fa-facebook-f"></i>
+                Facebook
+              </button>
+            </div>
+          </div>
+
+          <p className="signup-text">
             Chưa có tài khoản? 
-            <span onClick={() => navigate('/sign')} className="register-link">
+            <span 
+              onClick={() => navigate('/signup')} 
+              className="register-link"
+            >
               Đăng ký ngay
             </span>
           </p>
-          <a href="/forgot-password" className="forgot-password">
-            Quên mật khẩu?
-          </a>
         </div>
       </div>
     </div>
