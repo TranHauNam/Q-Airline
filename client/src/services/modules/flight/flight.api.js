@@ -5,13 +5,13 @@ const flightApi = {
   searchFlights: async (searchParams) => {
     try {
       console.log('Searching flights with params:', searchParams);
-      const response = await Client.post('/api/flight/search', {
+      const response = await Client.get('/api/flight/search', {
         origin: searchParams.origin,
         destination: searchParams.destination,
         departureTime: searchParams.departureTime,
         returnTime: searchParams.returnTime,
         flightType: searchParams.flightType || 'one-way',
-        classType: searchParams.classType || 'ECONOMY',
+        classType: searchParams.classType || 'Economy',
         adult: searchParams.adult || 1,
         children: searchParams.children || 0,
         infant: searchParams.infant || 0
