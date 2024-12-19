@@ -14,6 +14,23 @@ const AircraftManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (plane.economySeats % 6 !== 0) {
+        alert('Số ghế hạng phổ thông phải chia hết cho 6');
+        return;
+      }
+      if (plane.premiumEconomySeats % 6 !== 0) {
+        alert('Số ghế hạng phổ thông cao cấp phải chia hết cho 6');
+        return;
+      }
+      if (plane.businessSeats % 4 !== 0) {
+        alert('Số ghế hạng thương gia phải chia hết cho 4');
+        return;
+      }
+      if (plane.firstSeats % 6 !== 0) {
+        alert('Số ghế hạng nhất phải chia hết cho 6');
+        return;
+      }
+
       const response = await planeApi.addPlane(plane);
       alert(response.data.message);
       setPlane({
@@ -52,7 +69,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Số ghế hạng phổ thông</label>
+          <label>Số ghế hạng phổ thông (chia hết cho 6)</label>
           <input
             type="number"
             value={plane.economySeats}
@@ -61,7 +78,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Số ghế hạng phổ thông cao cấp</label>
+          <label>Số ghế hạng phổ thông cao cấp (chia hết cho 6)</label>
           <input
             type="number"
             value={plane.premiumEconomySeats}
@@ -70,7 +87,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Số ghế hạng thương gia</label>
+          <label>Số ghế hạng thương gia (chia hết cho 4)</label>
           <input
             type="number"
             value={plane.businessSeats}
@@ -79,7 +96,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Số ghế hạng nhất</label>
+          <label>Số ghế hạng nhất (chia hết cho 6)</label>
           <input
             type="number"
             value={plane.firstSeats}
