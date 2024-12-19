@@ -40,6 +40,7 @@ const Admin = () => {
       title: 'Đăng thông tin',
       icon: <FaNewspaper />,
       description: 'Quản lý thông tin, khuyến mại, thông báo, tin tức của hãng',
+
       color: '#3498db',
       component: NewsManagement
     },
@@ -48,32 +49,40 @@ const Admin = () => {
       title: 'Quản lý tàu bay',
       icon: <FaPlane />,
       description: 'Nhập và quản lý thông tin về các tàu bay',
+
       color: '#e74c3c',
       component: AircraftManagement
+
     },
     {
       id: 'flights',
       title: 'Quản lý chuyến bay',
       icon: <FaRoute />,
       description: 'Quản lý thông tin các chuyến bay',
+
       color: '#2ecc71',
       component: FlightManagement
+
     },
     {
       id: 'bookings',
       title: 'Thống kê đặt vé',
       icon: <FaTicketAlt />,
       description: 'Xem và thống kê đặt vé của khách hàng',
+
       color: '#f39c12',
       component: BookingStatistics
+
     },
     {
       id: 'delays',
       title: 'Quản lý delay',
       icon: <FaClock />,
       description: 'Cập nhật thời gian khởi hành cho các chuyến bay',
+
       color: '#9b59b6',
       component: DelayManagement
+
     }
   ];
 
@@ -150,5 +159,6 @@ const Admin = () => {
     </div>
   );
 };
+
 
 export default Admin;

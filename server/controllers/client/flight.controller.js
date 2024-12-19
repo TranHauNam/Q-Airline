@@ -1,5 +1,6 @@
 const Flight = require('../../models/flight.model');
 const TemporarySearch = require('../../models/temporary-search-flight.model');
+const calculateArrivalTime = require('../../helpers/caculateArrivalTime')
 
 // [GET] /api/flight/all
 module.exports.getAllFlights = async (req, res) => {
@@ -47,221 +48,182 @@ module.exports.getAllFlights = async (req, res) => {
     }
 };
 
-// [GET] /api/flight/single/:flightNumber
-module.exports.getSingleFlight = async (req, res) => {
-    try {
-        const flightNumber = req.params.flightNumber;
 
-        const flight = await Flight.findOne({ flightNumber: flightNumber }).populate('planeId');
-
-        if(!flight) {
-            return res.status(404).json({ message: 'Flight not found.' });
-        }
-
-        res.status(200).json({
-            flightNumber: flight.flightNumber, 
-            planeId: flight.planeId, 
-            origin: flight.origin, 
-            destination: flight.destination, 
-            departureTime: flight.departureTime, 
-            arrivalTime: flight.arrivalTime, 
-            price: flight.price, 
-            createAt: flight.createAt
-        });
-    } catch (error) {
-        console.error("Error getting flight by number", error);
-
-        res.status(500).json({
-            message: 'Internal Server Error',
-            error: error.message
-        });
-    }
-};
-
-// [POST] /api/flight/search
+//[GET] /api/flight/search
 module.exports.searchFlight = async (req, res) => {
     try {
-        const {
-            origin,
-            destination,
-            departureTime,
-            returnTime,
-            flightType,
-            classType,
-            adult,
-            children,
-            infant
-        } = req.body;
+        const {origin, destination, departureTime, returnTime, flightType, classType, adult, children, infant} = req.body; 
 
-        console.log('Search request body:', req.body);
+        // Xóa các bản ghi cũ của người dùng
+        await TemporarySearch.deleteMany({});
 
-        // Validate dữ liệu đầu vào
-        if (!origin || !destination || !departureTime || !flightType || !classType) {
-            console.log('Missing required fields:', {
-                origin: !!origin,
-                destination: !!destination,
-                departureTime: !!departureTime,
-                flightType: !!flightType,
-                classType: !!classType
-            });
-            return res.status(400).json({
-                message: 'Thiếu thông tin tìm kiếm'
-            });
-        }
-
-        // Tạo filter cơ bản cho chuyến đi
         const departureFilter = {
-            origin: origin,
-            destination: destination
+            origin: { $regex: origin, $options: 'i' },
+            destination: { $regex: destination, $options: 'i' },
+        };
+        const parsedDepartureTime = new Date(departureTime);
+        const departureStart = new Date(parsedDepartureTime.setUTCHours(0, 0, 0, 0));
+        const departureEnd = new Date(parsedDepartureTime.setUTCHours(23, 59, 59, 999));
+        departureFilter.departureTime = { $gte: departureStart, $lte: departureEnd };
+
+        const totalSeatsNeeded = (adult || 0) + (children || 0);
+
+        const arrClassType = classType.split(' ');
+        const strClassType = arrClassType.join('');
+
+        const calculatePrice = (flight, strClassType, adult, children, infant) => {
+            const priceField = price${strClassType};
+            const adultPrice = flight[priceField];
+            const childPrice = adultPrice * 0.75;
+            const infantPrice = adultPrice * 0.1;
+
+            return (
+                (adult || 0) * adultPrice +
+                (children || 0) * childPrice +
+                (infant || 0) * infantPrice
+            );
         };
 
-        // Xử lý ngày đi
-        const startDate = new Date(departureTime);
-        startDate.setHours(0, 0, 0, 0);
-        const endDate = new Date(departureTime);
-        endDate.setHours(23, 59, 59, 999);
-
-        departureFilter.departureTime = {
-            $gte: startDate,
-            $lte: endDate
-        };
-
-        console.log('Departure filter:', departureFilter);
-
-        // Tìm chuyến đi
-        let departureFlights = await Flight.find(departureFilter).lean();
-        console.log('Found departure flights:', departureFlights);
-
-        // Kiểm tra số ghế trống theo hạng vé
-        const totalPassengers = Number(adult) + Number(children);
-        departureFlights = departureFlights.filter(flight => {
-            let availableSeats;
-            switch(classType) {
-                case 'Economy':
-                    availableSeats = flight.availableSeatsEconomy;
-                    flight.price = flight.priceEconomy;
-                    break;
-                case 'Premium Economy':
-                    availableSeats = flight.availableSeatsPremiumEconomy;
-                    flight.price = flight.pricePremiumEconomy;
-                    break;
-                case 'Business':
-                    availableSeats = flight.availableSeatsBusiness;
-                    flight.price = flight.priceBusiness;
-                    break;
-                case 'First':
-                    availableSeats = flight.availableSeatsFirst;
-                    flight.price = flight.priceFirst;
-                    break;
-                default:
-                    availableSeats = flight.availableSeatsEconomy;
-                    flight.price = flight.priceEconomy;
-            }
-            return availableSeats >= totalPassengers;
-        });
-
-        if (departureFlights.length === 0) {
-            return res.status(404).json({
-                message: 'Không tìm thấy chuyến bay phù hợp'
-            });
-        }
-
-        let returnFlights = [];
-        // Nếu là round-trip, tìm thêm chuyến về
-        if (flightType === 'round-trip' && returnTime) {
-            const returnFilter = {
-                origin: destination,
-                destination: origin
-            };
-
-            const returnStartDate = new Date(returnTime);
-            returnStartDate.setHours(0, 0, 0, 0);
-            const returnEndDate = new Date(returnTime);
-            returnEndDate.setHours(23, 59, 59, 999);
-
-            returnFilter.departureTime = {
-                $gte: returnStartDate,
-                $lte: returnEndDate
-            };
-
-            console.log('Return filter:', returnFilter);
-            
-            returnFlights = await Flight.find(returnFilter).lean();
-            console.log('Found return flights:', returnFlights);
-
-            // Lọc chuyến về theo số ghế trống
-            returnFlights = returnFlights.filter(flight => {
-                let availableSeats;
-                switch(classType) {
-                    case 'Economy':
-                        availableSeats = flight.availableSeatsEconomy;
-                        flight.price = flight.priceEconomy;
-                        break;
-                    case 'Premium Economy':
-                        availableSeats = flight.availableSeatsPremiumEconomy;
-                        flight.price = flight.pricePremiumEconomy;
-                        break;
-                    case 'Business':
-                        availableSeats = flight.availableSeatsBusiness;
-                        flight.price = flight.priceBusiness;
-                        break;
-                    case 'First':
-                        availableSeats = flight.availableSeatsFirst;
-                        flight.price = flight.priceFirst;
-                        break;
-                    default:
-                        availableSeats = flight.availableSeatsEconomy;
-                        flight.price = flight.priceEconomy;
-                }
-                return availableSeats >= totalPassengers;
+        if (flightType == 'one-way') {
+            const flights = await Flight.find(departureFilter);
+            const availableFlights = flights.filter(flight => {
+                const availableSeatsField = availableSeats${strClassType};
+                return flight[availableSeatsField] >= totalSeatsNeeded;
             });
 
-            if (returnFlights.length === 0 && flightType === 'round-trip') {
+            if (availableFlights.length === 0) {
                 return res.status(404).json({
-                    message: 'Không tìm thấy chuyến bay về phù hợp'
+                    message: 'Không có chuyến bay phù hợp với yêu cầu của bạn.',
                 });
             }
+
+            const response = availableFlights.map(flight => {
+                return {
+                    flightNumber: flight.flightNumber,
+                    origin: flight.origin,
+                    destination: flight.destination,
+                    departureTime: flight.departureTime,
+                    duration: flight.duration,
+                    arrivalTime: calculateArrivalTime(flight.departureTime, flight.duration),
+                    priceEconomy: flight.priceEconomy,
+                    priceBusiness: flight.priceBusiness,
+                    pricePremiumEconomy: flight.pricePremiumEconomy,
+                    priceFirst: flight.priceFirst,  
+                    totalPrice: calculatePrice(flight, strClassType, adult, children, infant),
+                    availableSeatsEconomy: flight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+                    availableSeatsPremiumEconomy: flight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+                    availableSeatsBusiness: flight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+                    availableSeatsFirst: flight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+                    classType: classType,
+                    flightType: flightType
+                };
+            });
+    
+            // Lưu kết quả vào TemporaryBooking
+            await TemporarySearch.create({
+                userId: res.locals.user ? res.locals.user._id : null, 
+                flightData: response,
+                adult: adult,
+                children: children,
+                infant: infant,
+                expiresAt: Date.now()
+            });
+
+            res.status(200).json({ flights: response });
+        } else if (flightType == 'round-trip') {
+            const returnFilter = {
+                origin: { $regex: destination, $options: 'i' },
+                destination: { $regex: origin, $options: 'i' },
+            };
+
+            const parsedReturnTime = new Date(returnTime);
+            const returnStart = new Date(parsedReturnTime.setUTCHours(0, 0, 0, 0));
+            const returnEnd = new Date(parsedReturnTime.setUTCHours(23, 59, 59, 999));
+            returnFilter.departureTime = { $gte: returnStart, $lte: returnEnd };
+
+            const departureFlights = await Flight.find(departureFilter);
+
+            const returnFlights = await Flight.find(returnFilter);
+
+            const availableDepartureFlights = departureFlights.filter(flight => {
+                const availableSeatsField = availableSeats${strClassType};
+                return flight[availableSeatsField] >= totalSeatsNeeded;
+            });
+
+            const availableReturnFlights = returnFlights.filter(flight => {
+                const availableSeatsField = availableSeats${strClassType};
+                return flight[availableSeatsField] >= totalSeatsNeeded;
+            });
+
+            if (availableDepartureFlights.length === 0 || availableReturnFlights.length === 0) {
+                return res.status(404).json({
+                    message: 'Không có chuyến bay phù hợp với yêu cầu của bạn.',
+                });
+            }
+
+            const response = availableDepartureFlights.flatMap(departureFlight => {
+                return availableReturnFlights.map(returnFlight => {
+
+                    return {
+                        departure: {
+                            flightNumber: departureFlight.flightNumber,
+                            origin: departureFlight.origin,
+                            destination: departureFlight.destination,
+                            departureTime: departureFlight.departureTime,
+                            duration: departureFlight.duration,
+                            arrivalTimeOfTrip: calculateArrivalTime(departureFlight.departureTime, departureFlight.duration),
+                            priceEconomy: departureFlight.priceEconomy,
+                            priceBusiness: departureFlight.priceBusiness,
+                            pricePremiumEconomy: departureFlight.pricePremiumEconomy,
+                            priceFirst: departureFlight.priceFirst,  
+                            availableSeatsEconomy: departureFlight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+                            availableSeatsPremiumEconomy: departureFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+                            availableSeatsBusiness: departureFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+                            availableSeatsFirst: departureFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+                        },
+                        return: {
+                            flightNumber: returnFlight.flightNumber,
+                            origin: returnFlight.origin,
+                            destination: returnFlight.destination,
+                            departureTime: returnFlight.departureTime,
+                            duration: returnFlight.duration,
+                            arrivalTimeOfReturn: calculateArrivalTime(returnFlight.departureTime    , returnFlight.duration),
+                            priceEconomy: returnFlight.priceEconomy,
+                            priceBusiness: returnFlight.priceBusiness,
+                            pricePremiumEconomy: returnFlight.pricePremiumEconomy,
+                            priceFirst: returnFlight.priceFirst,  
+                            availableSeatsEconomy: returnFlight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+                            availableSeatsPremiumEconomy: returnFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+                            availableSeatsBusiness: returnFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+                            availableSeatsFirst: returnFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+                        },
+                        totalPrice: calculatePrice(departureFlight, classType, adult, children, infant) +
+                                    calculatePrice(returnFlight, classType, adult, children, infant),
+                        classType: classType,
+                        flightType: flightType
+                    };
+                });
+            });
+
+            // Lưu kết quả vào TemporaryBooking
+            await TemporarySearch.create({
+                userId: res.locals.user ? res.locals.user._id : null,
+                flightData: response,
+                adult: adult,
+                children: children,
+                infant: infant,
+                expiresAt: Date.now()
+            });
+
+            res.status(200).json({ flights: response });
         }
 
-        // Format kết quả trả về
-        const results = {
-            departureFlights: departureFlights.map(flight => ({
-                ...flight,
-                totalPrice: flight.price * (Number(adult) + Number(children) * 0.75 + Number(infant) * 0.1)
-            })),
-            returnFlights: returnFlights.map(flight => ({
-                ...flight,
-                totalPrice: flight.price * (Number(adult) + Number(children) * 0.75 + Number(infant) * 0.1)
-            }))
-        };
-
-        console.log('Search results:', results);
-
-        res.status(200).json({
-            flights: results
-        });
-
     } catch (error) {
-        console.error("Error searching flights:", error);
+        console.error("Error searching flight", error);
+
         res.status(500).json({
             message: 'Internal Server Error',
             error: error.message
         });
     }
 };
-
-// Hàm helper để lấy số ghế trống theo hạng vé
-function getAvailableSeats(flight, classType) {
-    switch (classType) {
-        case 'Economy':
-            return flight.availableSeatsEconomy || 0;
-        case 'Premium Economy':
-            return flight.availableSeatsPremiumEconomy || 0;
-        case 'Business':
-            return flight.availableSeatsBusiness || 0;
-        case 'First':
-            return flight.availableSeatsFirst || 0;
-        default:
-            return 0;
-    }
-}
