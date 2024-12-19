@@ -201,7 +201,7 @@
   top: 77px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   z-index: 1000;
-  border-top: 2px solid #c41e3a;
+  /* border-top: 2px solid #c41e3a; */
 }
 
 .dropdown-content .header {
@@ -492,4 +492,269 @@
 .service-info button:hover,
 .experience-info button:hover {
   background-color: #8b0000;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.sign-in-btn, .sign-up-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sign-in-btn {
+  background-color: transparent;
+  border: 1px solid #18b7be;
+  color: #18b7be;
+}
+
+.sign-in-btn:hover {
+  background-color: #18b7be;
+  color: white;
+}
+
+.sign-up-btn {
+  background-color: #18b7be;
+  border: 1px solid #18b7be;
+  color: white;
+}
+
+.sign-up-btn:hover {
+  background-color: #149499;
+  border-color: #149499;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .auth-buttons {
+    gap: 0.5rem;
+  }
+
+  .sign-in-btn, .sign-up-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Profile styles */
+.profile-wrapper {
+  position: relative;
+}
+
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+
+
+.profile-avatar {
+  width: 35px;
+  height: 35px;
+  color: #18b7be;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 30%;
+  padding: 0px;
+}
+
+.profile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+/* Xoay mũi tên khi menu mở */
+.profile-wrapper.active .profile-icon i {
+  transform: rotate(180deg);
+}
+
+/* Dấu chấm trạng thái online */
+.profile-status {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #22c55e; /* màu xanh cho trạng thái online */
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
+
+/* Animation cho icon khi hover */
+.profile-trigger:hover .profile-icon {
+  color: #18b7be;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profile-trigger {
+    padding: 2px;
+  }
+  
+  .profile-icon {
+    font-size: 10px;
+  }
+  
+  .profile-status {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+.profile-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -10px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  width: 280px;
+  z-index: 2000;
+  overflow: hidden;
+  border: 1px solid rgba(24, 183, 190, 0.1);
+  backdrop-filter: blur(10px);
+  transform-origin: top right;
+  animation: menuFadeIn 0.2s ease;
+}
+
+@keyframes menuFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.profile-info {
+  padding: 20px;
+  background: linear-gradient(135deg, #18b7be20, #072a4010);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #18b7be, #072a40);
+}
+
+.user-name {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.user-email {
+  display: block;
+  color: #666;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.menu-items {
+  padding: 8px 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.menu-item:hover {
+  background-color: #f8f9fa;
+  color: #18b7be;
+  padding-left: 24px;
+}
+
+.menu-item i {
+  font-size: 16px;
+  width: 16px;
+  text-align: center;
+  color: #18b7be;
+}
+
+.menu-item.logout {
+  color: #dc3545;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  margin-top: 8px;
+  padding-top: 16px;
+  font-weight: 500;
+}
+
+.menu-item.logout i {
+  color: #dc3545;
+}
+
+.menu-item.logout:hover {
+  background-color: #fff3f3;
+  color: #dc3545;
+}
+
+@media (max-width: 768px) {
+  .profile-menu {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    margin-top: 0;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .profile-info {
+    text-align: center;
+    padding: 24px 20px;
+  }
+
+  .menu-item {
+    padding: 16px 24px;
+  }
 }
