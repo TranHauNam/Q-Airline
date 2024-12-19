@@ -3,6 +3,7 @@ import image from "../assets/images/background.jpg";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from "react";
+import accountService from '../services/modules/user/account';
 
 const SignPage = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const SignPage = () => {
     password: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChangeSignIn = (e) => {
     setFormDataSignIn({
@@ -23,19 +25,14 @@ const SignPage = () => {
   const handleSubmitSignIn = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
-      // Cấu hình axios cho backend port 5000
-      axios.defaults.baseURL = 'http://localhost:5000';
-      axios.defaults.withCredentials = true;
-
-      const response = await axios.post('/api/user/login', formDataSignIn);
+      const response = await accountService.login(formDataSignIn);
       
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-        navigate('/');
+      if (response.token) {
+        // Đăng nhập thành công
+        window.location.href = '/';
       } else {
         setError('Đăng nhập không thành công');
       }
@@ -48,8 +45,15 @@ const SignPage = () => {
       } else {
         setError('Có lỗi xảy ra, vui lòng thử lại');
       }
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleForgotPassword = () => {
+  navigate('/forgot-password');
+};
+
 
   // Sign Up Form
   const [formDataSignUp, setFormDataSignUp] = useState({
@@ -69,27 +73,24 @@ const SignPage = () => {
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     // Kiểm tra mật khẩu xác nhận
     if (formDataSignUp.password !== formDataSignUp.confirmPassword) {
       setError('Mật khẩu xác nhận không khớp');
+      setLoading(false);
       return;
     }
 
     try {
-      axios.defaults.baseURL = 'http://localhost:5000';
-      axios.defaults.withCredentials = true;
-
-      const response = await axios.post('/api/user/register', {
+      const response = await accountService.register({
         fullName: formDataSignUp.fullName,
         email: formDataSignUp.email,
         password: formDataSignUp.password
       });
 
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+      if (response.token) {
+        // Đăng ký thành công và tự động đăng nhập
         navigate('/');
       } else {
         setError('Đăng ký không thành công');
@@ -103,9 +104,10 @@ const SignPage = () => {
       } else {
         setError('Có lỗi xảy ra, vui lòng thử lại');
       }
+    } finally {
+      setLoading(false);
     }
   };
-
 
 
 
@@ -145,21 +147,27 @@ const SignPage = () => {
               <input type="text" placeholder="Name" name="fullName"
               value={formDataSignUp.fullName}
               onChange={handleChangeSignUp}
+              disabled={loading}
               required/>
               <input type="email" placeholder="Email" name="email"
               value={formDataSignUp.email}
               onChange={handleChangeSignUp}
+              disabled={loading}
               required/>
               <input type="password" placeholder="Password" name="password"
               value={formDataSignUp.password}
               onChange={handleChangeSignUp}
+              disabled={loading}
               required/>
               <input type="password" placeholder="Confirm Password" name="confirmPassword"
               value={formDataSignUp.confirmPassword}
               onChange={handleChangeSignUp}
+              disabled={loading}
               required/>
               {error && <div className="error-message">{error}</div>}
-              <button class="sp-sign-btn">Sign Up</button>
+              <button class="sp-sign-btn" disabled={loading}>
+                {loading ? 'Đang đăng ký...' : 'Đăng Ký'}
+              </button>
             </form>
           </div>
           <div className="sp-form-container sp-sign-in-container">
@@ -180,16 +188,20 @@ const SignPage = () => {
               <input type="email" placeholder="Email" name="email"
               value={formDataSignIn.email}
               onChange={handleChangeSignIn}
+              disabled={loading}
               required/>
               <input type="password" placeholder="Password" name="password"
               value={formDataSignIn.password}
               onChange={handleChangeSignIn}
+              disabled={loading}
               required/>
               {error && <div className="error-message">{error}</div>}
-              <a class="sp-a" href="#">
+              <a class="sp-a" href="#" onClick={handleForgotPassword}>
                 Forgot your password?
               </a>
-              <button class="sp-sign-btn">Sign In</button>
+              <button class="sp-sign-btn" disabled={loading}>
+                {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              </button>
             </form>
           </div>
           <div className="sp-overlay-container">

@@ -1,29 +1,35 @@
-const API_BASE_URL = 'localhost:5000';
+import { apiHelper } from './client.api';
 
-export const flightService = {
-  searchFlights: async (params) => {
-    // Logic tìm kiếm chuyến bay
+export const authAPI = {
+  login: (data) => {
+    return apiHelper.post('/user/login', data);
   },
   
-  bookFlight: async (bookingData) => {
-    // Logic đặt vé
+  register: (data) => {
+    return apiHelper.post('/user/register', data);
   },
   
-  cancelBooking: async (bookingId) => {
-    // Logic hủy vé
+  logout: () => {
+    return apiHelper.post('/user/logout');
   },
-  
-  // Các API khác
+
+  forgotPassword: (email) => {
+    return apiHelper.post('/user/forgot-password', { email });
+  },
+
+  resetPassword: (data) => {
+    return apiHelper.post('/user/reset-password', data);
+  }
 };
 
-export const adminService = {
-  manageFlight: async (flightData) => {
-    // Logic quản lý chuyến bay
+export const userAPI = {
+  getProfile: () => {
+    return apiHelper.get('/user/profile');
   },
   
-  manageNews: async (newsData) => {
-    // Logic quản lý tin tức
-  },
-  
-  // Các API quản trị khác
-}; 
+  updateProfile: (data) => {
+    return apiHelper.put('/user/profile', data);
+  }
+};
+
+// Thêm các API khác khi cần 
