@@ -1,3 +1,4 @@
+
 .adm-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -35,6 +36,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+
 .adm-module:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -44,6 +46,7 @@
   font-size: 48px;
   margin-bottom: 16px;
 }
+
 
 .adm-module h3 {
   font-size: 20px;
@@ -164,6 +167,7 @@
 }
 
 @media (max-width: 768px) {
+
   .adm-container {
     padding: 20px;
   }
@@ -172,6 +176,7 @@
     font-size: 24px;
     margin-bottom: 24px;
   }
+
 
   .adm-grid {
     grid-template-columns: 1fr;
@@ -275,6 +280,7 @@
   background: #555;
 }
 
+
 .adm-layout {
   display: flex;
   min-height: 100vh;
@@ -322,8 +328,6 @@
   padding: 15px 24px;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 4px 8px;
-  border-radius: 8px;
 }
 
 .sidebar-item:hover {

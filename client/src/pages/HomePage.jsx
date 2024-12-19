@@ -7,15 +7,19 @@ import Footer from '../components/common/Footer'
 import FlightSearch from '../components/flight/FlightSearch'
 import FlightSearchPage from './FlightSearchPage'
 
+
+
 const Homepage = () => {
   return (
     <div>
       <Header/>
       <SlideShow/>
       <TabMenu/>
+
       <Heroes/>
       <Footer/>
       <FlightSearch/>
+
     </div>
   )
 }

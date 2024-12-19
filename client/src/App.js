@@ -11,6 +11,7 @@ import FlightSearchPage from './pages/FlightSearchPage';
 import FlightResultPage from './pages/FlightResultPage';
 import AdminLogin from './pages/AdminLogin';
 
+
 function App() {
   return (
     <AuthProvider>
