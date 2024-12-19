@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaNewspaper, FaPlane, FaRoute, FaTicketAlt, FaClock } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { adminApi } from '../services/modules/admin/admin.api';
 import './Admin.css';
 import welcomeImage from '../assets/images/admin-welcome.jpg';
 
@@ -85,6 +86,17 @@ const Admin = () => {
     return null;
   };
 
+  const handleLogout = async () => {
+    try {
+      await adminApi.logout();
+      const Cookies = require('js-cookie');
+      Cookies.remove('adminToken', { path: '/' });
+      navigate('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   if (!isAuthenticated) {
     return null; // hoặc loading spinner
   }
@@ -118,7 +130,7 @@ const Admin = () => {
           <h1>{selectedModule ? adminModules.find(m => m.id === selectedModule)?.description : 'Dashboard'}</h1>
           <div className="adm-user">
             <span>Admin</span>
-            <button className="logout-btn">Đăng xuất</button>
+            <button className="logout-btn" onClick={handleLogout}>Đăng xuất</button>
           </div>
         </div>
 

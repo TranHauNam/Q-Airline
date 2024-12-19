@@ -7,9 +7,5 @@ export const adminApi = {
   
   logout: () => {
     return axiosClient.post('/admin/account/logout');
-  },
-
-  register: (data) => {
-    return axiosClient.post('/admin/account/create', data);
   }
 }; 

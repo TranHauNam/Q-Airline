@@ -10,9 +10,13 @@ const AdminLogin = () => {
     password: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
+
     try {
       const response = await adminApi.login(formData);
       console.log('Login response:', response.data);
@@ -20,30 +24,29 @@ const AdminLogin = () => {
       if (response.data.adminToken) {
         const Cookies = require('js-cookie');
         Cookies.set('adminToken', response.data.adminToken, { 
-          expires: 1, // 1 day
+          expires: 1,
           path: '/',
           sameSite: 'Lax'
         });
         
         console.log('Cookie after set:', document.cookie);
-        navigate('/adminxinso', { replace: true });
+        navigate('/admin/home', { replace: true });
       }
     } catch (error) {
       console.error('Login error:', error);
       setError(error.response?.data?.message || 'Đăng nhập thất bại');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="admin-login">
-      <div className="login-container">
-        <div className="login-header">
-          <h1>Admin Login</h1>
-          <p>Đăng nhập để quản lý hệ thống</p>
-        </div>
-
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Admin Login</h2>
+        
         {error && <div className="error-message">{error}</div>}
-
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Email</label>
@@ -52,6 +55,8 @@ const AdminLogin = () => {
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               required
+              placeholder="Nhập email admin"
+              disabled={loading}
             />
           </div>
 
@@ -62,13 +67,30 @@ const AdminLogin = () => {
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
               required
+              placeholder="Nhập mật khẩu"
+              disabled={loading}
             />
           </div>
 
-          <button type="submit" className="login-button">
-            Đăng nhập
+          <button 
+            type="submit" 
+            className={`login-button ${loading ? 'loading' : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </button>
         </form>
+
+        <div className="login-footer">
+          <div className="remember-forgot">
+            <label className="remember-me">
+              <input type="checkbox" /> Ghi nhớ đăng nhập
+            </label>
+            <span className="forgot-password">
+              Quên mật khẩu?
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
