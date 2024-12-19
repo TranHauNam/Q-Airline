@@ -6,7 +6,8 @@ import TabMenu from '../components/pages/home/TabMenu'
 import Footer from '../components/common/Footer'
 import FlightSearch from '../components/flight/FlightSearch'
 import FlightSearchPage from './FlightSearchPage'
-//import News from '../components/pages/home/News'
+
+
 
 const Homepage = () => {
   return (
@@ -14,10 +15,11 @@ const Homepage = () => {
       <Header/>
       <SlideShow/>
       <TabMenu/>
-      <Heroes/> 
-      {/* <News/> */}
+
+      <Heroes/>
       <Footer/>
-      {/* <FlightSearch/> */}
+      <FlightSearch/>
+
     </div>
   )
 }

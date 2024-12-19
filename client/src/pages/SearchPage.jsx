@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 
+
+
 import { FaPlane, FaCalendarAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import Header from '../components/common/Header'
+
 import './SearchPage.css';
 
 const flightData = [
