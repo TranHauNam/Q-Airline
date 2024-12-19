@@ -114,11 +114,20 @@ module.exports.login = async (req, res) => {
 // [POST] /api/admin/account/logout
 module.exports.logout = async (req, res) => {
     try {
-        res.clearCookie("adminToken");    
-        res.status(200).json({ message: "Đăng xuất thành công" });
+        // Xóa cookie
+        res.clearCookie('adminToken', {
+            path: '/',
+            domain: 'localhost'
+        });
+
+        res.status(200).json({
+            message: "Đăng xuất thành công"
+        });
     } catch (error) {
         console.error("Logout error:", error);
-        res.status(500).json({ message: "Có lỗi xảy ra, vui lòng thử lại sau" });
+        res.status(500).json({
+            message: "Có lỗi xảy ra khi đăng xuất"
+        });
     }
 };
 
