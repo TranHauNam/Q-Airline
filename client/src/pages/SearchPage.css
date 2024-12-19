@@ -6,47 +6,67 @@
 .flight-results {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 40px 20px;
 }
 
 .flight-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
 }
 
 .route-info .cities {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 28px;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+}
+
+.route-info .city {
+  margin: 0 10px;
+}
+
+.route-info{
+  display: flex;
+  align-items: center;
 }
 
 .route-info .arrow {
-  margin: 0 15px;
-  color: #1976d2;
+  margin: 0 20px;
+  color: #3498db;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
 }
 
 .date-info {
+  padding-left: 20px;
   color: #666;
   margin-top: 5px;
 }
 
 .modify-btn {
-  background-color: #1976d2;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  padding: 12px 25px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.modify-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
 
 .date-navigation {
   display: flex;
   align-items: center;
   background: white;
-  padding: 15px;
+  padding: 20px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -59,14 +79,19 @@
 
 .date-option {
   text-align: center;
-  padding: 10px;
+  padding: 15px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.date-option:hover {
+  background-color: #f8f9fa;
 }
 
 .date-option.selected {
-  background-color: #1976d2;
-  color: white;
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  transform: scale(1.05);
 }
 
 .nav-btn {
@@ -93,77 +118,87 @@
 .flight-card {
   background: white;
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #eee;
+  transition: all 0.2s ease;
+}
+
+.flight-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .flight-info {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-}
-
-.flight-numbers {
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.flight-times {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 20px;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
-.duration {
-  text-align: center;
-  position: relative;
-  flex: 1;
-  margin: 0 20px;
+.airline-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 
-.duration .line {
-  height: 2px;
-  background: #1976d2;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-}
-
-.fare-options {
+.flight-details {
   display: flex;
+  align-items: center;
   gap: 20px;
 }
 
-.fare-type {
-  flex: 1;
-  padding: 15px;
-  border-radius: 4px;
-  text-align: center;
-}
-
-.fare-type.economy {
-  background-color: #e3f2fd;
-}
-
-.fare-type.business {
-  background-color: #f3e5f5;
-}
-
-.fare-type .label {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.fare-type .price {
-  font-size: 20px;
-  font-weight: bold;
-  color: #1976d2;
-  margin-bottom: 5px;
-}
-
-.fare-type .seats {
-  font-size: 12px;
+.flight-number {
+  font-size: 14px;
   color: #666;
+}
+
+.flight-time {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.flight-city {
+  font-size: 14px;
+  color: #666;
+}
+
+.duration-info {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+  padding: 0 20px;
+}
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f39c12;
+}
+
+.select-button {
+  background: #f39c12;
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.select-button:hover {
+  background: #e67e22;
 }

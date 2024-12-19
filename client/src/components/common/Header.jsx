@@ -1,10 +1,46 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 import image1 from '../../assets/images/image1.jpg';
 import logo from '../../assets/logo192.png';
+import accountService from '../../services/modules/user/account';
 
 const Header = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const currentUser = await accountService.getCurrentUser();
+      setUser(currentUser);
+    };
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await accountService.logout();
+      setUser(null);
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  const getInitials = (name) => {
+    if (!name) return '';
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase();
+  };
+
+  const toggleMenu = () => {
+    setShowProfileMenu(!showProfileMenu);
+  };
+
   return (
     <div className="mega-menu-wrapper">
       {/* Top Bar */}
@@ -35,12 +71,55 @@ const Header = () => {
               </svg>
               SUPPORT
             </Link>
-            <Link to="/" className="topbar-link">
-              <svg xmlns="http://www.w3.org/2000/svg" className="topbar-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              SIGN IN
-            </Link>
+            {user ? (
+              <div className={`profile-wrapper ${showProfileMenu ? 'active' : ''}`}>
+                <div 
+                  className="profile-trigger"
+                  onClick={toggleMenu}
+                >
+                  <div className="profile-avatar">
+                  {getInitials(user.fullName)}
+                  </div>
+                  <div className="profile-icon">
+                    <i className="fas fa-chevron-down"></i>
+                  </div>
+                  <div className="profile-status"></div>
+                </div>
+                {showProfileMenu && (
+                  <div className="profile-menu">
+                    <div className="profile-info">
+                      <span className="user-name">{user.fullName}</span>
+                      <span className="user-email">{user.email}</span>
+                    </div>
+                    <div className="menu-items">
+                      <Link to="/profile" className="menu-item">
+                        <i className="fas fa-user"></i>
+                        Thông tin cá nhân
+                      </Link>
+                      <Link to="/orders" className="menu-item">
+                        <i className="fas fa-shopping-bag"></i>
+                        Đơn hàng
+                      </Link>
+                      <Link to="/settings" className="menu-item">
+                        <i className="fas fa-cog"></i>
+                        Cài đặt
+                      </Link>
+                      <button onClick={handleLogout} className="menu-item logout">
+                        <i className="fas fa-sign-out-alt"></i>
+                        Đăng xuất
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/sign" className="topbar-link">
+                <svg xmlns="http://www.w3.org/2000/svg" className="topbar-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                SIGN IN
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -118,7 +197,7 @@ const Header = () => {
                     <div className="destination-info">
                       <p>Fly nonstop to</p>
                       <h3>NEW YORK CITY</h3>
-                      <button>Book Now ��</button>
+                      <button>Book Now →</button>
                     </div>
                   </div>
                 </div>

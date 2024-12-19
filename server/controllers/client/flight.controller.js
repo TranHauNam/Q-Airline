@@ -1,5 +1,6 @@
 const Flight = require('../../models/flight.model');
 const TemporarySearch = require('../../models/temporary-search-flight.model');
+const calculateArrivalTime = require('../../helpers/caculateArrivalTime')
 
 // [GET] /api/flight/all
 module.exports.getAllFlights = async (req, res) => {
@@ -39,7 +40,7 @@ module.exports.getAllFlights = async (req, res) => {
             flights: flights
         });
     } catch (error) {
-        console.error("Error getting all flights", error);
+        console.log("Error getting all flights", error);
         res.status(500).json({
             message: 'Internal Server Error',
             error: error.message
@@ -47,38 +48,8 @@ module.exports.getAllFlights = async (req, res) => {
     }
 };
 
-// [GET] /api/flight/single/:flightNumber
-module.exports.getSingleFlight = async (req, res) => {
-    try {
-        const flightNumber = req.params.flightNumber;
 
-        const flight = await Flight.findOne({ flightNumber: flightNumber }).populate('planeId');
-
-        if(!flight) {
-            return res.status(404).json({ message: 'Flight not found.' });
-        }
-
-        res.status(200).json({
-            flightNumber: flight.flightNumber, 
-            planeId: flight.planeId, 
-            origin: flight.origin, 
-            destination: flight.destination, 
-            departureTime: flight.departureTime, 
-            arrivalTime: flight.arrivalTime, 
-            price: flight.price, 
-            createAt: flight.createAt
-        });
-    } catch (error) {
-        console.error("Error getting flight by number", error);
-
-        res.status(500).json({
-            message: 'Internal Server Error',
-            error: error.message
-        });
-    }
-};
-
-// [GET] /api/flight/search
+//[GET] /api/flight/search
 module.exports.searchFlight = async (req, res) => {
     try {
         const {origin, destination, departureTime, returnTime, flightType, classType, adult, children, infant} = req.body; 
@@ -91,8 +62,8 @@ module.exports.searchFlight = async (req, res) => {
             destination: { $regex: destination, $options: 'i' },
         };
         const parsedDepartureTime = new Date(departureTime);
-        const departureStart = new Date(parsedDepartureTime.setHours(0, 0, 0, 0));
-        const departureEnd = new Date(parsedDepartureTime.setHours(23, 59, 59, 999));
+        const departureStart = new Date(parsedDepartureTime.setUTCHours(0, 0, 0, 0));
+        const departureEnd = new Date(parsedDepartureTime.setUTCHours(23, 59, 59, 999));
         departureFilter.departureTime = { $gte: departureStart, $lte: departureEnd };
 
         const totalSeatsNeeded = (adult || 0) + (children || 0);
@@ -132,9 +103,17 @@ module.exports.searchFlight = async (req, res) => {
                     origin: flight.origin,
                     destination: flight.destination,
                     departureTime: flight.departureTime,
-                    duration: flight.duration,  
-                    price: calculatePrice(flight, strClassType, adult, children, infant),
-                    availableSeats: flight.seats.filter(seat => seat.strClassType === strClassType && !seat.isBooked).length,
+                    duration: flight.duration,
+                    arrivalTime: calculateArrivalTime(flight.departureTime, flight.duration),
+                    priceEconomy: flight.priceEconomy,
+                    priceBusiness: flight.priceBusiness,
+                    pricePremiumEconomy: flight.pricePremiumEconomy,
+                    priceFirst: flight.priceFirst,  
+                    totalPrice: calculatePrice(flight, strClassType, adult, children, infant),
+                    availableSeatsEconomy: flight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+                    availableSeatsPremiumEconomy: flight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+                    availableSeatsBusiness: flight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+                    availableSeatsFirst: flight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
                     classType: classType,
                     flightType: flightType
                 };
@@ -158,8 +137,8 @@ module.exports.searchFlight = async (req, res) => {
             };
 
             const parsedReturnTime = new Date(returnTime);
-            const returnStart = new Date(parsedReturnTime.setHours(0, 0, 0, 0));
-            const returnEnd = new Date(parsedReturnTime.setHours(23, 59, 59, 999));
+            const returnStart = new Date(parsedReturnTime.setUTCHours(0, 0, 0, 0));
+            const returnEnd = new Date(parsedReturnTime.setUTCHours(23, 59, 59, 999));
             returnFilter.departureTime = { $gte: returnStart, $lte: returnEnd };
 
             const departureFlights = await Flight.find(departureFilter);
@@ -192,6 +171,15 @@ module.exports.searchFlight = async (req, res) => {
                             destination: departureFlight.destination,
                             departureTime: departureFlight.departureTime,
                             duration: departureFlight.duration,
+                            arrivalTimeOfTrip: calculateArrivalTime(departureFlight.departureTime, departureFlight.duration),
+                            priceEconomy: departureFlight.priceEconomy,
+                            priceBusiness: departureFlight.priceBusiness,
+                            pricePremiumEconomy: departureFlight.pricePremiumEconomy,
+                            priceFirst: departureFlight.priceFirst,  
+                            availableSeatsEconomy: departureFlight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+                            availableSeatsPremiumEconomy: departureFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+                            availableSeatsBusiness: departureFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+                            availableSeatsFirst: departureFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
                         },
                         return: {
                             flightNumber: returnFlight.flightNumber,
@@ -199,6 +187,15 @@ module.exports.searchFlight = async (req, res) => {
                             destination: returnFlight.destination,
                             departureTime: returnFlight.departureTime,
                             duration: returnFlight.duration,
+                            arrivalTimeOfReturn: calculateArrivalTime(returnFlight.departureTime    , returnFlight.duration),
+                            priceEconomy: returnFlight.priceEconomy,
+                            priceBusiness: returnFlight.priceBusiness,
+                            pricePremiumEconomy: returnFlight.pricePremiumEconomy,
+                            priceFirst: returnFlight.priceFirst,  
+                            availableSeatsEconomy: returnFlight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+                            availableSeatsPremiumEconomy: returnFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+                            availableSeatsBusiness: returnFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+                            availableSeatsFirst: returnFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
                         },
                         totalPrice: calculatePrice(departureFlight, classType, adult, children, infant) +
                                     calculatePrice(returnFlight, classType, adult, children, infant),
