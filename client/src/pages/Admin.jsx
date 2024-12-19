@@ -11,6 +11,7 @@ import AircraftManagement from '../components/admin/AircraftManagement';
 import FlightManagement from '../components/admin/FlightManagement';
 import BookingStatistics from '../components/admin/BookingStatistics';
 import DelayManagement from '../components/admin/DelayManagement';
+import AdminHeader from '../components/admin/AdminHeader';
 
 const Admin = () => {
   const [selectedModule, setSelectedModule] = useState(null);
@@ -112,11 +113,12 @@ const Admin = () => {
 
   return (
     <div className="adm-layout">
+      <AdminHeader onLogout={handleLogout} />
       <div className="adm-sidebar">
-        <div className="adm-logo">
-          <img src="/logo.png" alt="Logo" />
-          <h2>Admin Panel</h2>
-        </div>
+        {/* <div className="adm-logo"> */}
+          {/* <img src="/logo.png" alt="Logo" /> */}
+          {/* <h2>Admin Panel</h2> */}
+        {/* </div> */}
         
         <div className="adm-menu">
           {adminModules.map((module) => (
@@ -135,19 +137,11 @@ const Admin = () => {
       </div>
 
       <div className="adm-main">
-        <div className="adm-header">
-          <h1>{selectedModule ? adminModules.find(m => m.id === selectedModule)?.description : 'Dashboard'}</h1>
-          <div className="adm-user">
-            <span>Admin</span>
-            <button className="logout-btn" onClick={handleLogout}>Đăng xuất</button>
-          </div>
-        </div>
-
         <div className="adm-content">
           {!selectedModule ? (
             <div className="adm-welcome-screen">
-              <img src={welcomeImage} alt="Welcome" />
               <h2>Chào mừng đến với trang quản trị</h2>
+              <img src={welcomeImage} alt="Welcome" />
             </div>
           ) : (
             <div className="adm-content-area">
