@@ -85,17 +85,20 @@ module.exports.login = async (req, res) => {
         }
         
         const adminToken = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-        admin.adminToken = adminToken;
-        await admin.save();
-
-        res.cookie("adminToken", admin.adminToken, {
-            httpOnly: true, // Cookie chỉ có thể được truy cập qua HTTP
-            secure: process.env.NODE_ENV === 'production', // Chỉ gửi cookie qua HTTPS trong môi trường sản xuất
-            maxAge: 3600000 * 24 * 30 // Thời gian sống của cookie (30 ngày)
+        
+        // Set cookie với domain và secure options
+        res.cookie("adminToken", adminToken, {
+            httpOnly: false, // Cho phép JavaScript truy cập cookie
+            secure: false, // Tắt secure trong development
+            sameSite: 'lax',
+            maxAge: 86400000, // 24 hours
+            path: '/',
+            domain: 'localhost' // Thêm domain
         });
+
         res.status(200).json({
             message: "Đăng nhập thành công",
-            adminToken: admin.adminToken,
+            adminToken: adminToken,
             admin: {
                 fullName: admin.fullName,
                 email: admin.email

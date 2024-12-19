@@ -9,19 +9,21 @@ import { AuthProvider } from './contexts/AuthContext';
 import SearchPage from './pages/SearchPage';
 import FlightSearchPage from './pages/FlightSearchPage';
 import FlightResultPage from './pages/FlightResultPage';
+import AdminLogin from './pages/AdminLogin';
 
 function App() {
   return (
     <AuthProvider>
       <Routes>
         <Route path="" homepage element={<HomePage />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/adminxinso" element={<Admin />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign" element={<SignPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/flights/search" element={<FlightSearchPage />} />
         <Route path="/flights/results" element={<FlightResultPage />} />
+        <Route path="/loginadmin" element={<AdminLogin />} />
       </Routes>
     </AuthProvider>
   );
