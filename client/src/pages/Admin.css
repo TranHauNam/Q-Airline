@@ -584,3 +584,14 @@
   margin: 20px;
   text-align: center;
 }
+
+.success-message {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+}

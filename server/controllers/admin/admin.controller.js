@@ -214,3 +214,47 @@ module.exports.logout = async (req, res) => {
 //     );
 //     res.status(200).json({ message: "Cập nhật mật khẩu thành công" });
 // };
+
+// [GET] /api/admin/account/check-auth
+module.exports.checkAuth = async (req, res) => {
+  try {
+    // Lấy token từ cookie
+    const adminToken = req.cookies.adminToken;
+    if (!adminToken) {
+      return res.status(401).json({
+        success: false,
+        message: "Không tìm thấy token"
+      });
+    }
+
+    // Verify token
+    const decoded = jwt.verify(adminToken, process.env.JWT_SECRET);
+    
+    // Tìm admin trong database
+    const admin = await Admin.findById(decoded.id).select('-password');
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Admin không tồn tại"
+      });
+    }
+
+    // Trả về thông tin admin
+    res.status(200).json({
+      success: true,
+      admin: {
+        id: admin._id,
+        fullName: admin.fullName,
+        email: admin.email,
+        role: admin.role
+      }
+    });
+
+  } catch (error) {
+    console.error("Check auth error:", error);
+    res.status(401).json({
+      success: false,
+      message: "Token không hợp lệ"
+    });
+  }
+};
