@@ -7,6 +7,8 @@ import Footer from '../components/common/Footer'
 import FlightSearch from '../components/flight/FlightSearch'
 
 
+
+
 const Homepage = () => {
   return (
     <div>
@@ -14,6 +16,7 @@ const Homepage = () => {
       <SlideShow/>
       <FlightSearch/>
       <TabMenu/>
+
       <Heroes/>
       <Footer/>
 

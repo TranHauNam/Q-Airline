@@ -15,7 +15,7 @@ module.exports.addPlane = async (req, res) => {
     
         if(existPlane) {
             return res.status(400).json({
-                message: 'Plane with the same code already exists'
+                message: 'Mã tàu bay đã tồn tại'
             });
         }
     
@@ -30,30 +30,14 @@ module.exports.addPlane = async (req, res) => {
         });
     
         res.status(201).json({
-            message: 'Plane added successfully',
+            message: 'Thêm tàu bay thành công',
             plane: newPlane
         });
     } catch (error) {
-        console.error("Error adding plane", error);
+        console.error("Lỗi thêm tàu bay:", error);
 
         res.status(500).json({
-            message: 'Internal Server Error',
-            error: error.message
-        });
-    }
-}
-
-// [GET] /api/admin/plane/
-module.exports.getAllPlanes = async (req, res) => {
-    try {
-        const planes = await Plane.find({});
-        res.status(200).json({
-            planes: planes
-        });
-    } catch (error) {
-        console.error("Error getting all planes", error);
-        res.status(500).json({
-            message: 'Internal Server Error',
+            message: 'Lỗi server',
             error: error.message
         });
     }
