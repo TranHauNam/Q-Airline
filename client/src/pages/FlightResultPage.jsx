@@ -95,6 +95,15 @@ const FlightResultPage = () => {
             }).format(price);
         };
 
+        const handleSelectFlight = (classType) => {
+            navigate('/booking', { 
+                state: { 
+                    flight,
+                    selectedClass: classType
+                }
+            });
+        };
+
         return (
             <div className="flight-card">
                 <div className="flight-header">
@@ -130,7 +139,7 @@ const FlightResultPage = () => {
                             </span>
                         </div>
                         <div className="price">{formatPrice(flight.priceEconomy)}</div>
-                        <button className="select-button">Select</button>
+                        <button className="select-button" onClick={() => handleSelectFlight('Economy')}>Select</button>
                     </div>
                     <div className="option premium-economy">
                         <div className="class-header">
@@ -140,7 +149,7 @@ const FlightResultPage = () => {
                             </span>
                         </div>
                         <div className="price">{formatPrice(flight.pricePremiumEconomy)}</div>
-                        <button className="select-button">Select</button>
+                        <button className="select-button" onClick={() => handleSelectFlight('Premium Economy')}>Select</button>
                     </div>
                     <div className="option business">
                         <div className="class-header">
@@ -150,7 +159,7 @@ const FlightResultPage = () => {
                             </span>
                         </div>
                         <div className="price">{formatPrice(flight.priceBusiness)}</div>
-                        <button className="select-button">Select</button>
+                        <button className="select-button" onClick={() => handleSelectFlight('Business')}>Select</button>
                     </div>
                     <div className="option first">
                         <div className="class-header">
@@ -160,7 +169,7 @@ const FlightResultPage = () => {
                             </span>
                         </div>
                         <div className="price">{formatPrice(flight.priceFirst)}</div>
-                        <button className="select-button">Select</button>
+                        <button className="select-button" onClick={() => handleSelectFlight('First')}>Select</button>
                     </div>
                 </div>
                 <div className="flight-details">

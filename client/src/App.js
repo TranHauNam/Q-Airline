@@ -9,6 +9,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import FlightSearchPage from './pages/FlightSearchPage';
 import FlightResultPage from './pages/FlightResultPage';
 import AdminLogin from './pages/AdminLogin';
+import BookingPage from './pages/BookingPage';
+import ReviewPaymentPage from './pages/ReviewPaymentPage';
 
 
 function App() {
@@ -25,6 +27,10 @@ function App() {
         <Route path="/flight-results" element={<FlightResultPage />} />
 
         <Route path="/Admin/Login" element={<AdminLogin />} />
+
+        <Route path="/booking" element={<BookingPage />} />
+
+        <Route path="/review-payment" element={<ReviewPaymentPage />} />
 
       </Routes>
     </AuthProvider>
