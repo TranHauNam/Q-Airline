@@ -2,16 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { bookingApi } from '../../services/modules/admin/booking/booking.api';
 
 const BookingStatistics = () => {
-  const [statistics, setStatistics] = useState([]);
+  const [statistics, setStatistics] = useState({
+    totalBookings: 0,
+    bookingsByClass: [],
+    monthlyBookings: [],
+    flightTypeStats: []
+  });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
         const response = await bookingApi.getBookingStatistics();
-        setStatistics(response.data.statistics);
+        if (response.data.success) {
+          setStatistics(response.data.data);
+        } else {
+          setError('Không thể lấy dữ liệu thống kê');
+        }
       } catch (error) {
         console.error('Error fetching statistics:', error);
+        setError(error.response?.data?.message || 'Có lỗi xảy ra khi lấy dữ liệu');
       } finally {
         setLoading(false);
       }
@@ -20,38 +31,86 @@ const BookingStatistics = () => {
   }, []);
 
   if (loading) {
-    return <div>Đang tải...</div>;
+    return <div className="loading">Đang tải dữ liệu...</div>;
+  }
+
+  if (error) {
+    return <div className="error-message">{error}</div>;
   }
 
   return (
     <div className="statistics-container">
       <h2>Thống kê đặt vé</h2>
-      <table className="statistics-table">
-        <thead>
-          <tr>
-            <th>Số hiệu chuyến bay</th>
-            <th>Điểm khởi hành</th>
-            <th>Điểm đến</th>
-            <th>Thời gian khởi hành</th>
-            <th>Tổng số đặt vé</th>
-            <th>Tổng số ghế đã đặt</th>
-          </tr>
-        </thead>
-        <tbody>
-          {statistics.map((stat, index) => (
-            <tr key={index}>
-              <td>{stat.flightNumber}</td>
-              <td>{stat.origin}</td>
-              <td>{stat.destination}</td>
-              <td>{new Date(stat.departureTime).toLocaleString()}</td>
-              <td>{stat.totalBookings}</td>
-              <td>{stat.totalSeatsBooked}</td>
+
+      <div className="stat-section">
+        <h3>Tổng số đặt vé: {statistics.totalBookings}</h3>
+      </div>
+
+      <div className="stat-section">
+        <h3>Thống kê theo hạng ghế</h3>
+        <table className="statistics-table">
+          <thead>
+            <tr>
+              <th>Hạng ghế</th>
+              <th>Số lượng đặt</th>
+              <th>Doanh thu</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {statistics.bookingsByClass.map((stat, index) => (
+              <tr key={index}>
+                <td>{stat._id}</td>
+                <td>{stat.count}</td>
+                <td>{stat.totalRevenue.toLocaleString('vi-VN')} VNĐ</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="stat-section">
+        <h3>Thống kê theo tháng</h3>
+        <table className="statistics-table">
+          <thead>
+            <tr>
+              <th>Tháng</th>
+              <th>Số lượng đặt</th>
+              <th>Doanh thu</th>
+            </tr>
+          </thead>
+          <tbody>
+            {statistics.monthlyBookings.map((stat, index) => (
+              <tr key={index}>
+                <td>Tháng {stat._id}</td>
+                <td>{stat.count}</td>
+                <td>{stat.revenue.toLocaleString('vi-VN')} VNĐ</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="stat-section">
+        <h3>Thống kê loại chuyến bay</h3>
+        <table className="statistics-table">
+          <thead>
+            <tr>
+              <th>Loại chuyến bay</th>
+              <th>Số lượng</th>
+            </tr>
+          </thead>
+          <tbody>
+            {statistics.flightTypeStats.map((stat, index) => (
+              <tr key={index}>
+                <td>{stat._id.hasReturn === 'round-trip' ? 'Khứ hồi' : 'Một chiều'}</td>
+                <td>{stat.count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
-export default BookingStatistics; 
+export default BookingStatistics;
