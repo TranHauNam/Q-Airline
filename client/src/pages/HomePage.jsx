@@ -14,12 +14,9 @@ const Homepage = () => {
     <div>
       <Header/>
       <SlideShow/>
-      <FlightSearch/>
       <TabMenu/>
-
       <Heroes/>
       <Footer/>
-
     </div>
   )
 }

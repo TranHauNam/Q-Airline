@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import flightService from '../services/flightService';
 import './FlightResultPage.css';
+import SelectSeat from '../components/flight/SelectSeat';
 
 const FlightResultPage = () => {
     const location = useLocation();
@@ -9,6 +10,8 @@ const FlightResultPage = () => {
     const [flights, setFlights] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showSeatSelection, setShowSeatSelection] = useState(false);
+    const [selectedSeats, setSelectedSeats] = useState([]);
 
     useEffect(() => {
         const searchFlights = async () => {
@@ -35,6 +38,10 @@ const FlightResultPage = () => {
 
     const handleModifySearch = () => {
         navigate(-1);
+    };
+
+    const handleSeatSelect = (seats) => {
+        setSelectedSeats(seats);
     };
 
     // Progress bar component
@@ -125,6 +132,16 @@ const FlightResultPage = () => {
                         <div className="price">{formatPrice(flight.priceEconomy)}</div>
                         <button className="select-button">Select</button>
                     </div>
+                    <div className="option premium-economy">
+                        <div className="class-header">
+                            <span>PREMIUM ECONOMY</span>
+                            <span className="seats-left">
+                                {flight.availableSeatsPremiumEconomy} seats left at this fare
+                            </span>
+                        </div>
+                        <div className="price">{formatPrice(flight.pricePremiumEconomy)}</div>
+                        <button className="select-button">Select</button>
+                    </div>
                     <div className="option business">
                         <div className="class-header">
                             <span>BUSINESS</span>
@@ -135,6 +152,16 @@ const FlightResultPage = () => {
                         <div className="price">{formatPrice(flight.priceBusiness)}</div>
                         <button className="select-button">Select</button>
                     </div>
+                    <div className="option first">
+                        <div className="class-header">
+                            <span>FIRST</span>
+                            <span className="seats-left">
+                                {flight.availableSeatsFirst} seats left at this fare
+                            </span>
+                        </div>
+                        <div className="price">{formatPrice(flight.priceFirst)}</div>
+                        <button className="select-button">Select</button>
+                    </div>
                 </div>
                 <div className="flight-details">
                     <button className="view-details">View Flight Details</button>
@@ -142,6 +169,21 @@ const FlightResultPage = () => {
                         <span>Aircraft: {flight.planeCode}</span>
                     </div>
                 </div>
+                <button 
+                    className="select-button" 
+                    onClick={() => setShowSeatSelection(true)}
+                >
+                    Select
+                </button>
+
+                {showSeatSelection && (
+                    <div className="seat-selection-modal">
+                        <SelectSeat 
+                            selectedSeats={selectedSeats}
+                            onSelectSeat={handleSeatSelect}
+                        />
+                    </div>
+                )}
             </div>
         );
     };
