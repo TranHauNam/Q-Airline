@@ -1,8 +1,208 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const PassengerSelect = ({ searchData, setSearchData }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const updatePassenger = (type, action) => {
+    setSearchData(prev => {
+      const newCount = action === 'add' 
+        ? prev[type] + 1 
+        : Math.max(0, prev[type] - 1);
+
+      if (type === 'adult' && newCount < 1) return prev;
+
+      return {
+        ...prev,
+        [type]: newCount
+      };
+    });
+  };
+
+  const getTotalPassengers = () => {
+    const total = searchData.adult + searchData.children + searchData.infant;
+    return `Adult ${searchData.adult}${searchData.children ? `, Children ${searchData.children}` : ''}${searchData.infant ? `, Infant ${searchData.infant}` : ''}`;
+  };
+
+  return (
+    <div className="relative">
+      <div 
+        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500 cursor-pointer flex items-center justify-between"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{getTotalPassengers()}</span>
+        <svg 
+          className={`w-5 h-5 transition-transform ${isOpen ? 'transform rotate-180' : ''}`} 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 w-[300px] bg-white border border-gray-200 rounded-lg shadow-lg z-50 mt-1">
+          {/* Adult */}
+          <div className="p-4 border-b border-gray-100">
+            <div className="flex justify-between items-center">
+              <div className="flex-1">
+                <div className="font-medium text-gray-700">Adult</div>
+                <div className="text-sm text-gray-500">12+ Years</div>
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updatePassenger('adult', 'subtract');
+                  }}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors
+                    ${searchData.adult <= 1 
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                  disabled={searchData.adult <= 1}
+                >
+                  <span className="text-lg font-medium">-</span>
+                </button>
+                <span className="w-8 text-center font-medium">{searchData.adult}</span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updatePassenger('adult', 'add');
+                  }}
+                  className="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center hover:bg-gray-900 transition-colors"
+                >
+                  <span className="text-lg font-medium">+</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Children */}
+          <div className="p-4 border-b border-gray-100">
+            <div className="flex justify-between items-center">
+              <div className="flex-1">
+                <div className="font-medium text-gray-700">Children</div>
+                <div className="text-sm text-gray-500">2-11 Years</div>
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updatePassenger('children', 'subtract');
+                  }}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors
+                    ${searchData.children <= 0 
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                  disabled={searchData.children <= 0}
+                >
+                  <span className="text-lg font-medium">-</span>
+                </button>
+                <span className="w-8 text-center font-medium">{searchData.children}</span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updatePassenger('children', 'add');
+                  }}
+                  className="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center hover:bg-gray-900 transition-colors"
+                >
+                  <span className="text-lg font-medium">+</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Infant */}
+          <div className="p-4">
+            <div className="flex justify-between items-center">
+              <div className="flex-1">
+                <div className="font-medium text-gray-700">Infant</div>
+                <div className="text-sm text-gray-500">Under 2 Years</div>
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updatePassenger('infant', 'subtract');
+                  }}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors
+                    ${searchData.infant <= 0 
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                  disabled={searchData.infant <= 0}
+                >
+                  <span className="text-lg font-medium">-</span>
+                </button>
+                <span className="w-8 text-center font-medium">{searchData.infant}</span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updatePassenger('infant', 'add');
+                  }}
+                  className="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center hover:bg-gray-900 transition-colors"
+                >
+                  <span className="text-lg font-medium">+</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const TabMenu = () => {
   const [activeTab, setActiveTab] = useState('search');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+  const [searchData, setSearchData] = useState({
+    origin: '',
+    destination: '',
+    departureTime: '',
+    returnTime: '',
+    flightType: 'one-way',
+    classType: 'Economy',
+    adult: 1,
+    children: 0,
+    infant: 0
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSearchData(prev => ({
+        ...prev,
+        [name]: value
+    }));
+  };
+
+  const handleSubmitSearch = async (e) => {
+    e.preventDefault();
+    try {
+        const formattedData = {
+            ...searchData,
+            departureTime: new Date(searchData.departureTime).toISOString(),
+            returnTime: searchData.returnTime 
+                ? new Date(searchData.returnTime).toISOString() 
+                : undefined,
+            adult: parseInt(searchData.adult),
+            children: parseInt(searchData.children),
+            infant: parseInt(searchData.infant)
+        };
+        
+        console.log('Formatted Search Data:', formattedData);
+        navigate('/flight-results', { state: formattedData });
+    } catch (error) {
+        console.error('Error searching flights:', error);
+    }
+  };
+
+
 
   const renderContent = () => {
     switch (activeTab) {
@@ -29,12 +229,14 @@ const TabMenu = () => {
                 <div className="space-y-2">
                   <label className="block text-gray-600">FROM</label>
                   <input type="text" placeholder="Select City" 
-                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500" />
+                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500" 
+                    name="origin" value={searchData.origin} onChange={handleInputChange} />
                 </div>
                 <div className="space-y-2">
                   <label className="block text-gray-600">TO</label>
                   <input type="text" placeholder="Select City" 
-                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500" />
+                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500" 
+                    name="destination" value={searchData.destination} onChange={handleInputChange} />
                 </div>
               </div>
 
@@ -42,7 +244,8 @@ const TabMenu = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 <div className="space-y-2">
                   <label className="block text-gray-600">Depart</label>
-                  <input type="date" className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500" />
+                  <input type="date" className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500" 
+                    name="departureTime" value={searchData.departureTime} onChange={handleInputChange} />
                 </div>
                 <div className="space-y-2">
                   <label className="block text-gray-600">Return</label>
@@ -50,13 +253,12 @@ const TabMenu = () => {
                 </div>
                 <div className="space-y-2">
                   <label className="block text-gray-600">Passenger(S)</label>
-                  <select className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500">
-                    <option>Adult 1</option>
-                  </select>
+                  <PassengerSelect searchData={searchData} setSearchData={setSearchData} />
                 </div>
                 <div className="space-y-2">
                   <label className="block text-gray-600">Class</label>
-                  <select className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500">
+                  <select className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500 " 
+                    name="classType" value={searchData.classType} onChange={handleInputChange}>
                     <option>Economy</option>
                   </select>
                 </div>
@@ -78,7 +280,7 @@ const TabMenu = () => {
             {/* Footer */}
             <div className="flex justify-between items-center mt-6">
               <button className="text-red-600 hover:text-red-700">+ Add Promo Code</button>
-              <button className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700">Search</button>
+              <button className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700" onClick={handleSubmitSearch}>Search</button>
             </div>
           </div>
         );

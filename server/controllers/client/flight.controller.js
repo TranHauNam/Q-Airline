@@ -72,7 +72,7 @@ module.exports.searchFlight = async (req, res) => {
         const strClassType = arrClassType.join('');
 
         const calculatePrice = (flight, strClassType, adult, children, infant) => {
-            const priceField = `price${strClassType}`;
+            const priceField = price${strClassType};
             const adultPrice = flight[priceField];
             const childPrice = adultPrice * 0.75;
             const infantPrice = adultPrice * 0.1;
@@ -87,7 +87,7 @@ module.exports.searchFlight = async (req, res) => {
         if (flightType == 'one-way') {
             const flights = await Flight.find(departureFilter);
             const availableFlights = flights.filter(flight => {
-                const availableSeatsField = `availableSeats${strClassType}`;
+                const availableSeatsField = availableSeats${strClassType};
                 return flight[availableSeatsField] >= totalSeatsNeeded;
             });
 
@@ -146,12 +146,12 @@ module.exports.searchFlight = async (req, res) => {
             const returnFlights = await Flight.find(returnFilter);
 
             const availableDepartureFlights = departureFlights.filter(flight => {
-                const availableSeatsField = `availableSeats${strClassType}`;
+                const availableSeatsField = availableSeats${strClassType};
                 return flight[availableSeatsField] >= totalSeatsNeeded;
             });
 
             const availableReturnFlights = returnFlights.filter(flight => {
-                const availableSeatsField = `availableSeats${strClassType}`;
+                const availableSeatsField = availableSeats${strClassType};
                 return flight[availableSeatsField] >= totalSeatsNeeded;
             });
 

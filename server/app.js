@@ -1,13 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const flightController = require('./controllers/client/flight.controller');
+
 const app = express();
-const flightRoutes = require('./routes/client/flight.route');
 
 
 // Cấu hình CORS cho frontend port 3000
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000'],
   credentials: true,
 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -23,6 +24,15 @@ app.use(express.json());
 // Middleware để parse cookies
 app.use(cookieParser());
 
-// Các routes và middleware khác...
+// Flight routes
+app.get('/api/flight/search', flightController.searchFlight);
+app.get('/api/flight/all', flightController.getAllFlights);
+app.get('/api/flight/single/:flightNumber', flightController.getSingleFlight);
+
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+
 
 module.exports = app; 

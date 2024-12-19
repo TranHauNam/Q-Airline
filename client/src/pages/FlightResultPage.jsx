@@ -1,148 +1,186 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import flightService from '../services/flightService';
 import './FlightResultPage.css';
 
 const FlightResultPage = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { searchParams, results } = location.state || {};
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [flights, setFlights] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(price);
-  };
+    useEffect(() => {
+        const searchFlights = async () => {
+            if (!location.state) {
+                setError('No search criteria provided');
+                setLoading(false);
+                return;
+            }
 
-  const formatDateTime = (dateTimeStr) => {
-    const date = new Date(dateTimeStr);
-    return date.toLocaleString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+            try {
+                setLoading(true);
+                const response = await flightService.searchFlights(location.state);
+                    setFlights(response.flights);
+            } catch (err) {
+                console.error('Search error:', err);
+                setError(err.message || 'Failed to search flights');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  const handleSelectFlight = (departureFlight, returnFlight = null) => {
-    navigate('/booking', {
-      state: {
-        searchParams,
-        selectedFlights: {
-          departure: departureFlight,
-          return: returnFlight
-        }
-      }
-    });
-  };
+        searchFlights();
+    }, [location.state]);
 
-  const renderFlightCard = (flight, type) => {
-    return (
-      <div className="flight-card" key={flight.flightNumber}>
-        <div className="flight-header">
-          <span className="flight-number">Chuyến bay: {flight.flightNumber}</span>
-          <span className="plane-code">Máy bay: {flight.planeCode}</span>
+    const handleModifySearch = () => {
+        navigate(-1);
+    };
+
+    // Progress bar component
+    const ProgressBar = () => (
+        <div className="progress-bar">
+            <div className="progress-step active">1 FLIGHTS</div>
+            <div className="progress-step">2 JOURNEY DETAILS</div>
+            <div className="progress-step">3 REVIEW & PAYMENT</div>
         </div>
-        
-        <div className="flight-main">
-          <div className="flight-route">
-            <div className="origin">
-              <h3>{flight.origin}</h3>
-              <p>{formatDateTime(flight.departureTime)}</p>
-            </div>
-            
-            <div className="flight-duration">
-              <span className="duration">{flight.duration}</span>
-              <div className="flight-line">
-                <span className="plane-icon">✈</span>
-              </div>
-            </div>
-            
-            <div className="destination">
-              <h3>{flight.destination}</h3>
-              <p>{formatDateTime(new Date(new Date(flight.departureTime).getTime() + parseDuration(flight.duration)))}</p>
-            </div>
-          </div>
-
-          <div className="flight-details">
-            <div className="seat-info">
-              <p>Hạng: {searchParams.classType}</p>
-              <p>Ghế trống: {getAvailableSeats(flight, searchParams.classType)}</p>
-            </div>
-            
-            <div className="price-info">
-              <p className="total-price">{formatPrice(flight.totalPrice)}</p>
-              <button 
-                onClick={() => handleSelectFlight(
-                  type === 'departure' ? flight : results.departureFlights[0], 
-                  type === 'return' ? flight : null
-                )}
-                className="select-btn"
-              >
-                Chọn
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     );
-  };
 
-  const getAvailableSeats = (flight, classType) => {
-    switch (classType) {
-      case 'Economy':
-        return flight.availableSeatsEconomy;
-      case 'Premium Economy':
-        return flight.availableSeatsPremiumEconomy;
-      case 'Business':
-        return flight.availableSeatsBusiness;
-      case 'First':
-        return flight.availableSeatsFirst;
-      default:
-        return 0;
-    }
-  };
-
-  const parseDuration = (durationStr) => {
-    const [hours, minutes] = durationStr.replace(/[^0-9]/g, ' ').trim().split(' ');
-    return (parseInt(hours) * 60 + parseInt(minutes)) * 60 * 1000;
-  };
-
-  if (!results || !searchParams) {
-    return <div className="no-results">Không có dữ liệu chuyến bay</div>;
-  }
-
-  return (
-    <div className="flight-results">
-      <div className="search-summary">
-        <h2>Kết quả tìm kiếm</h2>
-        <div className="search-details">
-          <p>{searchParams.origin} → {searchParams.destination}</p>
-          <p>
-            {searchParams.adult} người lớn
-            {searchParams.children > 0 && `, ${searchParams.children} trẻ em`}
-            {searchParams.infant > 0 && `, ${searchParams.infant} em bé`}
-          </p>
-          <p>Hạng ghế: {searchParams.classType}</p>
+    // Journey summary component
+    const JourneySummary = () => (
+        <div className="journey-summary">
+            <div className="journey-info">
+                <div className="airport-code">
+                    <div>{location.state.origin}</div>
+                    <div className="date">{location.state.departureTime}</div>
+                </div>
+                <div className="flight-direction">
+                    <span>Departure</span>
+                    <div className="direction-line"></div>
+                </div>
+                <div className="airport-code">
+                    <div>{location.state.destination}</div>
+                    <div className="date">FRI, 20 DEC 24</div>
+                </div>
+            </div>
+            <button onClick={handleModifySearch} className="modify-booking">
+                Modify Booking
+            </button>
         </div>
-      </div>
+    );
 
-      <div className="flights-container">
-        <div className="departure-flights">
-          <h3>Chuyến đi</h3>
-          {results.departureFlights.map(flight => renderFlightCard(flight, 'departure'))}
+    // Flight card component
+    const FlightCard = ({ flight }) => {
+        // Format thời gian từ ISO string
+        const formatTime = (isoString) => {
+            return new Date(isoString).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        };
+
+        // Format giá tiền
+        const formatPrice = (price) => {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(price);
+        };
+
+        return (
+            <div className="flight-card">
+                <div className="flight-header">
+                    <div className="flight-number">
+                        <span>{flight.flightNumber}</span>
+                        <span className="airline">{flight.planeCode}</span>
+                    </div>
+                    <div className="flight-time">
+                        <div className="time-info">
+                            <div className="time">{formatTime(flight.departureTime)}</div>
+                            <div className="airport">{flight.origin}</div>
+                        </div>
+                        <div className="duration">
+                            <div className="duration-time">{flight.duration}</div>
+                            <div className="duration-line"></div>
+                        </div>
+                        <div className="time-info">
+                            <div className="time">
+                                {formatTime(new Date(new Date(flight.departureTime).getTime() + 
+                                    parseInt(flight.duration.split('h')[0]) * 60 * 60 * 1000 + 
+                                    parseInt(flight.duration.split('h')[1].split('m')[0]) * 60 * 1000))}
+                            </div>
+                            <div className="airport">{flight.destination}</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="flight-options">
+                    <div className="option economy">
+                        <div className="class-header">
+                            <span>ECONOMY</span>
+                            <span className="seats-left">
+                                {flight.availableSeatsEconomy} seats left at this fare
+                            </span>
+                        </div>
+                        <div className="price">{formatPrice(flight.priceEconomy)}</div>
+                        <button className="select-button">Select</button>
+                    </div>
+                    <div className="option business">
+                        <div className="class-header">
+                            <span>BUSINESS</span>
+                            <span className="seats-left">
+                                {flight.availableSeatsBusiness} seats left at this fare
+                            </span>
+                        </div>
+                        <div className="price">{formatPrice(flight.priceBusiness)}</div>
+                        <button className="select-button">Select</button>
+                    </div>
+                </div>
+                <div className="flight-details">
+                    <button className="view-details">View Flight Details</button>
+                    <div className="flight-info">
+                        <span>Aircraft: {flight.planeCode}</span>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    if (loading) return (
+            <div className="loading-state">
+                <div className="spinner"></div>
+                <p>Searching for flights...</p>
+            </div>
+        );
+
+    if (error) return (
+            <div className="error-state">
+                <h2>Error</h2>
+                <p>{error}</p>
+                <button onClick={handleModifySearch}>Modify Search</button>
+            </div>
+        );
+
+    return (
+        <div className="flight-result-page">
+            <ProgressBar />
+            <div className="result-container">
+                <JourneySummary />
+                <div className="results-header">
+                    <h2>{flights.length} Flights found for your trip</h2>
+                    <div className="filters">
+                        <button className="filter-button">Duration ▼</button>
+                        <button className="filter-button">Filter</button>
+                                </div>
+                            </div>
+                <div className="flights-list">
+                    {flights.map((flight, index) => (
+                        <FlightCard key={index} flight={flight} />
+                    ))}
+                            </div>
+            </div>
         </div>
-
-        {searchParams.flightType === 'round-trip' && results.returnFlights.length > 0 && (
-          <div className="return-flights">
-            <h3>Chuyến về</h3>
-            {results.returnFlights.map(flight => renderFlightCard(flight, 'return'))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default FlightResultPage; 
