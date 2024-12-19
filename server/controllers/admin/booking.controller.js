@@ -1,72 +1,69 @@
 const Booking = require('../../models/booking.model');
 
-// [GET] /api/admin/booking/
-module.exports.getAllBookings = async (req, res) => {
-    try {
-        const bookings = await Booking.find()
-        .populate('userId', 'name email')
-        .populate('flightId', 'flightNumber origin destination departureTime arrivalTime');
-
-        res.status(200).json({
-            message: 'Get all bookings successfully.',
-            bookings: bookings,
-        });
-    } catch (error) {
-        console.error('Error get all bookings:', error);
-        res.status(500).json({
-            message: 'Failed to get all bookings.',
-            error: error.message,
-        });
-    }
-
-    
-};
-
-//[GET] /api/admin/booking/statistics
 module.exports.getBookingStatistics = async (req, res) => {
     try {
-      const statistics = await Booking.aggregate([
-        {
-          $group: {
-            _id: '$flightId',
-            totalBookings: { $sum: 1 },
-            totalSeatsBooked: { $sum: '$seatsBooked' }
-          }
-        },
-        {
-          $lookup: {
-            from: 'flights',
-            localField: '_id',
-            foreignField: '_id',
-            as: 'flightInfo'
-          }
-        },
-        {
-          $unwind: '$flightInfo'
-        },
-        {
-          $project: {
-            _id: 0,
-            flightId: '$_id',
-            flightNumber: '$flightInfo.flightNumber',
-            origin: '$flightInfo.origin',
-            destination: '$flightInfo.destination',
-            departureTime: '$flightInfo.departureTime',
-            totalBookings: 1,
-            totalSeatsBooked: 1
-          }
-        }
-      ]);
-  
-      res.status(200).json({
-        message: 'Get booking statistics successfully.',
-        statistics: statistics,
-      });
+        // Thống kê tổng số đặt vé
+        const totalBookings = await Booking.countDocuments();
+
+        // Thống kê theo loại hạng ghế
+        const bookingsByClass = await Booking.aggregate([
+            {
+                $group: {
+                    _id: "$classType",
+                    count: { $sum: 1 },
+                    totalRevenue: { $sum: "$totalPrice" }
+                }
+            }
+        ]);
+
+        // Thống kê theo tháng trong năm hiện tại
+        const currentYear = new Date().getFullYear();
+        const monthlyBookings = await Booking.aggregate([
+            {
+                $match: {
+                    bookingDate: {
+                        $gte: new Date(currentYear, 0, 1),
+                        $lte: new Date(currentYear, 11, 31)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: "$bookingDate" },
+                    count: { $sum: 1 },
+                    revenue: { $sum: "$totalPrice" }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]);
+
+        // Thống kê chuyến bay một chiều và khứ hồi
+        const flightTypeStats = await Booking.aggregate([
+            {
+                $group: {
+                    _id: {
+                        hasReturn: { $cond: [{ $ifNull: ["$returnPrivateInformation.flightNumber", false] }, "round-trip", "one-way"] }
+                    },
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                totalBookings,
+                bookingsByClass,
+                monthlyBookings,
+                flightTypeStats
+            }
+        });
+
     } catch (error) {
-      console.error('Error fetching booking statistics:', error);
-      res.status(500).json({
-        message: 'Failed to fetch booking statistics.',
-        error: error.message,
-      });
+        return res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy thống kê đặt vé",
+            error: error.message
+        });
     }
 };

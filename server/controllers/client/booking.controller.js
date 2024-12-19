@@ -8,6 +8,11 @@ module.exports.bookFlight = async (req, res) => {
     try {
         const { departureFlightNumber, returnFlightNumber, passengers, departureSeatsRequested, returnSeatsRequested  } = req.body;
         const userId = res.locals.user ? res.locals.user._id : null;
+        
+        if (!userId) {
+            return res.status(401).json({ message: 'Bạn phải đăng nhập để đặt vé.' });
+        }
+
         const user = await User.findById(userId);
 
         const searched = await TemporarySearch.findOne({ userId: userId });

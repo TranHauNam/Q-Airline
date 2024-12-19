@@ -8,12 +8,12 @@ module.exports.addFlight = async (req, res) => {
 
         const existFlight = await Flight.findOne({flightNumber: flightNumber});
         if(existFlight) {
-            return res.status(400).json({ message: 'Flight number already exists.' });
+            return res.status(400).json({ message: 'Mã chuyến bay đã tồn tại' });
         }
 
         const existPlane = await Plane.findOne({code: planeCode});
         if(!existPlane) {
-            return res.status(400).json({ message: 'Plane not found.' });
+            return res.status(400).json({ message: 'Không tìm thấy tàu bay' });
         }
         
         const seats = existPlane.seats.map(seat => ({
@@ -40,15 +40,15 @@ module.exports.addFlight = async (req, res) => {
         });
 
         res.status(200).json({
-            message: 'Flight added successfully.',
+            message: 'Thêm chuyến bay thành công',
             flight: newFlight
         });
 
     } catch (error) {
-        console.log("Error adding flight", error);
+        console.log("Lỗi thêm chuyến bay", error);
         
         res.status(500).json({ 
-            message: 'Error adding flight.', 
+            message: 'Lỗi thêm chuyến bay', 
             error: error.message 
         });
     }
@@ -58,6 +58,7 @@ module.exports.addFlight = async (req, res) => {
 // [PATCH] /api/admin/flight/:id/departure-time
 module.exports.changeDepartureTime = async (req, res) => {
     try {
+        // thêm lí do
         const flightNumber = req.params.flightNumber;      
         const newDepartureTime = req.body.newDepartureTime;
         
@@ -86,3 +87,4 @@ module.exports.changeDepartureTime = async (req, res) => {
         });
     }   
 };
+

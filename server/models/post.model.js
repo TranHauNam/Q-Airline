@@ -2,11 +2,20 @@ const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema(
     {
+        postType: {
+            type: String,
+            enum: ['Tin tức', 'Khuyến mãi', 'Thông báo'],
+            required: true
+        },
         title: {
             type: String,
             required: true
         },
         content: {
+            type: String,
+            required: true
+        },
+        image: {
             type: String,
             required: true
         }
