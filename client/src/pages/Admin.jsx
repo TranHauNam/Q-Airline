@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaNewspaper, FaPlane, FaRoute, FaTicketAlt, FaClock } from 'react-icons/fa';
+import { FaNewspaper, FaPlane, FaRoute, FaTicketAlt, FaClock, FaUserPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../services/modules/admin/admin.api';
 import './Admin.css';
@@ -12,27 +12,30 @@ import FlightManagement from '../components/admin/FlightManagement';
 import BookingStatistics from '../components/admin/BookingStatistics';
 import DelayManagement from '../components/admin/DelayManagement';
 import AdminHeader from '../components/admin/AdminHeader';
+import AdminAccountManagement from '../components/admin/AdminAccountManagement';
 
 const Admin = () => {
   const [selectedModule, setSelectedModule] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Kiểm tra token trong cookie
-    const allCookies = document.cookie;
-    console.log('All cookies:', allCookies); // Log tất cả cookies
-    
-    const adminToken = document.cookie.split(';').find(c => c.trim().startsWith('adminToken='));
-    console.log('Found adminToken:', adminToken); // Log adminToken tìm được
-    
-    if (!adminToken) {
-      console.log('No admin token found, redirecting...'); // Log khi không tìm thấy token
-      navigate('/loginadmin');
-    } else {
-      console.log('Admin token found, setting authenticated'); // Log khi tìm thấy token
-      setIsAuthenticated(true);
-    }
+    const checkAuth = async () => {
+      try {
+        const response = await adminApi.checkAuth();
+        if (response.data.success) {
+          setIsAuthenticated(true);
+          setUserRole(response.data.admin.role);
+        } else {
+          navigate('/loginadmin');
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        navigate('/loginadmin');
+      }
+    };
+    checkAuth();
   }, [navigate]);
 
   const adminModules = [
@@ -84,8 +87,25 @@ const Admin = () => {
       color: '#9b59b6',
       component: DelayManagement
 
+    },
+    {
+      id: 'admin-accounts',
+      title: 'Tạo tài khoản Admin',
+      icon: <FaUserPlus />,
+      description: 'Tạo và quản lý tài khoản admin',
+      color: '#e67e22',
+      component: AdminAccountManagement
     }
   ];
+
+  // Lọc modules dựa trên role
+  const filteredModules = adminModules.filter(module => {
+    console.log('userRole', userRole);
+    if (module.id === 'admin-accounts') {
+      return userRole === 'superadmin';
+    }
+    return true;
+  });
 
   const renderModuleContent = () => {
     const selectedModuleData = adminModules.find(module => module.id === selectedModule);
@@ -115,13 +135,8 @@ const Admin = () => {
     <div className="adm-layout">
       <AdminHeader onLogout={handleLogout} />
       <div className="adm-sidebar">
-        {/* <div className="adm-logo"> */}
-          {/* <img src="/logo.png" alt="Logo" /> */}
-          {/* <h2>Admin Panel</h2> */}
-        {/* </div> */}
-        
         <div className="adm-menu">
-          {adminModules.map((module) => (
+          {filteredModules.map((module) => (
             <div
               key={module.id}
               className={`sidebar-item ${selectedModule === module.id ? 'active' : ''}`}
