@@ -3,14 +3,20 @@ import { bookingApi } from '../../services/modules/admin/booking/booking.api';
 import {
   Chart as ChartJS,
   ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
   Title,
   Tooltip,
   Legend
 } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { Pie, Bar } from 'react-chartjs-2';
 
 ChartJS.register(
   ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
   Title,
   Tooltip,
   Legend
@@ -20,7 +26,7 @@ const BookingStatistics = () => {
   const [statistics, setStatistics] = useState({
     totalBookings: 0,
     bookingsByClass: [],
-    monthlyBookings: [],
+      monthlyBookings: [],
     flightTypeStats: []
   });
   const [loading, setLoading] = useState(true);
@@ -210,25 +216,149 @@ const BookingStatistics = () => {
       </div>
 
       <div className="stat-section">
-        <h3>Thống kê theo tháng</h3>
+        <h3>Thống kê theo tháng trong năm {new Date().getFullYear()}</h3>
         <table className="statistics-table">
           <thead>
             <tr>
               <th>Tháng</th>
               <th>Số lượng đặt</th>
               <th>Doanh thu</th>
+              <th>Tỷ lệ</th>
             </tr>
           </thead>
           <tbody>
-            {statistics.monthlyBookings.map((stat, index) => (
-              <tr key={index}>
-                <td>Tháng {stat._id}</td>
-                <td>{stat.count}</td>
-                <td>{stat.revenue.toLocaleString('vi-VN')} VNĐ</td>
-              </tr>
-            ))}
+            {statistics.monthlyBookings[0]?.months.map((stat) => {
+              const totalRevenue = statistics.monthlyBookings[0].months.reduce(
+                (sum, month) => sum + month.revenue, 
+                0
+              );
+              const percentage = totalRevenue ? 
+                ((stat.revenue / totalRevenue) * 100).toFixed(1) : 
+                '0.0';
+              
+              return (
+                <tr key={stat.month}>
+                  <td>Tháng {stat.month}</td>
+                  <td>{stat.count}</td>
+                  <td>{stat.revenue.toLocaleString('vi-VN')} VNĐ</td>
+                  <td>{percentage}%</td>
+                </tr>
+              );
+            })}
+            <tr className="total-row">
+              <td><strong>Tổng cộng</strong></td>
+              <td>
+                <strong>
+                  {statistics.monthlyBookings[0]?.months.reduce(
+                    (sum, month) => sum + month.count, 
+                    0
+                  )}
+                </strong>
+              </td>
+              <td>
+                <strong>
+                  {statistics.monthlyBookings[0]?.months.reduce(
+                    (sum, month) => sum + month.revenue, 
+                    0
+                  ).toLocaleString('vi-VN')} VNĐ
+                </strong>
+              </td>
+              <td><strong>100%</strong></td>
+            </tr>
           </tbody>
         </table>
+
+        <div style={{ height: '400px', marginTop: '20px' }}>
+          <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Biểu đồ doanh thu theo tháng</h4>
+          <Bar
+            data={{
+              labels: statistics.monthlyBookings[0]?.months.map(
+                stat => `Tháng ${stat.month}`
+              ),
+              datasets: [
+                {
+                  label: 'Doanh thu (VNĐ)',
+                  data: statistics.monthlyBookings[0]?.months.map(
+                    stat => stat.revenue
+                  ),
+                  backgroundColor: 'rgba(196, 30, 58, 0.6)',
+                  borderColor: '#c41e3a',
+                  borderWidth: 1,
+                }
+              ]
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    callback: function(value) {
+                      return value.toLocaleString('vi-VN') + ' VNĐ';
+                    }
+                  }
+                }
+              },
+              plugins: {
+                title: {
+                  display: true,
+                  text: `Biểu đồ doanh thu theo tháng năm ${new Date().getFullYear()}`,
+                  color: '#c41e3a',
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  }
+                }
+              }
+            }}
+          />
+        </div>
+
+        <div style={{ height: '400px', marginTop: '40px' }}>
+          <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Biểu đồ số lượng đặt vé theo tháng</h4>
+          <Bar
+            data={{
+              labels: statistics.monthlyBookings[0]?.months.map(
+                stat => `Tháng ${stat.month}`
+              ),
+              datasets: [
+                {
+                  label: 'Số lượng đặt vé',
+                  data: statistics.monthlyBookings[0]?.months.map(
+                    stat => stat.count
+                  ),
+                  backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                  borderColor: '#36a2eb',
+                  borderWidth: 1,
+                }
+              ]
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    stepSize: 1
+                  }
+                }
+              },
+              plugins: {
+                title: {
+                  display: true,
+                  text: `Biểu đồ số lượng đặt vé theo tháng năm ${new Date().getFullYear()}`,
+                  color: '#36a2eb',
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  }
+                }
+              }
+            }}
+          />
+        </div>
       </div>
     </div>
   );

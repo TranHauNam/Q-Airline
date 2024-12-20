@@ -18,24 +18,88 @@ module.exports.getBookingStatistics = async (req, res) => {
         ]);
 
         // Thống kê theo tháng trong năm hiện tại
-        const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
         const monthlyBookings = await Booking.aggregate([
             {
+                $addFields: {
+                    bookingDateAsDate: { 
+                        $toDate: "$bookingDate" 
+                    }
+                }
+            },
+            {
                 $match: {
-                    bookingDate: {
-                        $gte: new Date(currentYear, 0, 1),
-                        $lte: new Date(currentYear, 11, 31)
+                    $expr: {
+                        $eq: [{ $year: "$bookingDateAsDate" }, currentYear]
                     }
                 }
             },
             {
                 $group: {
-                    _id: { $month: "$bookingDate" },
+                    _id: { 
+                        month: { $month: "$bookingDateAsDate" },
+                        year: { $year: "$bookingDateAsDate" }
+                    },
                     count: { $sum: 1 },
-                    revenue: { $sum: "$totalPrice" }
+                    revenue: { $sum: "$totalPrice" },
                 }
             },
-            { $sort: { _id: 1 } }
+            {
+                $project: {
+                    _id: "$_id.month",
+                    year: "$_id.year",
+                    count: 1,
+                    revenue: 1,
+                }
+            },
+            { 
+                $sort: { _id: 1 } 
+            },
+            {
+                $group: {
+                    _id: null,
+                    months: {
+                        $push: {
+                            month: "$_id",
+                            count: "$count",
+                            revenue: "$revenue",
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    months: {
+                        $map: {
+                            input: { $range: [1, 13] },
+                            as: "month",
+                            in: {
+                                $let: {
+                                    vars: {
+                                        monthData: {
+                                            $filter: {
+                                                input: "$months",
+                                                as: "m",
+                                                cond: { $eq: ["$$m.month", "$$month"] }
+                                            }
+                                        }
+                                    },
+                                    in: {
+                                        month: "$$month",
+                                        count: { 
+                                            $ifNull: [{ $arrayElemAt: ["$$monthData.count", 0] }, 0] 
+                                        },
+                                        revenue: { 
+                                            $ifNull: [{ $arrayElemAt: ["$$monthData.revenue", 0] }, 0] 
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         ]);
 
         // Thống kê các chuyến bay
