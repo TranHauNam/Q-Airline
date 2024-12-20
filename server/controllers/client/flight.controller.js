@@ -116,7 +116,8 @@ module.exports.searchFlight = async (req, res) => {
                     availableSeatsBusiness: flight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
                     availableSeatsFirst: flight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
                     classType: classType,
-                    flightType: flightType
+                    flightType: flightType,
+                    seats: flight.seats
                 };
             });
     
@@ -181,6 +182,7 @@ module.exports.searchFlight = async (req, res) => {
                             availableSeatsPremiumEconomy: departureFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
                             availableSeatsBusiness: departureFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
                             availableSeatsFirst: departureFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+                            seats: departureFlight.seats
                         },
                         return: {
                             flightNumber: returnFlight.flightNumber,
@@ -188,7 +190,7 @@ module.exports.searchFlight = async (req, res) => {
                             destination: returnFlight.destination,
                             departureTime: returnFlight.departureTime,
                             duration: returnFlight.duration,
-                            arrivalTimeOfReturn: calculateArrivalTime(returnFlight.departureTime    , returnFlight.duration),
+                            arrivalTimeOfReturn: calculateArrivalTime(returnFlight.departureTime, returnFlight.duration),
                             priceEconomy: returnFlight.priceEconomy,
                             priceBusiness: returnFlight.priceBusiness,
                             pricePremiumEconomy: returnFlight.pricePremiumEconomy,
@@ -197,6 +199,7 @@ module.exports.searchFlight = async (req, res) => {
                             availableSeatsPremiumEconomy: returnFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
                             availableSeatsBusiness: returnFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
                             availableSeatsFirst: returnFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+                            seats: returnFlight.seats
                         },
                         totalPrice: calculatePrice(departureFlight, classType, adult, children, infant) +
                                     calculatePrice(returnFlight, classType, adult, children, infant),
@@ -228,3 +231,88 @@ module.exports.searchFlight = async (req, res) => {
         });
     }
 };
+
+// [GET] /api/flight/:flightNumber/seats
+// module.exports.getFlightSeats = async (req, res) => {
+//     try {
+//         const flightNumber = req.params.flightNumber;
+//         const { classType } = req.query;
+
+//         const flight = await Flight.findOne({ flightNumber: flightNumber });
+        
+//         if (!flight) {
+//             return res.status(404).json({
+//                 message: 'Không tìm thấy chuyến bay.'
+//             });
+//         }
+
+//         // Lọc ghế theo hạng vé nếu có yêu cầu
+//         let seats = flight.seats;
+//         if (classType) {
+//             seats = seats.filter(seat => seat.classType === classType);
+//         }
+
+//         // Tổ chức ghế thành ma trận để dễ hiển thị
+//         const seatMap = organizeSeatMap(seats);
+
+//         res.status(200).json({
+//             message: 'Lấy thông tin ghế thành công',
+//             flightNumber: flight.flightNumber,
+//             seatMap: seatMap,
+//             flightInfo: {
+//                 origin: flight.origin,
+//                 destination: flight.destination,
+//                 departureTime: flight.departureTime,
+//                 duration: flight.duration,
+//                 availableSeats: {
+//                     Economy: flight.availableSeatsEconomy,
+//                     PremiumEconomy: flight.availableSeatsPremiumEconomy,
+//                     Business: flight.availableSeatsBusiness,
+//                     First: flight.availableSeatsFirst
+//                 }
+//             }
+//         });
+
+//     } catch (error) {
+//         console.error("Lỗi lấy thông tin ghế:", error);
+//         res.status(500).json({
+//             message: 'Có lỗi xảy ra, vui lòng thử lại sau.',
+//             error: error.message
+//         });
+//     }
+// };
+
+// // Hàm hỗ trợ tổ chức ghế thành ma trận
+// const organizeSeatMap = (seats) => {
+//     // Tạo đối tượng để nhóm ghế theo hạng
+//     const seatsByClass = {
+//         'First': [],
+//         'Business': [],
+//         'Premium Economy': [],
+//         'Economy': []
+//     };
+
+//     // Phân loại ghế theo hạng
+//     seats.forEach(seat => {
+//         seatsByClass[seat.classType].push({
+//             seatNumber: seat.seatNumber,
+//             isBooked: seat.isBooked
+//         });
+//     });
+
+//     // Sắp xếp ghế theo số thứ tự
+//     for (let classType in seatsByClass) {
+//         seatsByClass[classType].sort((a, b) => {
+//             // Giả sử số ghế có dạng "1A", "2B", etc.
+//             const rowA = parseInt(a.seatNumber.match(/\d+/)[0]);
+//             const rowB = parseInt(b.seatNumber.match(/\d+/)[0]);
+//             if (rowA !== rowB) return rowA - rowB;
+            
+//             const colA = a.seatNumber.match(/[A-Z]+/)[0];
+//             const colB = b.seatNumber.match(/[A-Z]+/)[0];
+//             return colA.localeCompare(colB);
+//         });
+//     }
+
+//     return seatsByClass;
+// };
