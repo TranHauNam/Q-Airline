@@ -51,12 +51,50 @@ const BookingStatistics = () => {
 
   return (
     <div className="statistics-container">
-      <h2>Thống kê đặt vé</h2>
 
       <div className="stat-section">
+      <h2>Thống kê đặt vé</h2>
+      <h2></h2>
         <h3>Tổng số đặt vé: {statistics.totalBookings}</h3>
       </div>
-
+      <div className="stat-section">
+        <h3>Thống kê chuyến bay</h3>
+        <table className="statistics-table">
+          <thead>
+            <tr>
+              <th>Điểm đi</th>
+              <th>Điểm đến</th>
+              <th>Số chuyến bay</th>
+              <th>Chi tiết</th>
+            </tr>
+          </thead>
+          <tbody>
+            {statistics.flightTypeStats.map((stat, index) => (
+              <tr key={index}>
+                <td>{stat._id.origin}</td>
+                <td>{stat._id.destination}</td>
+                <td>{stat.count}</td>
+                <td>
+                  <div className="flight-details">
+                    {stat.flights.map((flight, i) => (
+                      <div key={i} className="flight-item">
+                        <span>#{flight.flightNumber}</span>
+                        <span>{new Date(flight.departureTime).toLocaleString('vi-VN', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          day: '2-digit',
+                          month: '2-digit'
+                        })}</span>
+                        <span>{flight.duration} phút</span>
+                      </div>
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="stat-section">
         <h3>Thống kê theo hạng ghế</h3>
         <table className="statistics-table">
@@ -101,44 +139,7 @@ const BookingStatistics = () => {
         </table>
       </div>
 
-      <div className="stat-section">
-        <h3>Thống kê chuyến bay</h3>
-        <table className="statistics-table">
-          <thead>
-            <tr>
-              <th>Điểm đi</th>
-              <th>Điểm đến</th>
-              <th>Số chuyến bay</th>
-              <th>Chi tiết</th>
-            </tr>
-          </thead>
-          <tbody>
-            {statistics.flightTypeStats.map((stat, index) => (
-              <tr key={index}>
-                <td>{stat._id.origin}</td>
-                <td>{stat._id.destination}</td>
-                <td>{stat.count}</td>
-                <td>
-                  <div className="flight-details">
-                    {stat.flights.map((flight, i) => (
-                      <div key={i} className="flight-item">
-                        <span>#{flight.flightNumber}</span>
-                        <span>{new Date(flight.departureTime).toLocaleString('vi-VN', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          day: '2-digit',
-                          month: '2-digit'
-                        })}</span>
-                        <span>{flight.duration} phút</span>
-                      </div>
-                    ))}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      
     </div>
   );
 };
