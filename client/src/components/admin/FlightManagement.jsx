@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { flightApi } from '../../services/modules/admin/flight/flight.api';
+import { planeApi } from '../../services/modules/admin/plane/plane.api';
 
 const FlightManagement = () => {
   const [flight, setFlight] = useState({
@@ -15,8 +16,29 @@ const FlightManagement = () => {
     priceFirst: 0
   });
 
+  const [planes, setPlanes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Fetch danh sách máy bay khi component mount
+  useEffect(() => {
+    const fetchPlanes = async () => {
+      try {
+        const response = await planeApi.getAllPlanes();
+        setPlanes(response.data.planes);
+      } catch (error) {
+        console.error('Error fetching planes:', error);
+        setError('Không thể tải danh sách máy bay');
+      }
+    };
+    fetchPlanes();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+
     try {
       const response = await flightApi.addFlight(flight);
       alert(response.data.message);
@@ -33,13 +55,17 @@ const FlightManagement = () => {
         priceFirst: 0
       });
     } catch (error) {
-      alert(error.response?.data?.message || 'Có lỗi xảy ra');
+      setError(error.response?.data?.message || 'Có lỗi xảy ra');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="form-container">
       <h2>Thêm chuyến bay mới</h2>
+      {error && <div className="error-message">{error}</div>}
+      
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Số hiệu chuyến bay</label>
@@ -51,16 +77,24 @@ const FlightManagement = () => {
             placeholder="Ví dụ: VN123"
           />
         </div>
+
         <div className="form-group">
-          <label>Mã máy bay</label>
-          <input
-            type="text"
+          <label>Máy bay</label>
+          <select
             value={flight.planeCode}
             onChange={(e) => setFlight({...flight, planeCode: e.target.value})}
             required
-            placeholder="Nhập mã máy bay đã đăng ký"
-          />
+          >
+            <option value="">Chọn máy bay</option>
+            {planes.map((plane) => (
+              <option key={plane._id} value={plane.code}>
+                {plane.code} - {plane.manufacturer} 
+                ({plane.economySeats + plane.premiumEconomySeats + plane.businessSeats + plane.firstSeats} ghế)
+              </option>
+            ))}
+          </select>
         </div>
+
         <div className="form-group">
           <label>Điểm khởi hành</label>
           <input
@@ -140,7 +174,13 @@ const FlightManagement = () => {
             placeholder="Nhập giá (VNĐ)"
           />
         </div>
-        <button type="submit" className="submit-button">Thêm chuyến bay</button>
+        <button 
+          type="submit" 
+          className="submit-button"
+          disabled={loading}
+        >
+          {loading ? 'Đang thêm...' : 'Thêm chuyến bay'}
+        </button>
       </form>
     </div>
   );

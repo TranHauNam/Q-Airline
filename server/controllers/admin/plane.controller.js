@@ -42,3 +42,26 @@ module.exports.addPlane = async (req, res) => {
         });
     }
 }
+
+// [GET] /api/admin/plane/all
+module.exports.getAllPlanes = async (req, res) => {
+    try {
+        const planes = await Plane.find({})
+            .select('code manufacturer economySeats premiumEconomySeats businessSeats firstSeats')
+            .sort({ code: 1 }); // Sắp xếp theo mã máy bay
+
+        res.status(200).json({
+            success: true,
+            message: 'Lấy danh sách máy bay thành công',
+            planes: planes
+        });
+
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách máy bay:", error);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy danh sách máy bay',
+            error: error.message
+        });
+    }
+};
