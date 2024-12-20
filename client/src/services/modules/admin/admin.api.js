@@ -7,5 +7,13 @@ export const adminApi = {
   
   logout: () => {
     return axiosClient.post('/admin/account/logout');
+  },
+
+  createAdmin: (data) => {
+    return axiosClient.post('/admin/account/create', data);
+  },
+
+  checkAuth: () => {
+    return axiosClient.get('/admin/account/check-auth');
   }
 }; 

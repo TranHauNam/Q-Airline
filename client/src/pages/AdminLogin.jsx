@@ -41,54 +41,55 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h2>Admin Login</h2>
-        
-        {error && <div className="error-message">{error}</div>}
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              required
-              placeholder="Nhập email admin"
-              disabled={loading}
-            />
+    <div className="adm-login-wrap">
+      <div>
+        <div className="adm-login-container">
+          <div className="adm-login-form-container adm-login-sign-in-container">
+            <form className="adm-login-form" onSubmit={handleSubmit}>
+              <h1 className="adm-login-h11">Đăng nhập bằng tài khoản Admin</h1>
+
+              <span></span>
+              
+              {error && <div className="error-message">{error}</div>}
+              
+              <input
+                type="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                required
+                disabled={loading}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                required
+                disabled={loading}
+              />
+              
+              <button 
+                className="adm-login-btn"
+                disabled={loading}
+              >
+                {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              </button>
+            </form>
           </div>
-
-          <div className="form-group">
-            <label>Mật khẩu</label>
-            <input
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              required
-              placeholder="Nhập mật khẩu"
-              disabled={loading}
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className={`login-button ${loading ? 'loading' : ''}`}
-            disabled={loading}
-          >
-            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-          </button>
-        </form>
-
-        <div className="login-footer">
-          <div className="remember-forgot">
-            <label className="remember-me">
-              <input type="checkbox" /> Ghi nhớ đăng nhập
-            </label>
-            <span className="forgot-password">
-              Quên mật khẩu?
-            </span>
+          
+          <div className="adm-login-overlay-container">
+            <div className="adm-login-overlay">
+              <div className="adm-login-overlay-panel adm-login-overlay-right">
+                <h1 className="adm-login-h1">Xin chào Admin!</h1>
+                <p className="adm-login-p">
+                  Đăng nhập để quản lý hệ thống
+                  <p className="adm-login-p">
+                    Q-Airline
+                  </p>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

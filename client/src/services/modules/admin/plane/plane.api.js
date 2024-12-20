@@ -6,6 +6,6 @@ export const planeApi = {
   },
   
   getAllPlanes: () => {
-    return axiosClient.get('/admin/plane');
+    return axiosClient.get('/admin/plane/all');
   }
 }; 

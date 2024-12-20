@@ -8,6 +8,8 @@ const jwt = require('jsonwebtoken');
 // [POST] /api/admin/acount/create
 module.exports.create = async (req, res) => {
     try {
+        console.log('Received create admin request:', req.body);
+        
         const existEmail = await Admin.findOne({
             email: req.body.email,
             deleted: false
@@ -19,37 +21,36 @@ module.exports.create = async (req, res) => {
             });
         }
 
-        req.body.password = md5(req.body.password);
-        const admin = new Admin(req.body);
-        const adminToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-        admin.adminToken = adminToken;
+        const adminData = {
+            fullName: req.body.fullName,
+            email: req.body.email,
+            password: md5(req.body.password),
+            phone: req.body.phone,
+            role: req.body.role,
+            status: 'active'
+        };
+
+        const admin = new Admin(adminData);
         await admin.save();
 
-        console.log(admin);
-
-        res.cookie("adminToken", admin.adminToken, {
-            httpOnly: true, // Cookie chỉ có thể được truy cập qua HTTP
-            secure: process.env.NODE_ENV === 'production', // Chỉ gửi cookie qua HTTPS trong môi trường sản xuất
-            maxAge: 3600000 * 24 * 30 // Thời gian sống của cookie (30 ngày)
-        });
+        console.log('Created admin:', admin);
 
         res.status(200).json({
-            message: "Đăng ký thành công",
-            adminToken: admin.adminToken,
+            success: true,
+            message: "Tạo tài khoản admin thành công",
             admin: {
                 fullName: admin.fullName,
-                email: admin.email
+                email: admin.email,
+                role: admin.role
             }
         });
+
     } catch (error) {
-        console.error("Register error:", error);
-        if (error.name === 'ValidationError') {
-            return res.status(400).json({ 
-                message: "Dữ liệu không hợp lệ" 
-            });
-        }
+        console.error("Create admin error:", error);
         res.status(500).json({ 
-            message: "Có lỗi xảy ra, vui lòng thử lại sau" 
+            success: false,
+            message: "Có lỗi xảy ra khi tạo tài khoản admin",
+            error: error.message 
         });
     }
 };
@@ -214,3 +215,47 @@ module.exports.logout = async (req, res) => {
 //     );
 //     res.status(200).json({ message: "Cập nhật mật khẩu thành công" });
 // };
+
+// [GET] /api/admin/account/check-auth
+module.exports.checkAuth = async (req, res) => {
+  try {
+    // Lấy token từ cookie
+    const adminToken = req.cookies.adminToken;
+    if (!adminToken) {
+      return res.status(401).json({
+        success: false,
+        message: "Không tìm thấy token"
+      });
+    }
+
+    // Verify token
+    const decoded = jwt.verify(adminToken, process.env.JWT_SECRET);
+    
+    // Tìm admin trong database
+    const admin = await Admin.findById(decoded.id).select('-password');
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Admin không tồn tại"
+      });
+    }
+
+    // Trả về thông tin admin
+    res.status(200).json({
+      success: true,
+      admin: {
+        id: admin._id,
+        fullName: admin.fullName,
+        email: admin.email,
+        role: admin.role
+      }
+    });
+
+  } catch (error) {
+    console.error("Check auth error:", error);
+    res.status(401).json({
+      success: false,
+      message: "Token không hợp lệ"
+    });
+  }
+};

@@ -1,4 +1,5 @@
 const Booking = require('../../models/booking.model');
+const Flight = require('../../models/flight.model');
 
 module.exports.getBookingStatistics = async (req, res) => {
     try {
@@ -37,15 +38,29 @@ module.exports.getBookingStatistics = async (req, res) => {
             { $sort: { _id: 1 } }
         ]);
 
-        // Thống kê chuyến bay một chiều và khứ hồi
-        const flightTypeStats = await Booking.aggregate([
+        // Thống kê các chuyến bay
+        const flightTypeStats = await Flight.aggregate([
             {
                 $group: {
                     _id: {
-                        hasReturn: { $cond: [{ $ifNull: ["$returnPrivateInformation.flightNumber", false] }, "round-trip", "one-way"] }
+                        origin: "$origin",
+                        destination: "$destination"
                     },
-                    count: { $sum: 1 }
+                    count: { $sum: 1 },
+                    flights: {
+                        $push: {
+                            flightNumber: "$flightNumber",
+                            departureTime: "$departureTime",
+                            duration: "$duration"
+                        }
+                    }
                 }
+            },
+            { 
+                $sort: { 
+                    "_id.origin": 1,
+                    "_id.destination": 1 
+                } 
             }
         ]);
 
@@ -62,7 +77,7 @@ module.exports.getBookingStatistics = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Lỗi khi lấy thống kê đặt vé",
+            message: "Lỗi khi lấy thống kê",
             error: error.message
         });
     }
