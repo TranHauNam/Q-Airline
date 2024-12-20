@@ -16,7 +16,7 @@ const DelayManagement = () => {
         const response = await flightApi.getAllFlights();
         setFlights(response.data.flights);
       } catch (error) {
-        setError('Không thể tải danh sách chuyến bay');
+        setError('Unable to load flight list');
       }
     };
     fetchFlights();
@@ -32,20 +32,20 @@ const DelayManagement = () => {
   };
 
   const createDelayNotification = async (flight, oldTime, newTime) => {
-    const oldTimeStr = new Date(oldTime).toLocaleString('vi-VN');
-    const newTimeStr = new Date(newTime).toLocaleString('vi-VN');
+    const oldTimeStr = new Date(oldTime).toLocaleString('en-US');
+    const newTimeStr = new Date(newTime).toLocaleString('en-US');
     
-    const content = `Thông báo thay đổi giờ bay:\n\nChuyến bay ${flight.flightNumber} (${flight.origin} - ${flight.destination})\nThời gian cũ: ${oldTimeStr}\nThời gian mới: ${newTimeStr}\n\nQuý khách vui lòng theo dõi thông tin và sắp xếp thời gian phù hợp. Xin lỗi quý khách vì sự bất tiện này.`;
+    const content = `Delay notification:\n\nFlight ${flight.flightNumber} (${flight.origin} - ${flight.destination})\nOld time: ${oldTimeStr}\nNew time: ${newTimeStr}\n\nPlease keep track of the information and arrange your time accordingly. We apologize for the inconvenience.`;
 
     try {
       await postApi.createPost({
-        title: `Thông báo thay đổi giờ bay - Chuyến bay ${flight.flightNumber}`,
+        title: `Delay notification - Flight ${flight.flightNumber}`,
         content: content,
-        postType: 'Thông báo',
-        image: 'https://example.com/delay-notification.jpg' // Thay bằng ảnh thích hợp
+        postType: 'Notification',
+        image: 'https://example.com/delay-notification.jpg' // Replace with appropriate image
       });
     } catch (error) {
-      console.error('Lỗi khi tạo thông báo:', error);
+      console.error('Error creating notification:', error);
     }
   };
 
@@ -58,15 +58,15 @@ const DelayManagement = () => {
       const oldDepartureTime = selectedFlight.departureTime;
       const response = await flightApi.changeDepartureTime(flightNumber, { newDepartureTime });
       
-      // Tạo thông báo về việc delay
+      // Create delay notification
       await createDelayNotification(selectedFlight, oldDepartureTime, newDepartureTime);
       
-      alert('Cập nhật thời gian bay và tạo thông báo thành công');
+      alert('Updated flight time and created notification successfully');
       setFlightNumber('');
       setNewDepartureTime('');
       setSelectedFlight(null);
     } catch (error) {
-      setError(error.response?.data?.message || 'Có lỗi xảy ra');
+      setError(error.response?.data?.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -74,22 +74,22 @@ const DelayManagement = () => {
 
   return (
     <div className="form-container">
-      <h2>Cập nhật thời gian khởi hành</h2>
+      <h2>Update Departure Time</h2>
       {error && <div className="error-message">{error}</div>}
       
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Chọn chuyến bay</label>
+          <label>Select Flight</label>
           <select
             value={flightNumber}
             onChange={handleFlightSelect}
             required
           >
-            <option value="">-- Chọn chuyến bay --</option>
+            <option value="">-- Select Flight --</option>
             {flights.map((flight) => (
               <option key={flight._id} value={flight.flightNumber}>
-                {flight.flightNumber} - {flight.origin} đến {flight.destination} 
-                ({new Date(flight.departureTime).toLocaleString('vi-VN')})
+                {flight.flightNumber} - {flight.origin} to {flight.destination} 
+                ({new Date(flight.departureTime).toLocaleString('en-US')})
               </option>
             ))}
           </select>
@@ -97,7 +97,7 @@ const DelayManagement = () => {
 
         {selectedFlight && (
           <div className="form-group">
-            <label>Thời gian khởi hành mới</label>
+            <label>New Departure Time</label>
             <input
               type="datetime-local"
               value={newDepartureTime}
@@ -112,7 +112,7 @@ const DelayManagement = () => {
           className="submit-button"
           disabled={loading || !selectedFlight}
         >
-          {loading ? 'Đang cập nhật...' : 'Cập nhật'}
+          {loading ? 'Updating...' : 'Update'}
         </button>
       </form>
     </div>

@@ -48,10 +48,10 @@ const AircraftManagement = () => {
 
   return (
     <div className="form-container">
-      <h2>Thêm máy bay mới</h2>
+      <h2>Add new aircraft</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Mã máy bay</label>
+          <label>Aircraft code</label>
           <input
             type="text"
             value={plane.code}
@@ -60,7 +60,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Hãng sản xuất</label>
+          <label>Manufacturer</label>
           <input
             type="text"
             value={plane.manufacturer}
@@ -69,7 +69,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Số ghế hạng phổ thông (chia hết cho 6)</label>
+          <label>Number of economy class seats (divisible by 6)</label>
           <input
             type="number"
             value={plane.economySeats}
@@ -78,7 +78,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Số ghế hạng phổ thông cao cấp (chia hết cho 6)</label>
+          <label>Number of premium economy seats (divisible by 6)</label>
           <input
             type="number"
             value={plane.premiumEconomySeats}
@@ -87,7 +87,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Số ghế hạng thương gia (chia hết cho 4)</label>
+          <label>Number of business class seats (divisible by 4)</label>
           <input
             type="number"
             value={plane.businessSeats}
@@ -96,7 +96,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Số ghế hạng nhất (chia hết cho 6)</label>
+          <label>Number of first class seats (divisible by 6)</label>
           <input
             type="number"
             value={plane.firstSeats}
@@ -104,7 +104,7 @@ const AircraftManagement = () => {
             required
           />
         </div>
-        <button type="submit" className="submit-button">Thêm máy bay</button>
+        <button type="submit" className="submit-button">Confirm more planes</button>
       </form>
     </div>
   );
