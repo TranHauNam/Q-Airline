@@ -25,9 +25,7 @@ function App() {
 
         <Route path="/search" element={<FlightSearchPage />} />
         <Route path="/flight-results" element={<FlightResultPage />} />
-
         <Route path="/Admin/Login" element={<AdminLogin />} />
-
         <Route path="/booking" element={<BookingPage />} />
 
         <Route path="/review-payment" element={<ReviewPaymentPage />} />

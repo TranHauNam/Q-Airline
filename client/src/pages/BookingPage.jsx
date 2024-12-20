@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SelectSeat from '../components/flight/SelectSeat';
 import './BookingPage.css';
@@ -47,105 +47,117 @@ const BookingPage = () => {
     };
 
     // Passenger Details Form Component
-    const PassengerDetailsForm = () => (
-        <div className="passenger-details-form">
-            <h3>Passenger Information</h3>
-            <div className="form-grid">
-                <div className="form-group">
-                    <label>Title</label>
-                    <select 
-                        name="title" 
-                        value={passengerDetails.title}
-                        onChange={handlePassengerChange}
-                    >
-                        <option value="Mr">Mr</option>
-                        <option value="Mrs">Mrs</option>
-                        <option value="Ms">Ms</option>
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label>First Name</label>
-                    <input
-                        type="text"
-                        name="firstName"
-                        value={passengerDetails.firstName}
-                        onChange={handlePassengerChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Last Name</label>
-                    <input
-                        type="text"
-                        name="lastName"
-                        value={passengerDetails.lastName}
-                        onChange={handlePassengerChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Date of Birth</label>
-                    <input
-                        type="date"
-                        name="dateOfBirth"
-                        value={passengerDetails.dateOfBirth}
-                        onChange={handlePassengerChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Nationality</label>
-                    <input
-                        type="text"
-                        name="nationality"
-                        value={passengerDetails.nationality}
-                        onChange={handlePassengerChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Passport Number</label>
-                    <input
-                        type="text"
-                        name="passportNumber"
-                        value={passengerDetails.passportNumber}
-                        onChange={handlePassengerChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Passport Expiry Date</label>
-                    <input
-                        type="date"
-                        name="passportExpiry"
-                        value={passengerDetails.passportExpiry}
-                        onChange={handlePassengerChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={passengerDetails.email}
-                        onChange={handlePassengerChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Phone Number</label>
-                    <input
-                        type="tel"
-                        name="phone"
-                        value={passengerDetails.phone}
-                        onChange={handlePassengerChange}
-                        required
-                    />
+    const PassengerDetailsForm = () => {
+        // Tạo một state riêng cho form
+        const [formData, setFormData] = useState(passengerDetails);
+
+        // Xử lý thay đổi input
+        const handleInputChange = (e) => {
+            const { name, value } = e.target;
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        };
+
+        // Cập nhật state chính khi form thay đổi
+        useEffect(() => {
+            setPassengerDetails(formData);
+        }, [formData]);
+
+        return (
+            <div className="passenger-details-form">
+                <h3>Passenger Information</h3>
+                <div className="form-grid">
+                    <div className="form-group">
+                        <label>Title</label>
+                        <select 
+                            style={{ margin: '8px 0px' }}
+                            name="title" 
+                            value={formData.title}
+                            onChange={handleInputChange}
+                        >
+                            <option value="Mr">Mr</option>
+                            <option value="Mrs">Mrs</option>
+                            <option value="Ms">Ms</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label>First Name</label>
+                        <input
+                            type="text"
+                            name="firstName"
+                            value={formData.firstName}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Last Name</label>
+                        <input
+                            type="text"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Date of Birth</label>
+                        <input
+                            type="date"
+                            name="dateOfBirth"
+                            value={formData.dateOfBirth}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Nationality</label>
+                        <input
+                            type="text"
+                            name="nationality"
+                            value={formData.nationality}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Passport Number</label>
+                        <input
+                            type="text"
+                            name="passportNumber"
+                            value={formData.passportNumber}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Passport Expiry Date</label>
+                        <input
+                            type="date"
+                            name="passportExpiry"
+                            value={formData.passportExpiry}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Phone Number</label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     // Add-ons Component
     const AddOns = () => (
@@ -231,175 +243,6 @@ const BookingPage = () => {
         </div>
     );
 
-    // Thêm component ReviewAndPayment
-    const ReviewAndPayment = () => {
-        // Tính tổng tiền dịch vụ bổ sung
-        const calculateAddOnsTotal = () => {
-            let total = 0;
-            if (addOns.extraBaggage) total += 30;
-            if (addOns.meal) total += 15;
-            if (addOns.insurance) total += 20;
-            if (addOns.priorityBoarding) total += 10;
-            return total;
-        };
-
-        // Format tiền tệ
-        const formatPrice = (price) => {
-            return new Intl.NumberFormat('vi-VN', {
-                style: 'currency',
-                currency: 'VND'
-            }).format(price);
-        };
-
-        return (
-            <div className="review-payment">
-                <div className="review-section">
-                    <h3>Review Your Booking</h3>
-                    
-                    {/* Passenger Information Review */}
-                    <div className="review-block">
-                        <h4>Passenger Information</h4>
-                        <div className="review-details">
-                            <div className="detail-row">
-                                <span>Name:</span>
-                                <span>{passengerDetails.title} {passengerDetails.firstName} {passengerDetails.lastName}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span>Date of Birth:</span>
-                                <span>{new Date(passengerDetails.dateOfBirth).toLocaleDateString()}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span>Passport:</span>
-                                <span>{passengerDetails.passportNumber}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span>Contact:</span>
-                                <span>{passengerDetails.email} | {passengerDetails.phone}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Flight Details Review */}
-                    <div className="review-block">
-                        <h4>Flight Details</h4>
-                        <div className="review-details">
-                            <div className="detail-row">
-                                <span>Flight:</span>
-                                <span>{flight.flightNumber}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span>Route:</span>
-                                <span>{flight.origin} → {flight.destination}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span>Date:</span>
-                                <span>{new Date(flight.departureTime).toLocaleDateString()}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span>Time:</span>
-                                <span>{new Date(flight.departureTime).toLocaleTimeString()}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span>Class:</span>
-                                <span>{selectedClass}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span>Seat(s):</span>
-                                <span>{selectedSeats.join(', ')}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Add-ons Review */}
-                    <div className="review-block">
-                        <h4>Additional Services</h4>
-                        <div className="review-details">
-                            {addOns.extraBaggage && (
-                                <div className="detail-row">
-                                    <span>Extra Baggage</span>
-                                    <span>{formatPrice(30)}</span>
-                                </div>
-                            )}
-                            {addOns.meal && (
-                                <div className="detail-row">
-                                    <span>Special Meal</span>
-                                    <span>{formatPrice(15)}</span>
-                                </div>
-                            )}
-                            {addOns.insurance && (
-                                <div className="detail-row">
-                                    <span>Travel Insurance</span>
-                                    <span>{formatPrice(20)}</span>
-                                </div>
-                            )}
-                            {addOns.priorityBoarding && (
-                                <div className="detail-row">
-                                    <span>Priority Boarding</span>
-                                    <span>{formatPrice(10)}</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Payment Summary */}
-                <div className="payment-summary">
-                    <h3>Payment Summary</h3>
-                    <div className="price-details">
-                        <div className="price-row">
-                            <span>Flight Fare ({selectedClass})</span>
-                            <span>{formatPrice(flight[`price${selectedClass.replace(/\s+/g, '')}`])}</span>
-                        </div>
-                        {calculateAddOnsTotal() > 0 && (
-                            <div className="price-row">
-                                <span>Additional Services</span>
-                                <span>{formatPrice(calculateAddOnsTotal())}</span>
-                            </div>
-                        )}
-                        <div className="price-row taxes">
-                            <span>Taxes & Fees</span>
-                            <span>{formatPrice(flight[`price${selectedClass.replace(/\s+/g, '')}`] * 0.1)}</span>
-                        </div>
-                        <div className="price-row total">
-                            <span>Total Amount</span>
-                            <span>{formatPrice(
-                                flight[`price${selectedClass.replace(/\s+/g, '')}`] + 
-                                calculateAddOnsTotal() + 
-                                flight[`price${selectedClass.replace(/\s+/g, '')}`] * 0.1
-                            )}</span>
-                        </div>
-                    </div>
-
-                    {/* Payment Method Selection */}
-                    <div className="payment-methods">
-                        <h4>Select Payment Method</h4>
-                        <div className="payment-options">
-                            <label className="payment-option">
-                                <input type="radio" name="payment" value="credit" defaultChecked />
-                                <span className="radio-custom"></span>
-                                <span className="label-text">Credit/Debit Card</span>
-                            </label>
-                            <label className="payment-option">
-                                <input type="radio" name="payment" value="banking" />
-                                <span className="radio-custom"></span>
-                                <span className="label-text">Internet Banking</span>
-                            </label>
-                            <label className="payment-option">
-                                <input type="radio" name="payment" value="ewallet" />
-                                <span className="radio-custom"></span>
-                                <span className="label-text">E-Wallet</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <button className="confirm-payment">
-                        Confirm and Pay
-                    </button>
-                </div>
-            </div>
-        );
-    };
-
     // Thêm vào renderStepContent
     const renderStepContent = () => {
         switch (currentStep) {
@@ -416,8 +259,6 @@ const BookingPage = () => {
                 return <PassengerDetailsForm />;
             case 3:
                 return <AddOns />;
-            case 4:
-                return <ReviewAndPayment />;
             default:
                 return null;
         }
@@ -488,10 +329,6 @@ const BookingPage = () => {
                         <div className={`step ${currentStep === 3 ? 'active' : ''}`}>
                             <div className="step-number">3</div>
                             <div className="step-title">Add-ons</div>
-                        </div>
-                        <div className={`step ${currentStep === 4 ? 'active' : ''}`}>
-                            <div className="step-number">4</div>
-                            <div className="step-title">Review & Payment</div>
                         </div>
                     </div>
 

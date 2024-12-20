@@ -80,111 +80,112 @@ const ReviewPaymentPage = () => {
                 <FlightSummary />
 
                 <div className="booking-content">
-                    <div className="review-payment-content">
+                    <div className="review-payment-wrapper">
                         {/* Left Column - Booking Review */}
-                        <div className="booking-review">
-                            <h2>Review Your Booking</h2>
-
-                            {/* Flight Details */}
+                        <div className="review-details">
                             <div className="review-section">
                                 <h3>Flight Details</h3>
-                                <div className="flight-info">
-                                    <div className="info-row">
-                                        <span>Flight Number:</span>
+                                <div className="info-grid">
+                                    <div className="info-item">
+                                        <label>Flight Number</label>
                                         <span>{flight.flightNumber}</span>
                                     </div>
-                                    <div className="info-row">
-                                        <span>Route:</span>
+                                    <div className="info-item">
+                                        <label>Route</label>
                                         <span>{flight.origin} → {flight.destination}</span>
                                     </div>
-                                    <div className="info-row">
-                                        <span>Date:</span>
+                                    <div className="info-item">
+                                        <label>Date</label>
                                         <span>{new Date(flight.departureTime).toLocaleDateString()}</span>
                                     </div>
-                                    <div className="info-row">
-                                        <span>Time:</span>
+                                    <div className="info-item">
+                                        <label>Time</label>
                                         <span>{new Date(flight.departureTime).toLocaleTimeString()}</span>
                                     </div>
-                                    <div className="info-row">
-                                        <span>Class:</span>
+                                    <div className="info-item">
+                                        <label>Class</label>
                                         <span>{selectedClass}</span>
                                     </div>
-                                    <div className="info-row">
-                                        <span>Selected Seats:</span>
+                                    <div className="info-item">
+                                        <label>Selected Seats</label>
                                         <span>{selectedSeats.join(', ')}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Passenger Details */}
                             <div className="review-section">
                                 <h3>Passenger Information</h3>
-                                <div className="passenger-info">
-                                    <div className="info-row">
-                                        <span>Full Name:</span>
+                                <div className="info-grid">
+                                    <div className="info-item full-width">
+                                        <label>Full Name</label>
                                         <span>{`${passengerDetails.title} ${passengerDetails.firstName} ${passengerDetails.lastName}`}</span>
                                     </div>
-                                    <div className="info-row">
-                                        <span>Date of Birth:</span>
+                                    <div className="info-item">
+                                        <label>Date of Birth</label>
                                         <span>{new Date(passengerDetails.dateOfBirth).toLocaleDateString()}</span>
                                     </div>
-                                    <div className="info-row">
-                                        <span>Passport:</span>
+                                    <div className="info-item">
+                                        <label>Passport</label>
                                         <span>{passengerDetails.passportNumber}</span>
                                     </div>
-                                    <div className="info-row">
-                                        <span>Contact:</span>
+                                    <div className="info-item">
+                                        <label>Email</label>
                                         <span>{passengerDetails.email}</span>
                                     </div>
-                                    <div className="info-row">
-                                        <span>Phone:</span>
+                                    <div className="info-item">
+                                        <label>Phone</label>
                                         <span>{passengerDetails.phone}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Additional Services */}
-                            <div className="review-section">
-                                <h3>Additional Services</h3>
-                                <div className="services-info">
-                                    {Object.entries(addOns).map(([service, isSelected]) => (
-                                        isSelected && (
-                                            <div key={service} className="info-row">
-                                                <span>{service.replace(/([A-Z])/g, ' $1').trim()}</span>
-                                                <span>{formatPrice(
-                                                    service === 'extraBaggage' ? 30 :
-                                                    service === 'meal' ? 15 :
-                                                    service === 'insurance' ? 20 :
-                                                    service === 'priorityBoarding' ? 10 : 0
-                                                )}</span>
-                                            </div>
-                                        )
-                                    ))}
+                            {Object.values(addOns).some(value => value) && (
+                                <div className="review-section">
+                                    <h3>Additional Services</h3>
+                                    <div className="services-grid">
+                                        {Object.entries(addOns).map(([service, isSelected]) => (
+                                            isSelected && (
+                                                <div key={service} className="service-item">
+                                                    <span className="service-name">
+                                                        {service.replace(/([A-Z])/g, ' $1').trim()}
+                                                    </span>
+                                                    <span className="service-price">
+                                                        {formatPrice(
+                                                            service === 'extraBaggage' ? 30 :
+                                                            service === 'meal' ? 15 :
+                                                            service === 'insurance' ? 20 :
+                                                            service === 'priorityBoarding' ? 10 : 0
+                                                        )}
+                                                    </span>
+                                                </div>
+                                            )
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
                         {/* Right Column - Payment */}
-                        <div className="payment-section">
-                            <div className="payment-summary">
+                        <div className="payment-details">
+                            <div className="payment-section">
                                 <h3>Payment Summary</h3>
                                 <div className="price-breakdown">
-                                    <div className="price-row">
-                                        <span>Base Fare</span>
+                                    <div className="price-item">
+                                        <label>Base Fare ({selectedClass})</label>
                                         <span>{formatPrice(flight[`price${selectedClass.replace(/\s+/g, '')}`])}</span>
                                     </div>
                                     {calculateAddOnsTotal() > 0 && (
-                                        <div className="price-row">
-                                            <span>Additional Services</span>
+                                        <div className="price-item">
+                                            <label>Additional Services</label>
                                             <span>{formatPrice(calculateAddOnsTotal())}</span>
                                         </div>
                                     )}
-                                    <div className="price-row">
-                                        <span>Taxes & Fees</span>
+                                    <div className="price-item">
+                                        <label>Taxes & Fees</label>
                                         <span>{formatPrice(flight[`price${selectedClass.replace(/\s+/g, '')}`] * 0.1)}</span>
                                     </div>
-                                    <div className="price-row total">
-                                        <span>Total Amount</span>
+                                    <div className="price-item total">
+                                        <label>Total Amount</label>
                                         <span>{formatPrice(calculateTotal())}</span>
                                     </div>
                                 </div>
@@ -193,56 +194,27 @@ const ReviewPaymentPage = () => {
                             <div className="payment-methods">
                                 <h3>Payment Method</h3>
                                 <div className="payment-options">
-                                    <label className="payment-option">
-                                        <input
-                                            type="radio"
-                                            name="payment"
-                                            value="credit"
-                                            checked={selectedPayment === 'credit'}
-                                            onChange={handlePaymentChange}
-                                        />
-                                        <div className="option-content">
-                                            <img src="/icons/credit-card.png" alt="Credit Card" />
-                                            <span>Credit/Debit Card</span>
-                                        </div>
-                                    </label>
-
-                                    <label className="payment-option">
-                                        <input
-                                            type="radio"
-                                            name="payment"
-                                            value="banking"
-                                            checked={selectedPayment === 'banking'}
-                                            onChange={handlePaymentChange}
-                                        />
-                                        <div className="option-content">
-                                            <img src="/icons/bank.png" alt="Internet Banking" />
-                                            <span>Internet Banking</span>
-                                        </div>
-                                    </label>
-
-                                    <label className="payment-option">
-                                        <input
-                                            type="radio"
-                                            name="payment"
-                                            value="ewallet"
-                                            checked={selectedPayment === 'ewallet'}
-                                            onChange={handlePaymentChange}
-                                        />
-                                        <div className="option-content">
-                                            <img src="/icons/ewallet.png" alt="E-Wallet" />
-                                            <span>E-Wallet</span>
-                                        </div>
-                                    </label>
+                                    {[
+                                        { value: 'credit', label: 'Credit/Debit Card', icon: 'credit-card.png' },
+                                        { value: 'banking', label: 'Internet Banking', icon: 'bank.png' },
+                                        { value: 'ewallet', label: 'E-Wallet', icon: 'ewallet.png' }
+                                    ].map(method => (
+                                        <label key={method.value} className="payment-option">
+                                            <input
+                                                type="radio"
+                                                name="payment"
+                                                value={method.value}
+                                                checked={selectedPayment === method.value}
+                                                onChange={handlePaymentChange}
+                                            />
+                                            <div className="option-content">
+                                                <img src={`/icons/${method.icon}`} alt={method.label} />
+                                                <span>{method.label}</span>
+                                            </div>
+                                        </label>
+                                    ))}
                                 </div>
                             </div>
-
-                            <button 
-                                className="confirm-payment-button"
-                                onClick={handleConfirmPayment}
-                            >
-                                Confirm and Pay {formatPrice(calculateTotal())}
-                            </button>
                         </div>
                     </div>
 
