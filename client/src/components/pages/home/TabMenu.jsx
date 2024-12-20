@@ -260,6 +260,9 @@ const TabMenu = () => {
                   <select className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-red-500 " 
                     name="classType" value={searchData.classType} onChange={handleInputChange}>
                     <option>Economy</option>
+                    <option>Premium Economy</option>
+                    <option>Business</option>
+                    <option>First</option>  
                   </select>
                 </div>
                 <div className="space-y-2">

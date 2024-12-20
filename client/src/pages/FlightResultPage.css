@@ -1,6 +1,20 @@
 .flight-result-page {
   background-color: #f5f5f5;
   min-height: 100vh;
+  padding: 20px 0;
+}
+
+.flight-results-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.results-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 
 .progress-bar {
@@ -370,4 +384,190 @@
 .option.first .seats-left {
   background: #ffe3f0;
   color: #cc0066;
+}
+
+/* No Flights Found Styles */
+.no-flights-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 2rem;
+}
+
+.no-flights-content {
+    text-align: center;
+    max-width: 500px;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.no-flights-image {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 1.5rem;
+}
+
+.no-flights-content h2 {
+    color: #2d3748;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.no-flights-content p {
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+}
+
+.no-flights-suggestions {
+    text-align: left;
+    background: #f7fafc;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.no-flights-suggestions h3 {
+    color: #2d3748;
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.no-flights-suggestions ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.no-flights-suggestions li {
+    color: #4a5568;
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.no-flights-suggestions li::before {
+    content: "•";
+    color: #c41e3a;
+    position: absolute;
+    left: 0;
+}
+
+.modify-search-button {
+    background: #c41e3a;
+    color: white;
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 6px rgba(196, 30, 58, 0.2);
+}
+
+.modify-search-button:hover {
+    background: #b31b34;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(196, 30, 58, 0.25);
+}
+
+/* Loading Styles */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #c41e3a;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error Styles */
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 2rem;
+}
+
+.error-message {
+    background: #fff5f5;
+    color: #c41e3a;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    border: 1px solid #fed7d7;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .no-flights-container {
+        padding: 1rem;
+    }
+
+    .no-flights-content {
+        padding: 1.5rem;
+    }
+
+    .no-flights-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .modify-search-button {
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+    }
+} 
+
+/* Cập nhật styles cho no-results-content */
+.no-results-content {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.no-flights-image {
+    width: 200px;
+    height: 200px;
+    margin: 1.5rem auto;
+}
+
+.no-results-content h2 {
+    color: #2d3748;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.no-results-content p {
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+}
+
+.no-flights-suggestions {
+    text-align: left;
+    background: #f7fafc;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem auto;
+    max-width: 500px;
 } 
