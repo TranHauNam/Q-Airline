@@ -5,7 +5,8 @@ import Heroes from '../components/pages/home/Heroes'
 import TabMenu from '../components/pages/home/TabMenu'
 import Footer from '../components/common/Footer'
 import FlightSearch from '../components/flight/FlightSearch'
-
+//News
+import News from './News'
 
 
 
@@ -16,6 +17,7 @@ const Homepage = () => {
       <SlideShow/>
       <TabMenu/>
       <Heroes/>
+      <News/>
       <Footer/>
     </div>
   )
