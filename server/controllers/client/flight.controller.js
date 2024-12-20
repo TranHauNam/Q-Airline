@@ -103,9 +103,9 @@ module.exports.searchFlight = async (req, res) => {
                     flightNumber: flight.flightNumber,
                     origin: flight.origin,
                     destination: flight.destination,
-                    departureTime: flight.departureTime,
+                    departureTime: flight.departureTime.toISOString(),
                     duration: flight.duration,
-                    arrivalTime: calculateArrivalTime(flight.departureTime, flight.duration),
+                    arrivalTime: calculateArrivalTime(flight.departureTime, flight.duration).toISOString(),
                     priceEconomy: flight.priceEconomy,
                     priceBusiness: flight.priceBusiness,
                     pricePremiumEconomy: flight.pricePremiumEconomy,
@@ -116,7 +116,8 @@ module.exports.searchFlight = async (req, res) => {
                     availableSeatsBusiness: flight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
                     availableSeatsFirst: flight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
                     classType: classType,
-                    flightType: flightType
+                    flightType: flightType,
+                    seats: flight.seats
                 };
             });
     
@@ -170,9 +171,9 @@ module.exports.searchFlight = async (req, res) => {
                             flightNumber: departureFlight.flightNumber,
                             origin: departureFlight.origin,
                             destination: departureFlight.destination,
-                            departureTime: departureFlight.departureTime,
+                            departureTime: departureFlight.departureTime.toISOString(),
                             duration: departureFlight.duration,
-                            arrivalTimeOfTrip: calculateArrivalTime(departureFlight.departureTime, departureFlight.duration),
+                            arrivalTimeOfTrip: calculateArrivalTime(departureFlight.departureTime, departureFlight.duration).toISOString(),
                             priceEconomy: departureFlight.priceEconomy,
                             priceBusiness: departureFlight.priceBusiness,
                             pricePremiumEconomy: departureFlight.pricePremiumEconomy,
@@ -181,14 +182,15 @@ module.exports.searchFlight = async (req, res) => {
                             availableSeatsPremiumEconomy: departureFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
                             availableSeatsBusiness: departureFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
                             availableSeatsFirst: departureFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+                            seats: departureFlight.seats
                         },
                         return: {
                             flightNumber: returnFlight.flightNumber,
                             origin: returnFlight.origin,
                             destination: returnFlight.destination,
-                            departureTime: returnFlight.departureTime,
+                            departureTime: returnFlight.departureTime.toISOString(),
                             duration: returnFlight.duration,
-                            arrivalTimeOfReturn: calculateArrivalTime(returnFlight.departureTime    , returnFlight.duration),
+                            arrivalTimeOfReturn: calculateArrivalTime(returnFlight.departureTime, returnFlight.duration).toISOString(),
                             priceEconomy: returnFlight.priceEconomy,
                             priceBusiness: returnFlight.priceBusiness,
                             pricePremiumEconomy: returnFlight.pricePremiumEconomy,
@@ -197,6 +199,7 @@ module.exports.searchFlight = async (req, res) => {
                             availableSeatsPremiumEconomy: returnFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
                             availableSeatsBusiness: returnFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
                             availableSeatsFirst: returnFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+                            seats: returnFlight.seats
                         },
                         totalPrice: calculatePrice(departureFlight, classType, adult, children, infant) +
                                     calculatePrice(returnFlight, classType, adult, children, infant),
