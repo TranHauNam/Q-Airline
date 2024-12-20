@@ -30,6 +30,17 @@ const BookingStatistics = () => {
     fetchStatistics();
   }, []);
 
+  const formatFlightType = (type) => {
+    switch (type) {
+      case 'round-trip':
+        return 'Khứ hồi';
+      case 'one-way':
+        return 'Một chiều';
+      default:
+        return type;
+    }
+  };
+
   if (loading) {
     return <div className="loading">Đang tải dữ liệu...</div>;
   }
@@ -91,19 +102,38 @@ const BookingStatistics = () => {
       </div>
 
       <div className="stat-section">
-        <h3>Thống kê loại chuyến bay</h3>
+        <h3>Thống kê chuyến bay</h3>
         <table className="statistics-table">
           <thead>
             <tr>
-              <th>Loại chuyến bay</th>
-              <th>Số lượng</th>
+              <th>Điểm đi</th>
+              <th>Điểm đến</th>
+              <th>Số chuyến bay</th>
+              <th>Chi tiết</th>
             </tr>
           </thead>
           <tbody>
             {statistics.flightTypeStats.map((stat, index) => (
               <tr key={index}>
-                <td>{stat._id.hasReturn === 'round-trip' ? 'Khứ hồi' : 'Một chiều'}</td>
+                <td>{stat._id.origin}</td>
+                <td>{stat._id.destination}</td>
                 <td>{stat.count}</td>
+                <td>
+                  <div className="flight-details">
+                    {stat.flights.map((flight, i) => (
+                      <div key={i} className="flight-item">
+                        <span>#{flight.flightNumber}</span>
+                        <span>{new Date(flight.departureTime).toLocaleString('vi-VN', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          day: '2-digit',
+                          month: '2-digit'
+                        })}</span>
+                        <span>{flight.duration} phút</span>
+                      </div>
+                    ))}
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
