@@ -21,6 +21,7 @@ const AdminLogin = () => {
       const response = await adminApi.login(formData);
       console.log('Login response:', response.data);
       
+      // 
       if (response.data.adminToken) {
         const Cookies = require('js-cookie');
         Cookies.set('adminToken', response.data.adminToken, { 
@@ -31,6 +32,7 @@ const AdminLogin = () => {
         
         console.log('Cookie after set:', document.cookie);
         navigate('/admin/home', { replace: true });
+        console.log('Navigating to /admin/home');
       }
     } catch (error) {
       console.error('Login error:', error);
