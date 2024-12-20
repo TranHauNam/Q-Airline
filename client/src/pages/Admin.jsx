@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FaNewspaper, FaPlane, FaRoute, FaTicketAlt, FaClock, FaUserPlus } from 'react-icons/fa';
+import { FaNewspaper, FaPlane, FaRoute, FaTicketAlt, FaClock, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../services/modules/admin/admin.api';
 import './Admin.css';
 import welcomeImage from '../assets/images/admin-welcome.jpg';
+import logo from '../assets/logo192.png';
 
 // Import các components
 import NewsManagement from '../components/admin/NewsManagement';
@@ -11,7 +12,6 @@ import AircraftManagement from '../components/admin/AircraftManagement';
 import FlightManagement from '../components/admin/FlightManagement';
 import BookingStatistics from '../components/admin/BookingStatistics';
 import DelayManagement from '../components/admin/DelayManagement';
-import AdminHeader from '../components/admin/AdminHeader';
 import AdminAccountManagement from '../components/admin/AdminAccountManagement';
 
 const Admin = () => {
@@ -133,8 +133,17 @@ const Admin = () => {
 
   return (
     <div className="adm-layout">
-      <AdminHeader onLogout={handleLogout} />
       <div className="adm-sidebar">
+        <div className="adm-sidebar-header">
+          <div className="adm-brand">
+            <img src={logo} alt="Q-Airline Logo" className="adm-logo" />
+            <div className="adm-brand-text">
+              <span className="adm-brand-name">Q-AIRLINE</span>
+              <span className="adm-brand-slogan">ADMINISTRATOR PANEL</span>
+            </div>
+          </div>
+        </div>
+
         <div className="adm-menu">
           {filteredModules.map((module) => (
             <div
@@ -148,6 +157,20 @@ const Admin = () => {
               <span className="sidebar-text">{module.title}</span>
             </div>
           ))}
+        </div>
+
+        <div className="adm-sidebar-footer">
+          <div className="adm-profile">
+            <div className="adm-avatar">AD</div>
+            <div className="adm-profile-info">
+              <span className="adm-profile-name">Administrator</span>
+              <span className="adm-profile-email">admin@qairline.com</span>
+            </div>
+          </div>
+          <button onClick={handleLogout} className="adm-logout-btn">
+            <FaSignOutAlt />
+            <span>Đăng xuất</span>
+          </button>
         </div>
       </div>
 

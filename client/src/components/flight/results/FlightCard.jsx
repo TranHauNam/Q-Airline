@@ -48,6 +48,7 @@ const FlightCard = ({ flight }) => {
                 <div className="flight-time">
                     <div className="time-info">
                         <div className="time">{formatTime(flight.departureTime)}</div>
+                        <div className="date">{new Date(flight.departureTime).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
                         <div className="airport">{flight.origin}</div>
                     </div>
                     <div className="duration">
@@ -56,10 +57,9 @@ const FlightCard = ({ flight }) => {
                     </div>
                     <div className="time-info">
                         <div className="time">
-                            {formatTime(new Date(new Date(flight.departureTime).getTime() + 
-                                parseInt(flight.duration.split('h')[0]) * 60 * 60 * 1000 + 
-                                parseInt(flight.duration.split('h')[1].split('m')[0]) * 60 * 1000))}
+                            {formatTime(flight.arrivalTime)}
                         </div>
+                        <div className="date">{new Date(flight.arrivalTime).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
                         <div className="airport">{flight.destination}</div>
                     </div>
                 </div>
