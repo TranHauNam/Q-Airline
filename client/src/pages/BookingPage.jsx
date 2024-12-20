@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import SelectSeat from '../components/flight/SelectSeat';
+import SelectSeat from '../components/booking/SelectSeat';
 import ProgressBar from '../components/booking/ProgressBar';
 import FlightSummary from '../components/booking/FlightSummary';
 import PassengerForm from '../components/booking/PassengerForm';
@@ -51,6 +51,7 @@ const BookingPage = () => {
                         <SelectSeat 
                             selectedSeats={selectedSeats}
                             onSelectSeat={handleSeatSelect}
+                            flight={flight}
                         />
                     </div>
                 );
