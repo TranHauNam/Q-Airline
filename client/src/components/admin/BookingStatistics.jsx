@@ -1,5 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { bookingApi } from '../../services/modules/admin/booking/booking.api';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+
+ChartJS.register(
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const BookingStatistics = () => {
   const [statistics, setStatistics] = useState({
@@ -41,6 +56,52 @@ const BookingStatistics = () => {
     }
   };
 
+  const flightChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'right',
+      },
+      title: {
+        display: true,
+        text: 'Thống kê số chuyến bay theo tuyến đường',
+        color: '#c41e3a',
+        font: {
+          size: 16,
+          weight: 'bold'
+        }
+      },
+    },
+    maintainAspectRatio: false
+  };
+
+  const flightChartData = {
+    labels: statistics.flightTypeStats.map(stat => `${stat._id.origin} - ${stat._id.destination}`),
+    datasets: [
+      {
+        label: 'Số chuyến bay',
+        data: statistics.flightTypeStats.map(stat => stat.count),
+        backgroundColor: [
+          'rgba(196, 30, 58, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(153, 102, 255, 0.6)',
+          'rgba(255, 159, 64, 0.6)',
+        ],
+        borderColor: [
+          '#c41e3a',
+          '#36a2eb',
+          '#ffce56',
+          '#4bc0c0',
+          '#9966ff',
+          '#ff9f40',
+        ],
+        borderWidth: 1,
+      }
+    ]
+  };
+
   if (loading) {
     return <div className="loading">Đang tải dữ liệu...</div>;
   }
@@ -51,14 +112,44 @@ const BookingStatistics = () => {
 
   return (
     <div className="statistics-container">
-
       <div className="stat-section">
-      <h2>Thống kê đặt vé</h2>
-      <h2></h2>
+        <h2>Thống kê đặt vé</h2>
         <h3>Tổng số đặt vé: {statistics.totalBookings}</h3>
       </div>
+
       <div className="stat-section">
-        <h3>Thống kê chuyến bay</h3>
+        <h3>Biểu đồ thống kê chuyến bay theo tuyến đường</h3>
+        <div className="chart-container" style={{ height: '400px', marginBottom: '30px' }}>
+          <Pie options={flightChartOptions} data={flightChartData} />
+        </div>
+        <div className="flight-stats-summary">
+          <table className="statistics-table">
+            <thead>
+              <tr>
+                <th>Tuyến đường</th>
+                <th>Số chuyến bay</th>
+                <th>Tỷ lệ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {statistics.flightTypeStats.map((stat, index) => {
+                const totalFlights = statistics.flightTypeStats.reduce((sum, s) => sum + s.count, 0);
+                const percentage = ((stat.count / totalFlights) * 100).toFixed(1);
+                return (
+                  <tr key={index}>
+                    <td>{stat._id.origin} - {stat._id.destination}</td>
+                    <td>{stat.count} chuyến</td>
+                    <td>{percentage}%</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="stat-section">
+        <h3>Chi tiết các chuyến bay</h3>
         <table className="statistics-table">
           <thead>
             <tr>
@@ -95,6 +186,7 @@ const BookingStatistics = () => {
           </tbody>
         </table>
       </div>
+
       <div className="stat-section">
         <h3>Thống kê theo hạng ghế</h3>
         <table className="statistics-table">
@@ -138,8 +230,6 @@ const BookingStatistics = () => {
           </tbody>
         </table>
       </div>
-
-      
     </div>
   );
 };
