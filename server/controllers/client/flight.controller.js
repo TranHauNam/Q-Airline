@@ -110,7 +110,7 @@ module.exports.searchFlight = async (req, res) => {
                     priceBusiness: flight.priceBusiness,
                     pricePremiumEconomy: flight.pricePremiumEconomy,
                     priceFirst: flight.priceFirst,  
-                    totalPrice: calculatePrice(flight, strClassType, adult, children, infant),
+                    totalBasePrice: calculatePrice(flight, strClassType, adult, children, infant),
                     availableSeatsEconomy: flight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
                     availableSeatsPremiumEconomy: flight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
                     availableSeatsBusiness: flight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
@@ -147,15 +147,53 @@ module.exports.searchFlight = async (req, res) => {
 
             const returnFlights = await Flight.find(returnFilter);
 
-            const availableDepartureFlights = departureFlights.filter(flight => {
+            var availableDepartureFlights = departureFlights.filter(flight => {
                 const availableSeatsField = `availableSeats${strClassType}`;
                 return flight[availableSeatsField] >= totalSeatsNeeded;
             });
 
-            const availableReturnFlights = returnFlights.filter(flight => {
+            availableDepartureFlights = availableDepartureFlights.map(flight => ({
+                flightNumber: flight.flightNumber,
+                origin: flight.origin,
+                destination: flight.destination,
+                departureTime: new Date(flight.departureTime.getTime() - 7 * 60 * 60 * 1000),
+                duration: flight.duration,
+                arrivalTime: new Date(new Date(calculateArrivalTime(flight.departureTime, flight.duration)).getTime() - 7 * 60 * 60 * 1000),
+                priceEconomy: flight.priceEconomy,
+                priceBusiness: flight.priceBusiness,
+                pricePremiumEconomy: flight.pricePremiumEconomy,
+                priceFirst: flight.priceFirst,
+                //totalPrice: calculatePrice(flight, strClassType, adult, children, infant),
+                availableSeatsEconomy: flight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+                availableSeatsPremiumEconomy: flight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+                availableSeatsBusiness: flight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+                availableSeatsFirst: flight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+                seats: flight.seats
+            }));
+
+            var availableReturnFlights = returnFlights.filter(flight => {
                 const availableSeatsField = `availableSeats${strClassType}`;
                 return flight[availableSeatsField] >= totalSeatsNeeded;
             });
+
+            availableReturnFlights = availableReturnFlights.map(flight => ({
+                flightNumber: flight.flightNumber,
+                origin: flight.origin,
+                destination: flight.destination,
+                departureTime: new Date(flight.departureTime.getTime() - 7 * 60 * 60 * 1000),
+                duration: flight.duration,
+                arrivalTime: new Date(new Date(calculateArrivalTime(flight.departureTime, flight.duration)).getTime() - 7 * 60 * 60 * 1000),
+                priceEconomy: flight.priceEconomy,
+                priceBusiness: flight.priceBusiness,
+                pricePremiumEconomy: flight.pricePremiumEconomy,
+                priceFirst: flight.priceFirst,
+                //totalPrice: calculatePrice(flight, strClassType, adult, children, infant),
+                availableSeatsEconomy: flight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+                availableSeatsPremiumEconomy: flight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+                availableSeatsBusiness: flight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+                availableSeatsFirst: flight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+                seats: flight.seats
+            }));
 
             if (availableDepartureFlights.length === 0 || availableReturnFlights.length === 0) {
                 return res.status(404).json({
@@ -163,52 +201,60 @@ module.exports.searchFlight = async (req, res) => {
                 });
             }
 
-            const response = availableDepartureFlights.flatMap(departureFlight => {
-                return availableReturnFlights.map(returnFlight => {
+            // const response = availableDepartureFlights.flatMap(departureFlight => {
+            //     return availableReturnFlights.map(returnFlight => {
 
-                    return {
-                        departure: {
-                            flightNumber: departureFlight.flightNumber,
-                            origin: departureFlight.origin,
-                            destination: departureFlight.destination,
-                            departureTime: new Date(departureFlight.departureTime.getTime() - 7 * 60 * 60 * 1000),
-                            duration: departureFlight.duration,
-                            arrivalTimeOfTrip: new Date(new Date(calculateArrivalTime(departureFlight.departureTime, departureFlight.duration)).getTime() - 7 * 60 * 60 * 1000),
-                            priceEconomy: departureFlight.priceEconomy,
-                            priceBusiness: departureFlight.priceBusiness,
-                            pricePremiumEconomy: departureFlight.pricePremiumEconomy,
-                            priceFirst: departureFlight.priceFirst,  
-                            availableSeatsEconomy: departureFlight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
-                            availableSeatsPremiumEconomy: departureFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
-                            availableSeatsBusiness: departureFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
-                            availableSeatsFirst: departureFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
-                            seats: departureFlight.seats
-                        },
-                        return: {
-                            flightNumber: returnFlight.flightNumber,
-                            origin: returnFlight.origin,
-                            destination: returnFlight.destination,
-                            departureTime: new Date(returnFlight.departureTime.getTime() - 7 * 60 * 60 * 1000),
-                            duration: returnFlight.duration,
-                            arrivalTimeOfReturn: new Date(new Date(calculateArrivalTime(returnFlight.departureTime, returnFlight.duration)).getTime() - 7 * 60 * 60 * 1000),
-                            priceEconomy: returnFlight.priceEconomy,
-                            priceBusiness: returnFlight.priceBusiness,
-                            pricePremiumEconomy: returnFlight.pricePremiumEconomy,
-                            priceFirst: returnFlight.priceFirst,  
-                            availableSeatsEconomy: returnFlight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
-                            availableSeatsPremiumEconomy: returnFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
-                            availableSeatsBusiness: returnFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
-                            availableSeatsFirst: returnFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
-                            seats: returnFlight.seats
-                        },
-                        totalPrice: calculatePrice(departureFlight, classType, adult, children, infant) +
-                                    calculatePrice(returnFlight, classType, adult, children, infant),
-                        classType: classType,
-                        flightType: flightType
-                    };
-                });
-            });
+            //         return {
+            //             departure: {
+            //                 flightNumber: departureFlight.flightNumber,
+            //                 origin: departureFlight.origin,
+            //                 destination: departureFlight.destination,
+            //                 departureTime: new Date(departureFlight.departureTime.getTime() - 7 * 60 * 60 * 1000),
+            //                 duration: departureFlight.duration,
+            //                 arrivalTimeOfTrip: new Date(new Date(calculateArrivalTime(departureFlight.departureTime, departureFlight.duration)).getTime() - 7 * 60 * 60 * 1000),
+            //                 priceEconomy: departureFlight.priceEconomy,
+            //                 priceBusiness: departureFlight.priceBusiness,
+            //                 pricePremiumEconomy: departureFlight.pricePremiumEconomy,
+            //                 priceFirst: departureFlight.priceFirst,  
+            //                 availableSeatsEconomy: departureFlight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+            //                 availableSeatsPremiumEconomy: departureFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+            //                 availableSeatsBusiness: departureFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+            //                 availableSeatsFirst: departureFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+            //                 seats: departureFlight.seats
+            //             },
+            //             return: {
+            //                 flightNumber: returnFlight.flightNumber,
+            //                 origin: returnFlight.origin,
+            //                 destination: returnFlight.destination,
+            //                 departureTime: new Date(returnFlight.departureTime.getTime() - 7 * 60 * 60 * 1000),
+            //                 duration: returnFlight.duration,
+            //                 arrivalTimeOfReturn: new Date(new Date(calculateArrivalTime(returnFlight.departureTime, returnFlight.duration)).getTime() - 7 * 60 * 60 * 1000),
+            //                 priceEconomy: returnFlight.priceEconomy,
+            //                 priceBusiness: returnFlight.priceBusiness,
+            //                 pricePremiumEconomy: returnFlight.pricePremiumEconomy,
+            //                 priceFirst: returnFlight.priceFirst,  
+            //                 availableSeatsEconomy: returnFlight.seats.filter(seat => seat.classType === "Economy" && !seat.isBooked).length,
+            //                 availableSeatsPremiumEconomy: returnFlight.seats.filter(seat => seat.classType === "Premium Economy" && !seat.isBooked).length,
+            //                 availableSeatsBusiness: returnFlight.seats.filter(seat => seat.classType === "Business" && !seat.isBooked).length,
+            //                 availableSeatsFirst: returnFlight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
+            //                 seats: returnFlight.seats
+            //             },
+            //             totalPrice: calculatePrice(departureFlight, classType, adult, children, infant) +
+            //                         calculatePrice(returnFlight, classType, adult, children, infant),
+            //             classType: classType,
+            //             flightType: flightType
+            //         };
+            //     });
+            // });
 
+            const response = {
+                departure: availableDepartureFlights,
+                return: availableReturnFlights,
+                classType: classType,
+                flightType: flightType,
+                totalBasePrice: calculatePrice(departureFlight, classType, adult, children, infant) +
+                            calculatePrice(returnFlight, classType, adult, children, infant)
+            }
             // Lưu kết quả vào TemporaryBooking
             await TemporarySearch.create({
                 userId: res.locals.user ? res.locals.user._id : null,
@@ -219,9 +265,10 @@ module.exports.searchFlight = async (req, res) => {
                 expiresAt: Date.now()
             });
 
-            res.status(200).json({ flights: response });
+            res.status(200).json({ 
+                flightData: response
+            });
         }
-
     } catch (error) {
         console.error("Error searching flight", error);
 
