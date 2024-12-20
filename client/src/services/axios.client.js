@@ -35,7 +35,7 @@ axiosClient.interceptors.response.use(
   function (error) {
     // Xử lý lỗi authentication
     if (error.response?.status === 401) {
-      window.location.href = '/loginadmin';
+      // window.location.href = '/admin/login';
     }
     return Promise.reject(error);
   }

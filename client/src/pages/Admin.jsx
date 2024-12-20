@@ -25,14 +25,14 @@ const Admin = () => {
       try {
         const response = await adminApi.checkAuth();
         if (response.data.success) {
+          //  Kiểm tra role của admin
           setIsAuthenticated(true);
+          // set 
           setUserRole(response.data.admin.role);
-        } else {
-          navigate('/loginadmin');
         }
       } catch (error) {
         console.error('Auth check error:', error);
-        navigate('/loginadmin');
+        // navigate('/admin/login');
       }
     };
     checkAuth();
