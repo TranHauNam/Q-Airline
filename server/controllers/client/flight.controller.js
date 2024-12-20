@@ -117,7 +117,11 @@ module.exports.searchFlight = async (req, res) => {
                     availableSeatsFirst: flight.seats.filter(seat => seat.classType === "First" && !seat.isBooked).length,
                     classType: classType,
                     flightType: flightType,
-                    seats: flight.seats
+                    seats: flight.seats,
+                    adult: adult,
+                    children: children,
+                    infant: infant,
+                    totalSeatsNeeded: totalSeatsNeeded
                 };
             });
     
@@ -253,7 +257,11 @@ module.exports.searchFlight = async (req, res) => {
                 classType: classType,
                 flightType: flightType,
                 totalBasePrice: calculatePrice(departureFlight, classType, adult, children, infant) +
-                            calculatePrice(returnFlight, classType, adult, children, infant)
+                            calculatePrice(returnFlight, classType, adult, children, infant),
+                adult: adult,
+                children: children,
+                infant: infant,
+                totalSeatsNeeded: totalSeatsNeeded
             }
             // Lưu kết quả vào TemporaryBooking
             await TemporarySearch.create({
