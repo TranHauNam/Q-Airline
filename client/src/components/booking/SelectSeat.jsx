@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './SelectSeat.css';
 
 const SelectSeat = ({ selectedSeats, onSelectSeat, flight }) => {
+    const location = useLocation();
+    const { selectedClass } = location.state || {};
     const [selected, setSelected] = useState(selectedSeats || []);
     const [seatMap, setSeatMap] = useState({
         first: [],
         business: [],
+        premium: [],
         economy: []
     });
 
@@ -22,7 +26,13 @@ const SelectSeat = ({ selectedSeats, onSelectSeat, flight }) => {
         setSeatMap(groupedSeats);
     }, [flight]);
 
-    const handleSeatClick = (seatNumber) => {
+    const handleSeatClick = (seatNumber, seatClass) => {
+        // Chỉ cho phép chọn ghế cùng loại với selectedClass
+        if (!seatClass || !selectedClass || 
+            seatClass.toLowerCase() !== selectedClass.toLowerCase()) {
+            return;
+        }
+
         if (selected.includes(seatNumber)) {
             setSelected(selected.filter(id => id !== seatNumber));
             onSelectSeat(selected.filter(id => id !== seatNumber));
@@ -36,15 +46,17 @@ const SelectSeat = ({ selectedSeats, onSelectSeat, flight }) => {
         const isSelected = selected.includes(seatData.seatNumber);
         const isOccupied = seatData.isBooked;
         const classType = seatData.classType.toLowerCase();
+        const isWrongClass = !selectedClass || classType !== selectedClass.toLowerCase();
 
         return (
             <button
                 className={`seat ${isSelected ? 'selected' : ''} 
-                          ${isOccupied ? 'occupied' : ''} 
+                          ${isOccupied ? 'occupied' : ''}
+                          ${isWrongClass ? 'wrong-class' : ''}
                           ${classType}`}
-                onClick={() => !isOccupied && handleSeatClick(seatData.seatNumber)}
-                disabled={isOccupied}
-                title={`${seatData.seatNumber} - ${seatData.classType} Class${isOccupied ? ' (Already Booked)' : ''}`}
+                onClick={() => !isOccupied && !isWrongClass && handleSeatClick(seatData.seatNumber, seatData.classType)}
+                disabled={isOccupied || isWrongClass}
+                title={`${seatData.seatNumber} - ${seatData.classType} Class${isOccupied ? ' (Already Booked)' : ''}${isWrongClass ? ' (Not Available for Your Class)' : ''}`}
             >
                 {seatData.seatNumber}
             </button>
@@ -106,7 +118,10 @@ const SelectSeat = ({ selectedSeats, onSelectSeat, flight }) => {
     return (
         <div className="select-seat-container">
             <div className="seat-header">
-                <h2 className="section-title">Select Your Seat</h2>
+                <div className="header-info">
+                    <h2 className="section-title">Select Your Seat</h2>
+                    <p className="class-info">Selected Class: {selectedClass}</p>
+                </div>
                 <div className="passenger-info">
                     <button className="clear-selection" onClick={() => {
                         setSelected([]);
@@ -167,24 +182,12 @@ const SelectSeat = ({ selectedSeats, onSelectSeat, flight }) => {
                         <span>Already Booked</span>
                     </div>
                     <div className="legend-item">
+                        <div className="legend-seat wrong-class"></div>
+                        <span>Not Available for Your Class</span>
+                    </div>
+                    <div className="legend-item">
                         <div className="legend-seat selected"></div>
                         <span>Your Selection</span>
-                    </div>
-                    <div className="legend-item">
-                        <div className="legend-seat first"></div>
-                        <span>First Class</span>
-                    </div>
-                    <div className="legend-item">
-                        <div className="legend-seat business"></div>
-                        <span>Business Class</span>
-                    </div>
-                    <div className="legend-item">
-                        <div className="legend-seat premium"></div>
-                        <span>Premium Economy</span>
-                    </div>
-                    <div className="legend-item">
-                        <div className="legend-seat economy"></div>
-                        <span>Economy Class</span>
                     </div>
                 </div>
             </div>
