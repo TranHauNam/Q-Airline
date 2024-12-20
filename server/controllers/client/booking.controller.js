@@ -2,6 +2,7 @@ const Booking = require('../../models/booking.model');
 const Flight = require('../../models/flight.model');
 const User = require('../../models/user.model');
 const TemporarySearch = require('../../models/temporary-search-flight.model');
+const generateBookingCode = require('../../helpers/generateBookingCode');
 
 // [POST] /api/booking/
 module.exports.bookFlight = async (req, res) => {
@@ -21,6 +22,7 @@ module.exports.bookFlight = async (req, res) => {
         }
         if (searched.flightData[0].flightType === 'one-way') {
             const flightSearched = searched.flightData.find(f => f.flightNumber === departureFlightNumber);
+            console.log(flightSearched);
             const classType = flightSearched.classType;
             const departureFlight = await Flight.findOne({flightNumber: departureFlightNumber});
 
@@ -54,10 +56,13 @@ module.exports.bookFlight = async (req, res) => {
             departureFlight[seatField] -= depatureSeatsToBook.length;
             await departureFlight.save();
 
-            const totalPrice = flightSearched.price;
+            const totalPrice = flightSearched.totalPrice;
+
+            const bookingCode = generateBookingCode();
 
             //Tạo bản ghi đặt vé
             const booking = await Booking.create({
+                bookingCode: bookingCode,
                 userId: userId,
                 passengers: passengers,
                 classType: classType,
@@ -134,8 +139,11 @@ module.exports.bookFlight = async (req, res) => {
             await returnFlight.save();
 
             const totalPrice = flightSearched.totalPrice;
+
+            const bookingCode = generateBookingCode();
             //Tạo bản ghi đặt vé
             const booking = await Booking.create({
+                bookingCode: bookingCode,
                 userId: userId,
                 passengers: passengers,
                 classType: classType,
