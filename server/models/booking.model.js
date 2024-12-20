@@ -12,19 +12,40 @@ const bookingSchema = new mongoose.Schema(
             ref: 'User',
             required: true
         },
+        
         passengers: [
             {
-                name: { 
-                    type: String, 
-                    required: true 
+                title: {
+                    type: String,
+                    required: true
                 },
-                email: { 
-                    type: String, 
-                    required: true 
+                firstName: {
+                    type: String,
+                    required: true
                 },
-                phone: { 
-                    type: String, 
-                    required: true,
+                birthday: {
+                    type: Date,
+                    required: true
+                },
+                national: {
+                    type: String,
+                    required: true
+                },
+                passportNumber: {
+                    type: String,
+                    required: true
+                },
+                passportExpireDate: {
+                    type: Date,
+                    required: true
+                },
+                email: {
+                    type: String,
+                    required: true
+                },
+                phoneNumber: {
+                    type: String,
+                    required: true
                 }
             }
         ],
