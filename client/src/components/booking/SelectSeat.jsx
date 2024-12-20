@@ -27,6 +27,7 @@ const SelectSeat = ({ selectedSeats, onSelectSeat, flight }) => {
     }, [flight]);
 
     const handleSeatClick = (seatNumber, seatClass) => {
+        console.log('Location State select seat:', location.state);
         // Chỉ cho phép chọn ghế cùng loại với selectedClass
         if (!seatClass || !selectedClass || 
             seatClass.toLowerCase() !== selectedClass.toLowerCase()) {

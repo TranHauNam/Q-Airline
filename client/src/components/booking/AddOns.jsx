@@ -1,4 +1,5 @@
 import React from 'react';
+import './AddOns.css';
 
 const AddOns = ({ addOns, handleAddOnChange }) => {
     const addOnsList = [
@@ -7,28 +8,28 @@ const AddOns = ({ addOns, handleAddOnChange }) => {
             title: 'Extra Baggage',
             description: 'Add extra 23kg checked baggage',
             price: '$30',
-            icon: 'baggage.png'
+            icon: 'baggage.jpg'
         },
         {
             id: 'meal',
             title: 'Special Meal',
             description: 'Pre-order your preferred meal',
             price: '$15',
-            icon: 'meal.png'
+            icon: 'meal.jpg'
         },
         {
             id: 'insurance',
             title: 'Travel Insurance',
             description: 'Comprehensive travel protection',
             price: '$20',
-            icon: 'insurance.png'
+            icon: 'insurance.jpg'
         },
         {
             id: 'priorityBoarding',
             title: 'Priority Boarding',
             description: 'Board first and settle in comfortably',
             price: '$10',
-            icon: 'priority.png'
+            icon: 'priority.jpg'
         }
     ];
 
@@ -39,7 +40,9 @@ const AddOns = ({ addOns, handleAddOnChange }) => {
                 {addOnsList.map(addon => (
                     <div key={addon.id} className="add-on-item">
                         <div className="add-on-content">
-                            <img src={`/icons/${addon.icon}`} alt={addon.title} />
+                            <div className="add-on-icon">
+                                <img src={`/icons/${addon.icon}`} alt={addon.title} />
+                            </div>
                             <div className="add-on-info">
                                 <h4>{addon.title}</h4>
                                 <p>{addon.description}</p>

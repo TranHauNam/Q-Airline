@@ -11,7 +11,7 @@ import FlightResultPage from './pages/FlightResultPage';
 import AdminLogin from './pages/AdminLogin';
 import BookingPage from './pages/BookingPage';
 import ReviewPaymentPage from './pages/ReviewPaymentPage';
-
+import BookingManagementPage from './pages/BookingManagementPage';
 
 function App() {
   return (
@@ -19,15 +19,14 @@ function App() {
       <Routes>
         <Route path="" homepage element={<HomePage />} />
         <Route path="/admin/home" element={<Admin />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<SignPage />} />
         <Route path="/sign" element={<SignPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-
         <Route path="/search" element={<FlightSearchPage />} />
         <Route path="/flight-results" element={<FlightResultPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/booking" element={<BookingPage />} />
-
+        <Route path="/booking-management" element={<BookingManagementPage />} />
         <Route path="/review-payment" element={<ReviewPaymentPage />} />
 
       </Routes>

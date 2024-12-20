@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './ReviewPaymentPage.css';
 
+
 const ReviewPaymentPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -46,22 +47,22 @@ const ReviewPaymentPage = () => {
         if (!flight || !selectedClass) return 0;
         
         // Map trực tiếp class với property name trong flight object
-        const priceKeys = {
-            'ECONOMY': 'priceEconomy',
-            'PREMIUM ECONOMY': 'pricePremiumEconomy',
-            'BUSINESS': 'priceBusiness',
-            'FIRST': 'priceFirst'
-        };
+        // const priceKeys = {
+        //     'ECONOMY': 'priceEconomy',
+        //     'PREMIUM ECONOMY': 'pricePremiumEconomy',
+        //     'BUSINESS': 'priceBusiness',
+        //     'FIRST': 'priceFirst'
+        // };
 
-        const priceKey = priceKeys[selectedClass];
-        const price = flight[priceKey];
-
-        console.log('Selected Class:', selectedClass);
-        console.log('Price Key:', priceKey);
-        console.log('Flight Object:', flight);
-        console.log('Selected Price:', price);
+        // const priceKey = priceKeys[selectedClass];
+        // const price = flight[priceKey];
+   
+        // console.log('Selected Class:', selectedClass);
+        // console.log('Price Key:', priceKey);
+        // console.log('Flight Object:', flight);
+        // console.log('Selected Price:', price);
         
-        return price || 0;
+        return flight.totalBasePrice || 0;
     };
 
     // Tính tổng tiền dịch vụ bổ sung
@@ -87,9 +88,48 @@ const ReviewPaymentPage = () => {
         setSelectedPayment(e.target.value);
     };
 
-    const handleConfirmPayment = () => {
-        // Xử lý thanh toán ở đây
-        console.log('Processing payment...');
+    const handleConfirmPayment = async () => {
+        try {
+            console.log('Location State Review Payment:', location.state);
+            const bookingData = {
+                departureFlightNumber: flight.flightNumber,
+                returnFlightNumber: flight.returnFlightNumber, // if exists
+                passengers: [passengerDetails],
+                departureSeatsRequested: selectedSeats,
+                returnSeatsRequested: flight.isRoundTrip ? '1D' : undefined
+            };
+            console.log('Booking Data:', bookingData);
+
+            const response = await fetch('/api/booking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookingData)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Booking failed');
+            }
+
+            // Booking successful
+            alert('Booking successful! Your booking code is: ' + data.booking.bookingCode);
+            navigate('/booking-confirmation', { 
+                state: { 
+                    booking: data.booking,
+                    flightDetails: flight,
+                    passengerDetails,
+                    selectedClass,
+                    selectedSeats,
+                    addOns
+                } 
+            });
+        } catch (error) {
+            console.error('Error during booking:', error);
+            alert(error.message || 'An error occurred during booking. Please try again.');
+        }
     };
 
     // Progress bar component
@@ -244,9 +284,9 @@ const ReviewPaymentPage = () => {
                                 <h3>Payment Method</h3>
                                 <div className="payment-options">
                                     {[
-                                        { value: 'credit', label: 'Credit/Debit Card', icon: 'credit-card.png' },
-                                        { value: 'banking', label: 'Internet Banking', icon: 'bank.png' },
-                                        { value: 'ewallet', label: 'E-Wallet', icon: 'ewallet.png' }
+                                        { value: 'credit', label: 'Credit/Debit Card', icon: 'credit-card.jpg' },
+                                        { value: 'banking', label: 'Internet Banking', icon: 'internet-banking.jpg' },
+                                        { value: 'ewallet', label: 'E-Wallet', icon: 'e-wallet.jpg' }
                                     ].map(method => (
                                         <label key={method.value} className="payment-option">
                                             <input

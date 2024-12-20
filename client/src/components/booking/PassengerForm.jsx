@@ -7,6 +7,7 @@ const PassengerForm = ({ passengerDetails, setPassengerDetails }) => {
             ...prev,
             [name]: value
         }));
+        console.log('Passenger Details:', passengerDetails);
     };
 
     return (
