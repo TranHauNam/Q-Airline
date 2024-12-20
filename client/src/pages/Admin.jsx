@@ -6,7 +6,7 @@ import './Admin.css';
 import welcomeImage from '../assets/images/admin-welcome.jpg';
 import logo from '../assets/logo192.png';
 
-// Import các components
+// Import components
 import NewsManagement from '../components/admin/NewsManagement';
 import AircraftManagement from '../components/admin/AircraftManagement';
 import FlightManagement from '../components/admin/FlightManagement';
@@ -25,9 +25,8 @@ const Admin = () => {
       try {
         const response = await adminApi.checkAuth();
         if (response.data.success) {
-          //  Kiểm tra role của admin
+          // Check admin role
           setIsAuthenticated(true);
-          // set 
           setUserRole(response.data.admin.role);
         }
       } catch (error) {
@@ -41,64 +40,55 @@ const Admin = () => {
   const adminModules = [
     {
       id: 'news',
-      title: 'Đăng thông tin',
+      title: 'Post Information',
       icon: <FaNewspaper />,
-      description: 'Quản lý thông tin, khuyến mại, thông báo, tin tức của hãng',
-
+      description: 'Manage information, promotions, notifications, and news of the airline',
       color: '#3498db',
       component: NewsManagement
     },
     {
       id: 'aircraft',
-      title: 'Quản lý tàu bay',
+      title: 'Manage Aircraft',
       icon: <FaPlane />,
-      description: 'Nhập và quản lý thông tin về các tàu bay',
-
+      description: 'Input and manage information about aircraft',
       color: '#e74c3c',
       component: AircraftManagement
-
     },
     {
       id: 'flights',
-      title: 'Quản lý chuyến bay',
+      title: 'Manage Flights',
       icon: <FaRoute />,
-      description: 'Quản lý thông tin các chuyến bay',
-
+      description: 'Manage information about flights',
       color: '#2ecc71',
       component: FlightManagement
-
     },
     {
       id: 'bookings',
-      title: 'Thống kê đặt vé',
+      title: 'Booking Statistics',
       icon: <FaTicketAlt />,
-      description: 'Xem và thống kê đặt vé của khách hàng',
-
+      description: 'View and analyze customer booking statistics',
       color: '#f39c12',
       component: BookingStatistics
-
     },
     {
       id: 'delays',
-      title: 'Quản lý delay',
+      title: 'Manage Delays',
       icon: <FaClock />,
-      description: 'Cập nhật thời gian khởi hành cho các chuyến bay',
-
+      description: 'Update departure times for flights',
       color: '#9b59b6',
       component: DelayManagement
-
     },
     {
       id: 'admin-accounts',
-      title: 'Tạo tài khoản Admin',
+      title: 'Create Admin Account',
       icon: <FaUserPlus />,
-      description: 'Tạo và quản lý tài khoản admin',
+      description: 'Create and manage admin accounts',
       color: '#e67e22',
       component: AdminAccountManagement
     }
   ];
 
-  // Lọc modules dựa trên role
+  // Filter modules based on role
   const filteredModules = adminModules.filter(module => {
     console.log('userRole', userRole);
     if (module.id === 'admin-accounts') {
@@ -128,7 +118,7 @@ const Admin = () => {
   };
 
   if (!isAuthenticated) {
-    return null; // hoặc loading spinner
+    return null; // or loading spinner
   }
 
   return (
@@ -169,7 +159,7 @@ const Admin = () => {
           </div>
           <button onClick={handleLogout} className="adm-logout-btn">
             <FaSignOutAlt />
-            <span>Đăng xuất</span>
+            <span>Logout</span>
           </button>
         </div>
       </div>
@@ -178,7 +168,7 @@ const Admin = () => {
         <div className="adm-content">
           {!selectedModule ? (
             <div className="adm-welcome-screen">
-              <h2>Chào mừng đến với trang quản trị</h2>
+              <h2>Welcome to the Admin Panel</h2>
               <img src={welcomeImage} alt="Welcome" />
             </div>
           ) : (
@@ -191,6 +181,5 @@ const Admin = () => {
     </div>
   );
 };
-
 
 export default Admin;
