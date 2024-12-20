@@ -45,15 +45,19 @@ const AdminAccountManagement = () => {
     setSuccess('');
     setLoading(true);
 
-    // Validate password match
-    if (formData.password !== formData.confirmPassword) {
-      setError('Mật khẩu xác nhận không khớp');
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await adminApi.createAdmin(formData);
+      // Log để debug
+      console.log('Sending data:', formData);
+      
+      const response = await adminApi.createAdmin({
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        role: formData.role
+      });
+
+      console.log('Response:', response);
       setSuccess('Tạo tài khoản admin thành công!');
       setFormData({
         fullName: '',
@@ -64,6 +68,7 @@ const AdminAccountManagement = () => {
         role: 'admin'
       });
     } catch (error) {
+      console.error('Error details:', error.response?.data || error);
       setError(error.response?.data?.message || 'Có lỗi xảy ra khi tạo tài khoản');
     } finally {
       setLoading(false);
