@@ -128,9 +128,9 @@ const Header = () => {
       <div className="navbar">
         <div className="navbar-brand">
           <a href="/">
-            <img src={logo} alt="Air India Logo" />
+            <img src={logo} alt="Q-Airline Logo" />
             <div className="brand-name">
-              <span className="brand-text">AIR INDIA</span>
+              <span className="brand-text">Q-AIRLINE</span>
               <span className="brand-slogan">THE PALACE IN THE SKY</span>
             </div>
           </a>
@@ -264,7 +264,7 @@ const Header = () => {
 
           <div className="dropdown">
             <button className="dropbtn">
-              AIR INDIA EXPERIENCE
+              Q-AIRLINE EXPERIENCE
             </button>
             <div className="dropdown-content">
               <div className="row">
@@ -273,7 +273,7 @@ const Header = () => {
                   <a href="#">At the Airport</a>
                   <a href="#">In the Air</a>
                   <a href="#">Transforming Experiences</a>
-                  <a href="#">The Air India Fleet</a>
+                  <a href="#">The Q-Airline Fleet</a>
                 </div>
                 <div className="column featured-experiences">
                   <div className="experience-card">
@@ -290,7 +290,7 @@ const Header = () => {
                     <img src={image1} alt="Gift Cards" />
                     <div className="experience-info">
                       <p>Gift them the love of travel</p>
-                      <h3>INTRODUCING AIR INDIA'S GIFT CARDS</h3>
+                      <h3>INTRODUCING Q-AIRLINE'S GIFT CARDS</h3>
                       <button>Buy Now →</button>
                     </div>
                   </div>
@@ -311,7 +311,7 @@ const Header = () => {
 
           <div className="dropdown">
             <button className="dropbtn">
-              MAHARAJA CLUB
+              Q-AIRLINE CLUB
             </button>
             <div className="dropdown-content">
               {/* Add Maharaja Club content here */}
