@@ -26,7 +26,7 @@ const BookingStatistics = () => {
   const [statistics, setStatistics] = useState({
     totalBookings: 0,
     bookingsByClass: [],
-      monthlyBookings: [],
+    monthlyBookings: [],
     flightTypeStats: []
   });
   const [loading, setLoading] = useState(true);
@@ -39,11 +39,11 @@ const BookingStatistics = () => {
         if (response.data.success) {
           setStatistics(response.data.data);
         } else {
-          setError('Không thể lấy dữ liệu thống kê');
+          setError('Unable to fetch statistics data');
         }
       } catch (error) {
         console.error('Error fetching statistics:', error);
-        setError(error.response?.data?.message || 'Có lỗi xảy ra khi lấy dữ liệu');
+        setError(error.response?.data?.message || 'An error occurred while fetching data');
       } finally {
         setLoading(false);
       }
@@ -54,9 +54,9 @@ const BookingStatistics = () => {
   const formatFlightType = (type) => {
     switch (type) {
       case 'round-trip':
-        return 'Khứ hồi';
+        return 'Round Trip';
       case 'one-way':
-        return 'Một chiều';
+        return 'One Way';
       default:
         return type;
     }
@@ -70,7 +70,7 @@ const BookingStatistics = () => {
       },
       title: {
         display: true,
-        text: 'Thống kê số chuyến bay theo tuyến đường',
+        text: 'Flight Statistics by Route',
         color: '#c41e3a',
         font: {
           size: 16,
@@ -85,7 +85,7 @@ const BookingStatistics = () => {
     labels: statistics.flightTypeStats.map(stat => `${stat._id.origin} - ${stat._id.destination}`),
     datasets: [
       {
-        label: 'Số chuyến bay',
+        label: 'Number of Flights',
         data: statistics.flightTypeStats.map(stat => stat.count),
         backgroundColor: [
           'rgba(196, 30, 58, 0.6)',
@@ -109,7 +109,7 @@ const BookingStatistics = () => {
   };
 
   if (loading) {
-    return <div className="loading">Đang tải dữ liệu...</div>;
+    return <div className="loading">Loading data...</div>;
   }
 
   if (error) {
@@ -119,12 +119,12 @@ const BookingStatistics = () => {
   return (
     <div className="statistics-container">
       <div className="stat-section">
-        <h2>Thống kê đặt vé</h2>
-        <h3>Tổng số đặt vé: {statistics.totalBookings}</h3>
+        <h2>Booking Statistics</h2>
+        <h3>Total Bookings: {statistics.totalBookings}</h3>
       </div>
 
       <div className="stat-section">
-        <h3>Biểu đồ thống kê chuyến bay theo tuyến đường</h3>
+        <h3>Flight Statistics by Route Chart</h3>
         <div className="chart-container" style={{ height: '400px', marginBottom: '30px' }}>
           <Pie options={flightChartOptions} data={flightChartData} />
         </div>
@@ -132,9 +132,9 @@ const BookingStatistics = () => {
           <table className="statistics-table">
             <thead>
               <tr>
-                <th>Tuyến đường</th>
-                <th>Số chuyến bay</th>
-                <th>Tỷ lệ</th>
+                <th>Route</th>
+                <th>Number of Flights</th>
+                <th>Percentage</th>
               </tr>
             </thead>
             <tbody>
@@ -144,7 +144,7 @@ const BookingStatistics = () => {
                 return (
                   <tr key={index}>
                     <td>{stat._id.origin} - {stat._id.destination}</td>
-                    <td>{stat.count} chuyến</td>
+                    <td>{stat.count} flights</td>
                     <td>{percentage}%</td>
                   </tr>
                 );
@@ -155,14 +155,14 @@ const BookingStatistics = () => {
       </div>
 
       <div className="stat-section">
-        <h3>Chi tiết các chuyến bay</h3>
+        <h3>Flight Details</h3>
         <table className="statistics-table">
           <thead>
             <tr>
-              <th>Điểm đi</th>
-              <th>Điểm đến</th>
-              <th>Số chuyến bay</th>
-              <th>Chi tiết</th>
+              <th>Departure Point</th>
+              <th>Destination</th>
+              <th>Number of Flights</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
@@ -176,13 +176,13 @@ const BookingStatistics = () => {
                     {stat.flights.map((flight, i) => (
                       <div key={i} className="flight-item">
                         <span>#{flight.flightNumber}</span>
-                        <span>{new Date(flight.departureTime).toLocaleString('vi-VN', {
+                        <span>{new Date(flight.departureTime).toLocaleString('en-US', {
                           hour: '2-digit',
                           minute: '2-digit',
                           day: '2-digit',
                           month: '2-digit'
                         })}</span>
-                        <span>{flight.duration} phút</span>
+                        <span>{flight.duration} minutes</span>
                       </div>
                     ))}
                   </div>
@@ -194,13 +194,13 @@ const BookingStatistics = () => {
       </div>
 
       <div className="stat-section">
-        <h3>Thống kê theo hạng ghế</h3>
+        <h3>Statistics by Class</h3>
         <table className="statistics-table">
           <thead>
             <tr>
-              <th>Hạng ghế</th>
-              <th>Số lượng đặt</th>
-              <th>Doanh thu</th>
+              <th>Class</th>
+              <th>Number of Bookings</th>
+              <th>Revenue</th>
             </tr>
           </thead>
           <tbody>
@@ -208,7 +208,7 @@ const BookingStatistics = () => {
               <tr key={index}>
                 <td>{stat._id}</td>
                 <td>{stat.count}</td>
-                <td>{stat.totalRevenue.toLocaleString('vi-VN')} VNĐ</td>
+                <td>{stat.totalRevenue.toLocaleString('en-US')} VND</td>
               </tr>
             ))}
           </tbody>
@@ -216,14 +216,14 @@ const BookingStatistics = () => {
       </div>
 
       <div className="stat-section">
-        <h3>Thống kê theo tháng trong năm {new Date().getFullYear()}</h3>
+        <h3>Monthly Statistics for the Year {new Date().getFullYear()}</h3>
         <table className="statistics-table">
           <thead>
             <tr>
-              <th>Tháng</th>
-              <th>Số lượng đặt</th>
-              <th>Doanh thu</th>
-              <th>Tỷ lệ</th>
+              <th>Month</th>
+              <th>Number of Bookings</th>
+              <th>Revenue</th>
+              <th>Percentage</th>
             </tr>
           </thead>
           <tbody>
@@ -238,15 +238,15 @@ const BookingStatistics = () => {
               
               return (
                 <tr key={stat.month}>
-                  <td>Tháng {stat.month}</td>
+                  <td>Month {stat.month}</td>
                   <td>{stat.count}</td>
-                  <td>{stat.revenue.toLocaleString('vi-VN')} VNĐ</td>
+                  <td>{stat.revenue.toLocaleString('en-US')} VND</td>
                   <td>{percentage}%</td>
                 </tr>
               );
             })}
             <tr className="total-row">
-              <td><strong>Tổng cộng</strong></td>
+              <td><strong>Total</strong></td>
               <td>
                 <strong>
                   {statistics.monthlyBookings[0]?.months.reduce(
@@ -260,7 +260,7 @@ const BookingStatistics = () => {
                   {statistics.monthlyBookings[0]?.months.reduce(
                     (sum, month) => sum + month.revenue, 
                     0
-                  ).toLocaleString('vi-VN')} VNĐ
+                  ).toLocaleString('en-US')} VND
                 </strong>
               </td>
               <td><strong>100%</strong></td>
@@ -269,15 +269,15 @@ const BookingStatistics = () => {
         </table>
 
         <div style={{ height: '400px', marginTop: '20px' }}>
-          <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Biểu đồ doanh thu theo tháng</h4>
+          <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Revenue Chart by Month</h4>
           <Bar
             data={{
               labels: statistics.monthlyBookings[0]?.months.map(
-                stat => `Tháng ${stat.month}`
+                stat => `Month ${stat.month}`
               ),
               datasets: [
                 {
-                  label: 'Doanh thu (VNĐ)',
+                  label: 'Revenue (VND)',
                   data: statistics.monthlyBookings[0]?.months.map(
                     stat => stat.revenue
                   ),
@@ -295,7 +295,7 @@ const BookingStatistics = () => {
                   beginAtZero: true,
                   ticks: {
                     callback: function(value) {
-                      return value.toLocaleString('vi-VN') + ' VNĐ';
+                      return value.toLocaleString('en-US') + ' VND';
                     }
                   }
                 }
@@ -303,7 +303,7 @@ const BookingStatistics = () => {
               plugins: {
                 title: {
                   display: true,
-                  text: `Biểu đồ doanh thu theo tháng năm ${new Date().getFullYear()}`,
+                  text: `Revenue Chart by Month for ${new Date().getFullYear()}`,
                   color: '#c41e3a',
                   font: {
                     size: 16,
@@ -316,15 +316,15 @@ const BookingStatistics = () => {
         </div>
 
         <div style={{ height: '400px', marginTop: '40px' }}>
-          <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Biểu đồ số lượng đặt vé theo tháng</h4>
+          <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Booking Chart by Month</h4>
           <Bar
             data={{
               labels: statistics.monthlyBookings[0]?.months.map(
-                stat => `Tháng ${stat.month}`
+                stat => `Month ${stat.month}`
               ),
               datasets: [
                 {
-                  label: 'Số lượng đặt vé',
+                  label: 'Number of Bookings',
                   data: statistics.monthlyBookings[0]?.months.map(
                     stat => stat.count
                   ),
@@ -348,7 +348,7 @@ const BookingStatistics = () => {
               plugins: {
                 title: {
                   display: true,
-                  text: `Biểu đồ số lượng đặt vé theo tháng năm ${new Date().getFullYear()}`,
+                  text: `Booking Chart by Month for ${new Date().getFullYear()}`,
                   color: '#36a2eb',
                   font: {
                     size: 16,
