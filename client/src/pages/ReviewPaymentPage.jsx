@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './ReviewPaymentPage.css';
 
@@ -8,27 +8,76 @@ const ReviewPaymentPage = () => {
     const { flight, selectedClass, selectedSeats, passengerDetails, addOns } = location.state || {};
     const [selectedPayment, setSelectedPayment] = useState('credit');
 
+    useEffect(() => {
+        if (!flight || !selectedClass) {
+            console.error('Missing flight or class data:', { flight, selectedClass });
+            navigate('/search');
+            return;
+        }
+        // Debug log
+        console.log('Flight Data:', flight);
+        console.log('Selected Class:', selectedClass);
+        console.log('Price Map:', {
+            ECONOMY: flight.priceECONOMY,
+            PREMIUMECONOMY: flight.pricePREMIUMECONOMY,
+            BUSINESS: flight.priceBUSINESS,
+            FIRST: flight.priceFIRST
+        });
+    }, [flight, selectedClass, navigate]);
+
+    // Format class name để match với property name trong flight object
+    const formatClassName = (className) => {
+        if (!className) return '';
+        // Chuyển đổi "PREMIUM ECONOMY" -> "PREMIUMECONOMY"
+        return className.toUpperCase().replace(/\s+/g, '');
+    };
+
     // Format tiền tệ
     const formatPrice = (price) => {
+        if (!price || isNaN(price)) return '0 ₫';
         return new Intl.NumberFormat('vi-VN', {
             style: 'currency',
             currency: 'VND'
         }).format(price);
     };
 
+    // Lấy giá vé cơ bản
+    const getBasePrice = () => {
+        if (!flight || !selectedClass) return 0;
+        
+        // Map trực tiếp class với property name trong flight object
+        const priceKeys = {
+            'ECONOMY': 'priceEconomy',
+            'PREMIUM ECONOMY': 'pricePremiumEconomy',
+            'BUSINESS': 'priceBusiness',
+            'FIRST': 'priceFirst'
+        };
+
+        const priceKey = priceKeys[selectedClass];
+        const price = flight[priceKey];
+
+        console.log('Selected Class:', selectedClass);
+        console.log('Price Key:', priceKey);
+        console.log('Flight Object:', flight);
+        console.log('Selected Price:', price);
+        
+        return price || 0;
+    };
+
     // Tính tổng tiền dịch vụ bổ sung
     const calculateAddOnsTotal = () => {
+        if (!addOns) return 0;
         let total = 0;
-        if (addOns.extraBaggage) total += 30;
-        if (addOns.meal) total += 15;
-        if (addOns.insurance) total += 20;
-        if (addOns.priorityBoarding) total += 10;
+        if (addOns.extraBaggage) total += 300000;
+        if (addOns.meal) total += 150000;
+        if (addOns.insurance) total += 200000;
+        if (addOns.priorityBoarding) total += 100000;
         return total;
     };
 
     // Tính tổng tiền
     const calculateTotal = () => {
-        const basePrice = flight[`price${selectedClass.replace(/\s+/g, '')}`];
+        const basePrice = getBasePrice();
         const addOnsTotal = calculateAddOnsTotal();
         const taxes = basePrice * 0.1;
         return basePrice + addOnsTotal + taxes;
@@ -151,10 +200,10 @@ const ReviewPaymentPage = () => {
                                                     </span>
                                                     <span className="service-price">
                                                         {formatPrice(
-                                                            service === 'extraBaggage' ? 30 :
-                                                            service === 'meal' ? 15 :
-                                                            service === 'insurance' ? 20 :
-                                                            service === 'priorityBoarding' ? 10 : 0
+                                                            service === 'extraBaggage' ? 300000 :
+                                                            service === 'meal' ? 150000 :
+                                                            service === 'insurance' ? 200000 :
+                                                            service === 'priorityBoarding' ? 100000 : 0
                                                         )}
                                                     </span>
                                                 </div>
@@ -171,8 +220,8 @@ const ReviewPaymentPage = () => {
                                 <h3>Payment Summary</h3>
                                 <div className="price-breakdown">
                                     <div className="price-item">
-                                        <label>Base Fare ({selectedClass})</label>
-                                        <span>{formatPrice(flight[`price${selectedClass.replace(/\s+/g, '')}`])}</span>
+                                        <label>Base Fare ({selectedClass || 'N/A'})</label>
+                                        <span>{formatPrice(getBasePrice())}</span>
                                     </div>
                                     {calculateAddOnsTotal() > 0 && (
                                         <div className="price-item">
@@ -181,8 +230,8 @@ const ReviewPaymentPage = () => {
                                         </div>
                                     )}
                                     <div className="price-item">
-                                        <label>Taxes & Fees</label>
-                                        <span>{formatPrice(flight[`price${selectedClass.replace(/\s+/g, '')}`] * 0.1)}</span>
+                                        <label>Taxes & Fees (10%)</label>
+                                        <span>{formatPrice(getBasePrice() * 0.1)}</span>
                                     </div>
                                     <div className="price-item total">
                                         <label>Total Amount</label>

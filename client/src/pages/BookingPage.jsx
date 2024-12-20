@@ -75,9 +75,11 @@ const BookingPage = () => {
 
     const handleNextStep = () => {
         if (currentStep === 3) {
+            console.log('Flight data before navigation:', flight);
+            
             navigate('/review-payment', {
                 state: {
-                    flight,
+                    flight: flight,
                     selectedClass,
                     selectedSeats,
                     passengerDetails,

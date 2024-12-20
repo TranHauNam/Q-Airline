@@ -4,11 +4,8 @@ import SlideShow from '../components/pages/home/SlideShow'
 import Heroes from '../components/pages/home/Heroes'
 import TabMenu from '../components/pages/home/TabMenu'
 import Footer from '../components/common/Footer'
-import FlightSearch from '../components/flight/FlightSearch'
-//News
+import Canvas from '../components/pages/home/Canvas'
 import News from './News'
-
-
 
 const Homepage = () => {
   return (
@@ -17,6 +14,7 @@ const Homepage = () => {
       <SlideShow/>
       <TabMenu/>
       <Heroes/>
+      {/* <Canvas/> */}
       <News/>
       <Footer/>
     </div>
