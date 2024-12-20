@@ -77,21 +77,21 @@ const AdminAccountManagement = () => {
 
   return (
     <div className="form-container">
-      <h2>Tạo tài khoản Admin mới</h2>
+      <h2>Create new Admin account</h2>
       
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Họ và tên</label>
+          <label>Full name</label>
           <input
             type="text"
             value={formData.fullName}
             onChange={(e) => setFormData({...formData, fullName: e.target.value})}
             required
             disabled={loading}
-            placeholder="Nhập họ và tên"
+            placeholder="Enter your first and last name"
           />
         </div>
 
@@ -108,14 +108,14 @@ const AdminAccountManagement = () => {
         </div>
 
         <div className="form-group">
-          <label>Số điện thoại</label>
+          <label>Phone number</label>
           <input
             type="tel"
             value={formData.phone}
             onChange={(e) => setFormData({...formData, phone: e.target.value})}
             required
             disabled={loading}
-            placeholder="Nhập số điện thoại"
+            placeholder="Enter phone number"
           />
         </div>
 
@@ -127,7 +127,7 @@ const AdminAccountManagement = () => {
             onChange={(e) => setFormData({...formData, password: e.target.value})}
             required
             disabled={loading}
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
           />
         </div>
 
@@ -139,12 +139,12 @@ const AdminAccountManagement = () => {
             onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
             required
             disabled={loading}
-            placeholder="Nhập lại mật khẩu"
+            placeholder="Re-enter the password"
           />
         </div>
 
         <div className="form-group">
-          <label>Vai trò</label>
+          <label>Role</label>
           <select
             value={formData.role}
             onChange={(e) => setFormData({...formData, role: e.target.value})}
@@ -160,7 +160,7 @@ const AdminAccountManagement = () => {
           className="submit-button"
           disabled={loading}
         >
-          {loading ? 'Đang tạo...' : 'Tạo tài khoản'}
+          {loading ? 'Creating...' : 'Create account'}
         </button>
       </form>
     </div>

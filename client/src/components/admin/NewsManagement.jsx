@@ -5,7 +5,7 @@ const NewsManagement = () => {
   const [post, setPost] = useState({
     title: '',
     content: '',
-    postType: 'Tin tức',
+    postType: 'News',
     image: ''
   });
 
@@ -17,7 +17,7 @@ const NewsManagement = () => {
       setPost({
         title: '',
         content: '',
-        postType: 'Tin tức',
+        postType: 'News',
         image: ''
       });
     } catch (error) {
@@ -27,23 +27,23 @@ const NewsManagement = () => {
 
   return (
     <div className="form-container">
-      <h2>Đăng tin tức</h2>
+      <h1>Post</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Loại bài đăng</label>
+          <label>Post Type</label>
           <select
             value={post.postType}
             onChange={(e) => setPost({...post, postType: e.target.value})}
             required
           >
-            <option value="Tin tức">Tin tức</option>
-            <option value="Khuyến mãi">Khuyến mãi</option>
-            <option value="Thông báo">Thông báo</option>
+            <option value="Tin tức">News</option>
+            <option value="Khuyến mãi">Promotion</option>
+            <option value="Thông báo">Notification</option>
           </select>
         </div>
 
         <div className="form-group">
-          <label>Tiêu đề</label>
+          <label>Title</label>
           <input
             type="text"
             value={post.title}
@@ -53,7 +53,7 @@ const NewsManagement = () => {
         </div>
 
         <div className="form-group">
-          <label>Nội dung</label>
+          <label>Content</label>
           <textarea
             value={post.content}
             onChange={(e) => setPost({...post, content: e.target.value})}
@@ -63,17 +63,17 @@ const NewsManagement = () => {
         </div>
 
         <div className="form-group">
-          <label>Link ảnh</label>
+          <label>Image link</label>
           <input
             type="text"
             value={post.image}
             onChange={(e) => setPost({...post, image: e.target.value})}
             required
-            placeholder="Nhập đường dẫn ảnh"
+            placeholder="Enter image path"
           />
         </div>
 
-        <button type="submit" className="submit-button">Đăng bài</button>
+        <button type="submit" className="submit-button">Post</button>
       </form>
     </div>
   );

@@ -63,29 +63,29 @@ const FlightManagement = () => {
 
   return (
     <div className="form-container">
-      <h2>Thêm chuyến bay mới</h2>
+   <h2>Add new flight</h2>
       {error && <div className="error-message">{error}</div>}
       
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Số hiệu chuyến bay</label>
+          <label>Flight number</label>
           <input
             type="text"
             value={flight.flightNumber}
             onChange={(e) => setFlight({...flight, flightNumber: e.target.value})}
             required
-            placeholder="Ví dụ: VN123"
+            placeholder="Example: VN123"
           />
         </div>
 
         <div className="form-group">
-          <label>Máy bay</label>
+          <label>Plane</label>
           <select
             value={flight.planeCode}
             onChange={(e) => setFlight({...flight, planeCode: e.target.value})}
             required
           >
-            <option value="">Chọn máy bay</option>
+            <option value="">Select plane</option>
             {planes.map((plane) => (
               <option key={plane._id} value={plane.code}>
                 {plane.code} - {plane.manufacturer} 
@@ -96,27 +96,27 @@ const FlightManagement = () => {
         </div>
 
         <div className="form-group">
-          <label>Điểm khởi hành</label>
+          <label>Departure point</label>
           <input
             type="text"
             value={flight.origin}
             onChange={(e) => setFlight({...flight, origin: e.target.value})}
             required
-            placeholder="Ví dụ: Hà Nội (HAN)"
+            placeholder="Example: Hanoi (HAN)"
           />
         </div>
         <div className="form-group">
-          <label>Điểm đến</label>
+          <label>Destination</label>
           <input
             type="text"
             value={flight.destination}
             onChange={(e) => setFlight({...flight, destination: e.target.value})}
             required
-            placeholder="Ví dụ: TP.HCM (SGN)"
+            placeholder="Example: Ho Chi Minh City (SGN)"
           />
         </div>
         <div className="form-group">
-          <label>Thời gian khởi hành</label>
+          <label>Departure time</label>
           <input
             type="datetime-local"
             value={flight.departureTime}
@@ -125,7 +125,7 @@ const FlightManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Thời gian bay (phút)</label>
+          <label>Flight time (minutes)</label>
           <input
             type="number"
             value={flight.duration}
@@ -135,43 +135,43 @@ const FlightManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Giá vé hạng phổ thông</label>
+          <label>Economy class fare</label>
           <input
             type="number"
             value={flight.priceEconomy}
             onChange={(e) => setFlight({...flight, priceEconomy: parseInt(e.target.value)})}
             required
-            placeholder="Nhập giá (VNĐ)"
+            placeholder="Enter price (VND)"
           />
         </div>
         <div className="form-group">
-          <label>Giá vé hạng phổ thông cao cấp</label>
+          <label>Premium Economy Class Ticket Prices</label>
           <input
             type="number"
             value={flight.pricePremiumEconomy}
             onChange={(e) => setFlight({...flight, pricePremiumEconomy: parseInt(e.target.value)})}
             required
-            placeholder="Nhập giá (VNĐ)"
+            placeholder="Enter price (VND)"
           />
         </div>
         <div className="form-group">
-          <label>Giá vé hạng thương gia</label>
+          <label>Business class fares</label>
           <input
             type="number"
             value={flight.priceBusiness}
             onChange={(e) => setFlight({...flight, priceBusiness: parseInt(e.target.value)})}
             required
-            placeholder="Nhập giá (VNĐ)"
+            placeholder="Enter price (VND)"
           />
         </div>
         <div className="form-group">
-          <label>Giá vé hạng nhất</label>
+          <label>First class fare</label>
           <input
             type="number"
             value={flight.priceFirst}
             onChange={(e) => setFlight({...flight, priceFirst: parseInt(e.target.value)})}
             required
-            placeholder="Nhập giá (VNĐ)"
+            placeholder="Enter price (VND)"
           />
         </div>
         <button 
@@ -179,7 +179,7 @@ const FlightManagement = () => {
           className="submit-button"
           disabled={loading}
         >
-          {loading ? 'Đang thêm...' : 'Thêm chuyến bay'}
+          {loading ? 'Adding...' : 'Add flight'}
         </button>
       </form>
     </div>
