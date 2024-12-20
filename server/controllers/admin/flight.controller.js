@@ -88,3 +88,21 @@ module.exports.changeDepartureTime = async (req, res) => {
     }   
 };
 
+module.exports.getAllFlights = async (req, res) => {
+  try {
+    const flights = await Flight.find({})
+      .sort({ departureTime: 1 });
+      
+    res.status(200).json({
+      success: true,
+      flights: flights
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy danh sách chuyến bay",
+      error: error.message
+    });
+  }
+};
+
