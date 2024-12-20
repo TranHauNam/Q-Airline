@@ -65,7 +65,7 @@
 
 .review-section:last-child {
     margin-bottom: 0;
-    padding-bottom: 0;
+    padding-bottom: 24px;
     border-bottom: none;
 }
 
