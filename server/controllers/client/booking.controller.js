@@ -228,6 +228,7 @@ module.exports.cancelBooking = async (req, res) => {
         }
 
         booking.bookingStatus = "Canceled";
+        console.log(booking);
         await booking.save();
         //await Booking.deleteOne({bookingCode: bookingCode});
 

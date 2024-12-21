@@ -11,6 +11,17 @@ const UserBookingsPage = () => {
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
 
+    const canCancelBooking = (booking) => {
+        if (booking.bookingStatus !== "Confirmed") return false;
+
+        const now = new Date();
+        const departureTime = new Date(booking.departurePrivateInformation.departureTime);
+        const timeDifference = departureTime.getTime() - now.getTime();
+        const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+        return hoursDifference >= 12;
+    };
+
     useEffect(() => {
         const fetchUserBookings = async () => {
             try {
@@ -44,10 +55,17 @@ const UserBookingsPage = () => {
         fetchUserBookings();
     }, [navigate]);
 
-    const handleCancelBooking = async (bookingId) => {
+    const handleCancelBooking = async (bookingCode) => {
         try {
-            const response = await fetch(`/api/booking/cancel/${bookingId}`, {
-                method: 'PUT'
+            if (!window.confirm('Are you sure you want to cancel this booking?')) {
+                return;
+            }
+
+            const response = await fetch(`/api/booking/cancel/${bookingCode}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
             const data = await response.json();
 
@@ -55,13 +73,14 @@ const UserBookingsPage = () => {
                 throw new Error(data.message || 'Cannot cancel booking');
             }
 
-            // Update the bookings list
+            // Update the bookings list with the updated booking from response
             setBookings(bookings.map(booking => 
-                booking._id === bookingId 
-                    ? { ...booking, status: 'CANCELLED' } 
+                booking.bookingCode === bookingCode 
+                    ? { ...booking, bookingStatus: "Canceled" } 
                     : booking
             ));
             setShowModal(false);
+            alert('Booking cancelled successfully!');
         } catch (err) {
             alert(err.message);
         }
@@ -162,10 +181,10 @@ const UserBookingsPage = () => {
                     </div>
 
                     <div className="modal-footer">
-                        {booking.bookingStatus === 'Confirmed' && (
+                        {canCancelBooking(booking) && (
                             <button 
                                 className="cancel-button"
-                                onClick={() => onCancel(booking._id)}
+                                onClick={() => onCancel(booking.bookingCode)}
                             >
                                 Cancel Booking
                             </button>
@@ -245,8 +264,8 @@ const UserBookingsPage = () => {
                                         <div className="booking-info">
                                             <div className="booking-code">
                                                 <h3>Booking Code: <span>{booking.bookingCode}</span></h3>
-                                                <span className={`booking-status ${booking.status}`}>
-                                                    {booking.status === 'CONFIRMED' ? 'Confirmed' : 'Cancelled'}
+                                                <span className={`booking-status ${booking.bookingStatus}`}>
+                                                    {booking.bookingStatus === 'Confirmed' ? 'Confirmed' : 'Cancelled'}
                                                 </span>
                                             </div>
                                             <div className="booking-date">
