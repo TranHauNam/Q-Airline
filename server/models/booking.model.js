@@ -64,7 +64,6 @@ const bookingSchema = new mongoose.Schema(
         },
         totalPrice: { 
             type: Number, 
-            required: true,
             required: true
         },
         departurePrivateInformation: {
@@ -86,8 +85,16 @@ const bookingSchema = new mongoose.Schema(
                 type: String,
                 ref: 'Flight',
             }
+        },
+        additionalService: {
+            type: String,
+            enum: ['Extra Baggage', 'Special Meal', 'Travel Insurance', 'Priority Boarding']
+        },
+        paymenMethod: {
+            type: String,
+            enum: ['Credit/Debit Card', 'Internet Banking', 'E-Wallet'],
+            default: 'Credit/Debit Card'
         }
-
     },
     {
         timestamps: true
