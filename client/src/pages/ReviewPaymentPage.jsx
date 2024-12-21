@@ -6,8 +6,8 @@ import './ReviewPaymentPage.css';
 const ReviewPaymentPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { flight, selectedClass, selectedSeats, passengerDetails, addOns } = location.state || {};
-    const [selectedPayment, setSelectedPayment] = useState('credit');
+    const { flight, selectedClass, selectedSeats, passengerDetails, addOns, totalBase, addOnsTotals, taxes, totalPrice } = location.state || {};
+    const [selectedPayment, setSelectedPayment] = useState('Credit/Debit Card');
 
     useEffect(() => {
         if (!flight || !selectedClass) {
@@ -87,7 +87,16 @@ const ReviewPaymentPage = () => {
                 returnFlightNumber: flight.returnFlightNumber, // if exists
                 passengers: [passengerDetails],
                 departureSeatsRequested: selectedSeats,
-                returnSeatsRequested: flight.isRoundTrip ? '1D' : undefined
+                returnSeatsRequested: flight.isRoundTrip ? '1D' : undefined,
+                paymentMethod: selectedPayment,
+                extraBaggage: addOns.extraBaggage,
+                specialMeal: addOns.meal,
+                travelInsurance: addOns.insurance,
+                priorityBoarding: addOns.priorityBoarding,
+                totalBase: getBasePrice(),
+                addOnsTotals: calculateAddOnsTotal(),
+                taxes: calculateTaxes(),
+                totalPrice: calculateTotal()
             };
             console.log('Booking Data:', bookingData);
 
@@ -281,9 +290,9 @@ const ReviewPaymentPage = () => {
                                 <h3>Payment Method</h3>
                                 <div className="payment-options">
                                     {[
-                                        { value: 'credit', label: 'Credit/Debit Card', icon: 'credit-card.jpg' },
-                                        { value: 'banking', label: 'Internet Banking', icon: 'internet-banking.jpg' },
-                                        { value: 'ewallet', label: 'E-Wallet', icon: 'e-wallet.jpg' }
+                                        { value: 'Credit/Debit Card', label: 'Credit/Debit Card', icon: 'credit-card.jpg' },
+                                        { value: 'Internet Banking', label: 'Internet Banking', icon: 'internet-banking.jpg' },
+                                        { value: 'E-Wallet', label: 'E-Wallet', icon: 'e-wallet.jpg' }
                                     ].map(method => (
                                         <label key={method.value} className="payment-option">
                                             <input
