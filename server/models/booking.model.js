@@ -63,8 +63,7 @@ const bookingSchema = new mongoose.Schema(
             enum: ['Economy', 'Premium Economy', 'Business', 'First']
         },
         totalPrice: { 
-            type: Number, 
-            required: true
+            type: Number
         },
         departurePrivateInformation: {
             seatsBooked: {
@@ -124,6 +123,18 @@ const bookingSchema = new mongoose.Schema(
             type: String,
             enum: ['Confirmed', 'Canceled'],
             default: 'Confirmed'
+        },
+        totalBase: {
+            type: Number
+        },
+        addOnsTotals: {
+            type: Number
+        },
+        taxes: {
+            type: Number
+        },
+        totalPrice: {
+            type: Number
         }
     },
     {

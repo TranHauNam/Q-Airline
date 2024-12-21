@@ -7,7 +7,21 @@ const generateBookingCode = require('../../helpers/generateBookingCode');
 // [POST] /api/booking/
 module.exports.bookFlight = async (req, res) => {
     try {
-        const { departureFlightNumber, returnFlightNumber, passengers, departureSeatsRequested, returnSeatsRequested, paymenMethod, extraBaggage, specialMeal, travelInsurance, priorityBoarding } = req.body;
+        const { departureFlightNumber, 
+                returnFlightNumber, 
+                passengers, 
+                departureSeatsRequested, 
+                returnSeatsRequested, 
+                paymenMethod, 
+                extraBaggage, 
+                specialMeal, 
+                travelInsurance, 
+                priorityBoarding,
+                totalBase,
+                addOnsTotals,
+                taxes,
+                totalPrice
+              } = req.body;
         const userId = res.locals.user ? res.locals.user._id : null;
         
         if (!userId) {
@@ -20,7 +34,7 @@ module.exports.bookFlight = async (req, res) => {
         if (!searched || !searched.flightData) {
             return res.status(404).json({ message: 'The search data is expired or does not exist.' });
         }
-        if (searched.flightData[0].flightType === 'one-way') {
+        if (searched.flightData.flightType === 'one-way') {
             const flightSearched = searched.flightData.find(f => f.flightNumber === departureFlightNumber);
             console.log(flightSearched);
             const classType = flightSearched.classType;
@@ -56,14 +70,6 @@ module.exports.bookFlight = async (req, res) => {
             departureFlight[seatField] -= depatureSeatsToBook.length;
             await departureFlight.save();
 
-            var totalPrice = flightSearched.totalBasePrice;
-
-            if (extraBaggage) totalPrice += 300000;
-            if (specialMeal) totalPrice += 150000;
-            if (travelInsurance) totalPrice += 200000;
-            if (priorityBoarding) totalPrice += 100000;
-
-            totalPrice *= 1.06;
 
             const bookingCode = generateBookingCode();
 
@@ -86,20 +92,27 @@ module.exports.bookFlight = async (req, res) => {
                 specialMeal: specialMeal,
                 travelInsurance: travelInsurance,
                 priorityBoarding: priorityBoarding,
+                totalBase: totalBase,
+                addOnsTotals: addOnsTotals,
+                taxes: taxes,
+                totalPrice: totalPrice
             });
 
             res.status(201).json({
                 message: 'Booking successful!',
                 booking: booking
             });
-        } else if (searched.flightData[0].flightType === 'round-trip') {
-            console.log(searched.flightData);
-            const flightSearched = searched.flightData.find(f => f.departure.flightNumber === departureFlightNumber);
-            const classType = flightSearched.classType;
+        } else if (searched.flightData.flightType === 'round-trip') {
+            //console.log(searched.flightData);
+            const flightSearched = searched.flightData.departure.find(f => f.flightNumber === departureFlightNumber);
+            const classType = searched.flightData.classType;
+            //console.log(classType);
             const departureFlight = await Flight.findOne({flightNumber: departureFlightNumber});
             if (!departureFlight) {
                 return res.status(400).json({ message: 'Flight not found!' });       
             }
+
+            //console.log(departureFlight);
 
             //Đánh dấu các ghế đã đặt
             const depatureSeatsToBook = [];
@@ -153,8 +166,6 @@ module.exports.bookFlight = async (req, res) => {
             returnFlight[seatField] -= returnSeatsToBook.length;
             await returnFlight.save();
 
-            const totalPrice = flightSearched.totalPrice;
-
             const bookingCode = generateBookingCode();
             //Tạo bản ghi đặt vé
             const booking = await Booking.create({
@@ -162,7 +173,6 @@ module.exports.bookFlight = async (req, res) => {
                 userId: userId,
                 passengers: passengers,
                 classType: classType,
-                totalPrice: totalPrice,
                 departurePrivateInformation: {
                     seatsBooked: depatureSeatsToBook.map(seat => seat.seatNumber),
                     flightNumber: departureFlightNumber,
@@ -178,7 +188,16 @@ module.exports.bookFlight = async (req, res) => {
                     destination: returnFlight.destination
                 },
                 departureFlight: departureFlight,
-                returnFlight: returnFlight
+                returnFlight: returnFlight,
+                totalBase: totalBase,
+                addOnsTotals: addOnsTotals,
+                taxes: taxes,
+                totalPrice: totalPrice,
+                paymenMethod: paymenMethod,
+                extraBaggage: extraBaggage,
+                specialMeal: specialMeal,
+                travelInsurance: travelInsurance,
+                priorityBoarding: priorityBoarding,
             });
 
             res.status(201).json({
@@ -227,16 +246,42 @@ module.exports.cancelBooking = async (req, res) => {
         }
 
         booking.bookingStatus = "Canceled";
-        console.log(booking);
-        await booking.save();
+        //console.log(booking);
         //await Booking.deleteOne({bookingCode: bookingCode});
 
+        for (const seatNumber of booking.departurePrivateInformation.seatsBooked) {
+            const seatIndex = flight.seats.findIndex(seat => 
+                seat.seatNumber === seatNumber && seat.classType === booking.classType
+            );
+            if (seatIndex !== -1) {
+                flight.seats[seatIndex].isBooked = false;
+            }
+        }
+         // Nếu là vé khứ hồi, cập nhật cả ghế chuyến về
+        if (booking.returnPrivateInformation,length) {
+            const returnFlight = await Flight.findOne({ 
+                flightNumber: booking.returnPrivateInformation.flightNumber 
+            });
+            
+            if (returnFlight) {
+                for (const seatNumber of booking.returnPrivateInformation.seatsBooked) {
+                    const seatIndex = returnFlight.seats.findIndex(seat => 
+                        seat.seatNumber === seatNumber && seat.classType === booking.classType
+                    );
+                    if (seatIndex !== -1) {
+                        returnFlight.seats[seatIndex].isBooked = false;
+                    }
+                }
+                await returnFlight.save();
+            }
+        }
         const arrClassType = booking.classType.split(' ');
         const srtClassType = arrClassType.join('');
         const seatField = `availableSeats${srtClassType}`;
 
         flight[seatField] = flight[seatField] + booking.departurePrivateInformation.seatsBooked.length + booking.returnPrivateInformation.seatsBooked.length;
         await flight.save();
+        await booking.save();
 
         res.status(200).json({
             message: 'Ticket cancellation successful.',
