@@ -66,7 +66,7 @@ module.exports.searchFlight = async (req, res) => {
         const departureEnd = new Date(parsedDepartureTime.setUTCHours(23, 59, 59, 999));
         departureFilter.departureTime = { $gte: departureStart, $lte: departureEnd };
 
-        const totalSeatsNeeded = (adult || 0) + (children || 0);
+        const totalSeatsNeeded = (parseInt(adult) || 0) + (parseInt(children) || 0);
 
         // console.log(origin);
         const arrClassType = classType.split(' ');
@@ -118,9 +118,9 @@ module.exports.searchFlight = async (req, res) => {
                     classType: classType,
                     flightType: flightType,
                     seats: flight.seats,
-                    adult: adult,
-                    children: children,
-                    infant: infant,
+                    adult: parseInt(adult),
+                    children: parseInt(children),
+                    infant: parseInt(infant),
                     totalSeatsNeeded: totalSeatsNeeded
                 };
             });
@@ -256,13 +256,32 @@ module.exports.searchFlight = async (req, res) => {
                 return: availableReturnFlights,
                 classType: classType,
                 flightType: flightType,
-                totalBasePrice: calculatePrice(departureFlight, classType, adult, children, infant) +
-                            calculatePrice(returnFlight, classType, adult, children, infant),
-                adult: adult,
-                children: children,
-                infant: infant,
+                // totalBasePrice: calculatePrice(departureFlight, classType, adult, children, infant) +
+                //             calculatePrice(returnFlight, classType, adult, children, infant),
+                adult: parseInt(adult),
+                children: parseInt(children),
+                infant: parseInt(infant),
                 totalSeatsNeeded: totalSeatsNeeded
             }
+
+            // const response = availableDepartureFlights.flatMap(departureFlight => {
+            //         return availableReturnFlights.map(returnFlight => {
+            //             return {
+            //                 departure: availableDepartureFlights,
+            //                 return: availableReturnFlights,
+            //                 classType: classType,
+            //                 flightType: flightType,
+            //                 totalBasePrice: calculatePrice(departureFlight, classType, adult, children, infant) +
+            //                             calculatePrice(returnFlight, classType, adult, children, infant),
+            //                 adult: adult,
+            //                 children: children,
+            //                 infant: infant,
+            //                 totalSeatsNeeded: totalSeatsNeeded
+            //             }
+            //         })
+            //     }
+            // )
+
             // Lưu kết quả vào TemporaryBooking
             await TemporarySearch.create({
                 userId: res.locals.user ? res.locals.user._id : null,
