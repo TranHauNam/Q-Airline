@@ -79,6 +79,14 @@ const bookingSchema = new mongoose.Schema(
             departureTime: {
                 type: Date,
                 required: true
+            },
+            origin: {
+                type: String,
+                required: true
+            },
+            destination: {
+                type: String,
+                required: true
             }
         },
         returnPrivateInformation: {
@@ -91,12 +99,22 @@ const bookingSchema = new mongoose.Schema(
             },
             departureTime: {
                 type: Date
+            },
+            origin: {
+                type: String
+            },
+            destination: {
+                type: String
             }
         },
-        additionalService: {
-            type: String,
-            enum: ['Extra Baggage', 'Special Meal', 'Travel Insurance', 'Priority Boarding']
-        },
+        // additionalService: {
+        //     type: String,
+        //     enum: ['Extra Baggage', 'Special Meal', 'Travel Insurance', 'Priority Boarding']
+        // },
+        extraBaggage: Boolean,
+        specialMeal: Boolean,
+        travelInsurance: Boolean,
+        priorityBoarding: Boolean,
         paymenMethod: {
             type: String,
             enum: ['Credit/Debit Card', 'Internet Banking', 'E-Wallet'],
