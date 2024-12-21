@@ -211,7 +211,7 @@ module.exports.cancelBooking = async (req, res) => {
         const user = await User.findById(userId);
 
         // Tìm thông tin chuyến bay tương ứng
-        const flight = await Flight.findOne({ flightNumber: booking.flightNumber });
+        const flight = await Flight.findOne({ flightNumber: booking.departurePrivateInformation.flightNumber });
         if (!flight) {
             return res.status(404).json({ message: 'Không tìm thấy chuyến bay tương ứng.' });
         }
@@ -227,7 +227,7 @@ module.exports.cancelBooking = async (req, res) => {
             });
         }
 
-        booking.status = "Canceled";
+        booking.bookingStatus = "Canceled";
         await booking.save();
         //await Booking.deleteOne({bookingCode: bookingCode});
 
@@ -242,8 +242,8 @@ module.exports.cancelBooking = async (req, res) => {
             message: 'Hủy vé thành công.',
             booking: {
                 bookingCode: bookingCode,
-                flightNumber: booking.flightNumber,
-                status: booking.status,
+                flightNumber: booking.departurePrivateInformation.flightNumber,
+                status: booking.bookingStatus,
                 totalPrice: booking.totalPrice,
             }
         });
