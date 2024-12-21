@@ -31,15 +31,15 @@ const planeSchema = new mongoose.Schema(
             required: true,
             validate: {
                 validator: (value) => value % 4 === 0,
-                message: 'businessSeats must be divisible by 6'
+                message: 'businessSeats must be divisible by 4'
             }
         },
         firstSeats: {
             type: Number,
             required: true,
             validate: {
-                validator: (value) => value % 6 === 0,
-                message: 'firstSeats must be divisible by 6'
+                validator: (value) => value % 4 === 0,
+                message: 'firstSeats must be divisible by 4'
             }
         },
         seats: [

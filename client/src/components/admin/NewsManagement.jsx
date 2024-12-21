@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { postApi } from '../../services/modules/admin/post/post.api';
+import Dialog from '../common/Dialog';
 import './Admin.css';
+
 const NewsManagement = () => {
   const [post, setPost] = useState({
     title: '',
@@ -9,11 +11,23 @@ const NewsManagement = () => {
     image: ''
   });
 
+  const [dialog, setDialog] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await postApi.createPost(post);
-      alert(response.data.message);
+      setDialog({
+        isOpen: true,
+        title: 'Success',
+        message: 'Posted successfully',
+        type: 'success'
+      });
       setPost({
         title: '',
         content: '',
@@ -21,13 +35,18 @@ const NewsManagement = () => {
         image: ''
       });
     } catch (error) {
-      alert(error.response?.data?.message || 'Có lỗi xảy ra');
+      setDialog({
+        isOpen: true,
+        title: 'Error',
+        message: error.response?.data?.message || 'An error occurred while posting.',
+        type: 'error'
+      });
     }
   };
 
   return (
     <div className="form-container">
-      <h2 className='h2-admin'>Post</h2>
+      {/* <h2 className='h2-admin'>Post</h2> */}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Post Type</label>
@@ -75,6 +94,14 @@ const NewsManagement = () => {
 
         <button type="submit" className="submit-button">Post</button>
       </form>
+
+      <Dialog
+        isOpen={dialog.isOpen}
+        onClose={() => setDialog({ ...dialog, isOpen: false })}
+        title={dialog.title}
+        message={dialog.message}
+        type={dialog.type}
+      />
     </div>
   );
 };

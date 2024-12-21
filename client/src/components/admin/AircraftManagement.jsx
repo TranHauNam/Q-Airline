@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { planeApi } from '../../services/modules/admin/plane/plane.api';
+import Dialog from '../common/Dialog';
 import './Admin.css';
+
 const AircraftManagement = () => {
   const [plane, setPlane] = useState({
     code: '',
@@ -11,28 +13,60 @@ const AircraftManagement = () => {
     firstSeats: 0
   });
 
+  const [dialog, setDialog] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (plane.economySeats % 6 !== 0) {
-        alert('Số ghế hạng phổ thông phải chia hết cho 6');
+        setDialog({
+          isOpen: true,
+          title: 'error',
+          message: 'The number of economy class seats must be divisible by 6.',
+          type: 'error'
+        });
         return;
       }
       if (plane.premiumEconomySeats % 6 !== 0) {
-        alert('Số ghế hạng phổ thông cao cấp phải chia hết cho 6');
+        setDialog({
+          isOpen: true,
+          title: 'error',
+          message: 'The number of premium economy seats must be divisible by 6.',
+          type: 'error'
+        });
         return;
       }
       if (plane.businessSeats % 4 !== 0) {
-        alert('Số ghế hạng thương gia phải chia hết cho 4');
+        setDialog({
+          isOpen: true,
+          title: 'error',
+          message: 'The number of business class seats must be divisible by 4.',
+          type: 'error'
+        });
         return;
       }
       if (plane.firstSeats % 6 !== 0) {
-        alert('Số ghế hạng nhất phải chia hết cho 6');
+        setDialog({
+          isOpen: true,
+          title: 'error',
+          message: 'The number of first class seats must be divisible by 4.',
+          type: 'error'
+        });
         return;
       }
 
       const response = await planeApi.addPlane(plane);
-      alert(response.data.message);
+      setDialog({
+        isOpen: true,
+        title: 'Success',
+        message: 'New aircraft added successfully',
+        type: 'success'
+      });
       setPlane({
         code: '',
         manufacturer: '',
@@ -42,13 +76,17 @@ const AircraftManagement = () => {
         firstSeats: 0
       });
     } catch (error) {
-      alert(error.response?.data?.message || 'Có lỗi xảy ra');
+      setDialog({
+        isOpen: true,
+        title: 'error',
+        message: error.response?.data?.message || 'Có error xảy ra khi thêm máy bay',
+        type: 'error'
+      });
     }
   };
 
   return (
     <div className="form-container">
-      <h2 className='h2-admin'>Add new aircraft</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Aircraft code</label>
@@ -69,7 +107,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Number of economy class seats (divisible by 6)</label>
+          <label>Number of economy class seats </label>
           <input
             type="number"
             value={plane.economySeats}
@@ -78,7 +116,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Number of premium economy seats (divisible by 6)</label>
+          <label>Number of premium economy seats </label>
           <input
             type="number"
             value={plane.premiumEconomySeats}
@@ -87,7 +125,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Number of business class seats (divisible by 4)</label>
+          <label>Number of business class seats </label>
           <input
             type="number"
             value={plane.businessSeats}
@@ -96,7 +134,7 @@ const AircraftManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Number of first class seats (divisible by 6)</label>
+          <label>Number of first class seats </label>
           <input
             type="number"
             value={plane.firstSeats}
@@ -106,6 +144,14 @@ const AircraftManagement = () => {
         </div>
         <button type="submit" className="submit-button">Confirm more planes</button>
       </form>
+
+      <Dialog
+        isOpen={dialog.isOpen}
+        onClose={() => setDialog({ ...dialog, isOpen: false })}
+        title={dialog.title}
+        message={dialog.message}
+        type={dialog.type}
+      />
     </div>
   );
 };

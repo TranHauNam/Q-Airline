@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { flightApi } from '../../services/modules/admin/flight/flight.api';
 import { postApi } from '../../services/modules/admin/post/post.api';
 import './Admin.css';
+import Dialog from '../common/Dialog';
+
 const DelayManagement = () => {
   const [flightNumber, setFlightNumber] = useState('');
   const [newDepartureTime, setNewDepartureTime] = useState('');
@@ -9,6 +11,12 @@ const DelayManagement = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedFlight, setSelectedFlight] = useState(null);
+  const [dialog, setDialog] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
 
   useEffect(() => {
     const fetchFlights = async () => {
@@ -58,15 +66,24 @@ const DelayManagement = () => {
       const oldDepartureTime = selectedFlight.departureTime;
       const response = await flightApi.changeDepartureTime(flightNumber, { newDepartureTime });
       
-      // Create delay notification
       await createDelayNotification(selectedFlight, oldDepartureTime, newDepartureTime);
       
-      alert('Updated flight time and created notification successfully');
+      setDialog({
+        isOpen: true,
+        title: 'Success',
+        message: 'Update flight time and create success message',
+        type: 'success'
+      });
       setFlightNumber('');
       setNewDepartureTime('');
       setSelectedFlight(null);
     } catch (error) {
-      setError(error.response?.data?.message || 'An error occurred');
+      setDialog({
+        isOpen: true,
+        title: 'Error',
+        message: error.response?.data?.message || 'An error occurred while updating flight times.',
+        type: 'error'
+      });
     } finally {
       setLoading(false);
     }
@@ -74,7 +91,7 @@ const DelayManagement = () => {
 
   return (
     <div className="form-container">
-      <h2 className='h2-admin'>Update Departure Time</h2>
+      {/* <h2 className='h2-admin'>Update Departure Time</h2> */}
       {error && <div className="error-message">{error}</div>}
       
       <form onSubmit={handleSubmit}>
@@ -115,6 +132,14 @@ const DelayManagement = () => {
           {loading ? 'Updating...' : 'Update'}
         </button>
       </form>
+      
+      <Dialog
+        isOpen={dialog.isOpen}
+        onClose={() => setDialog({ ...dialog, isOpen: false })}
+        title={dialog.title}
+        message={dialog.message}
+        type={dialog.type}
+      />
     </div>
   );
 };
