@@ -94,6 +94,11 @@ const bookingSchema = new mongoose.Schema(
             type: String,
             enum: ['Credit/Debit Card', 'Internet Banking', 'E-Wallet'],
             default: 'Credit/Debit Card'
+        },
+        bookingStatus: {
+            type: String,
+            enum: ['Confirmed', 'Canceled'],
+            default: 'Confirmed'
         }
     },
     {

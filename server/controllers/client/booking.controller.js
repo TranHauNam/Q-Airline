@@ -89,7 +89,8 @@ module.exports.bookFlight = async (req, res) => {
                     flightNumber: departureFlightNumber,
                 },
                 additionalService: additionalService,
-                paymenMethod: paymenMethod
+                paymenMethod: paymenMethod,
+                departureFlight: departureFlight
             });
 
             res.status(201).json({
@@ -175,6 +176,8 @@ module.exports.bookFlight = async (req, res) => {
                     seatsBooked: returnSeatsToBook.map(seat => seat.seatNumber),
                     flightNumber: returnFlightNumber,
                 },
+                departureFlight: departureFlight,
+                returnFlight: returnFlight
             });
 
             res.status(201).json({
@@ -195,9 +198,9 @@ module.exports.bookFlight = async (req, res) => {
 // [DELETE] /api/booking/cancel/:bookingCode
 module.exports.cancelBooking = async (req, res) => {
     try {
-        const bookingId = req.params.bookingCode;
+        const bookingCode = req.params.bookingCode;
 
-        const booking = await Booking.findById(bookingCode);
+        const booking = await Booking.findOne({bookingCode});
         if (!booking) {
             return res.status(404).json({ message: 'Không tìm thấy vé.' });
         }
@@ -222,19 +225,21 @@ module.exports.cancelBooking = async (req, res) => {
             });
         }
 
-        await Booking.deleteOne({_id: bookingId});
+        booking.status = "Canceled";
+        await booking.save();
+        //await Booking.deleteOne({bookingCode: bookingCode});
 
         const arrClassType = booking.classType.split(' ');
         const srtClassType = arrClassType.join('');
         const seatField = `availableSeats${srtClassType}`;
 
-        flight[seatField] += booking.seatsBooked.length;
+        flight[seatField] = booking.departurePrivateInformation.seatsBooked.length + booking.returnPrivateInformation.seatsBooked.length;
         await flight.save();
 
         res.status(200).json({
             message: 'Hủy vé thành công.',
             booking: {
-                bookingId: booking._id,
+                bookingCode: bookingCode,
                 flightNumber: booking.flightNumber,
                 status: booking.status,
                 totalPrice: booking.totalPrice,
