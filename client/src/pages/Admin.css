@@ -428,8 +428,9 @@
 
 .adm-main {
   flex: 1;
-  margin-left: 280px;
+  /* margin-left: 280px; */
   padding: 20px;
+  align-items: center;
 }
 
 .adm-content {
@@ -439,7 +440,7 @@
 
 .adm-welcome-screen {
   text-align: center;
-  padding: 40px;
+  padding: 0px;
 }
 
 .adm-welcome-screen h2 {
