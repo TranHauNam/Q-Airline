@@ -7,7 +7,7 @@ const generateBookingCode = require('../../helpers/generateBookingCode');
 // [POST] /api/booking/
 module.exports.bookFlight = async (req, res) => {
     try {
-        const { departureFlightNumber, returnFlightNumber, passengers, departureSeatsRequested, returnSeatsRequested, additionalService, paymenMethod  } = req.body;
+        const { departureFlightNumber, returnFlightNumber, passengers, departureSeatsRequested, returnSeatsRequested, paymenMethod, extraBaggage, specialMeal, travelInsurance, priorityBoarding } = req.body;
         const userId = res.locals.user ? res.locals.user._id : null;
         
         if (!userId) {
@@ -56,24 +56,14 @@ module.exports.bookFlight = async (req, res) => {
             departureFlight[seatField] -= depatureSeatsToBook.length;
             await departureFlight.save();
 
-            const totalPrice = flightSearched.totalBasePrice;
+            var totalPrice = flightSearched.totalBasePrice;
 
-            switch (additionalService) {
-                case "Extra Baggage":
-                    totalPrice += 300000;
-                    break;
-                case "Special Meal":
-                    totalPrice += 150000;
-                    break;
-                case "Travel Insurance":
-                    totalPrice += 200000;
-                    break;
-                case "Priority Boarding":
-                    totalPrice += 100000;
-                    break;
-                default:
-                    break;
-            }
+            if (extraBaggage) totalPrice += 300000;
+            if (specialMeal) totalPrice += 150000;
+            if (travelInsurance) totalPrice += 200000;
+            if (priorityBoarding) totalPrice += 100000;
+
+            totalPrice *= 1.06;
 
             const bookingCode = generateBookingCode();
 
@@ -87,10 +77,15 @@ module.exports.bookFlight = async (req, res) => {
                 departurePrivateInformation: {
                     seatsBooked: depatureSeatsToBook.map(seat => seat.seatNumber),
                     flightNumber: departureFlightNumber,
-                    departureTime: departureFlight.departureTime
+                    departureTime: departureFlight.departureTime,
+                    origin: departureFlight.origin,
+                    destination: departureFlight.destination
                 },
-                additionalService: additionalService,
-                paymenMethod: paymenMethod
+                paymenMethod: paymenMethod,
+                extraBaggage: extraBaggage,
+                specialMeal: specialMeal,
+                travelInsurance: travelInsurance,
+                priorityBoarding: priorityBoarding,
             });
 
             res.status(201).json({
@@ -171,12 +166,16 @@ module.exports.bookFlight = async (req, res) => {
                 departurePrivateInformation: {
                     seatsBooked: depatureSeatsToBook.map(seat => seat.seatNumber),
                     flightNumber: departureFlightNumber,
-                    departureTime: departureFlightNumber.departureTime
+                    departureTime: departureFlight.departureTime,
+                    origin: departureFlight.origin,
+                    destination: departureFlight.destination
                 },
                 returnPrivateInformation: {
                     seatsBooked: returnSeatsToBook.map(seat => seat.seatNumber),
                     flightNumber: returnFlightNumber,
-                    departureTime: returnFlight.departureTime
+                    departureTime: returnFlight.departureTime,
+                    origin: returnFlight.origin,
+                    destination: returnFlight.destination
                 },
                 departureFlight: departureFlight,
                 returnFlight: returnFlight
