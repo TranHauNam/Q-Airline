@@ -24,8 +24,8 @@ const NewsManagement = () => {
       const response = await postApi.createPost(post);
       setDialog({
         isOpen: true,
-        title: 'Thành công',
-        message: 'Đăng bài viết thành công',
+        title: 'Success',
+        message: 'Posted successfully',
         type: 'success'
       });
       setPost({
@@ -37,8 +37,8 @@ const NewsManagement = () => {
     } catch (error) {
       setDialog({
         isOpen: true,
-        title: 'Lỗi',
-        message: error.response?.data?.message || 'Có lỗi xảy ra khi đăng bài',
+        title: 'Error',
+        message: error.response?.data?.message || 'An error occurred while posting.',
         type: 'error'
       });
     }

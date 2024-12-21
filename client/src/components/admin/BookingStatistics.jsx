@@ -68,6 +68,7 @@ const BookingStatistics = () => {
     responsive: true,
     plugins: {
       legend: {
+
         position: 'bottom',
         labels: {
           font: {
@@ -134,7 +135,15 @@ const BookingStatistics = () => {
 
       <div className="stat-section">
         <h3>Flight Statistics by Route Chart</h3>
-        <div className="chart-container" style={{ height: '550px',width: '550px', marginBottom: '30px', marginRight: '0px',}}>
+        <div className="chart-container" style={{ 
+          height: '550px',
+          width: '550px', 
+          marginBottom: '30px',
+          margin: '0 auto',  // Thêm này để căn giữa theo chiều ngang
+          display: 'flex',   // Thêm này
+          justifyContent: 'center', // Thêm này để căn giữa theo chiều ngang
+          alignItems: 'center' // Thêm này để căn giữa theo chiều dọc
+        }}>
           <Pie options={flightChartOptions} data={flightChartData} />
         </div>
         <div className="flight-stats-summary">

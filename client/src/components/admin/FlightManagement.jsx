@@ -51,8 +51,8 @@ const FlightManagement = () => {
       const response = await flightApi.addFlight(flight);
       setDialog({
         isOpen: true,
-        title: 'Thành công',
-        message: 'Thêm chuyến bay mới thành công',
+        title: 'Success',
+        message: 'New flight added successfully',
         type: 'success'
       });
       setFlight({
@@ -70,8 +70,7 @@ const FlightManagement = () => {
     } catch (error) {
       setDialog({
         isOpen: true,
-        title: 'Lỗi',
-        message: error.response?.data?.message || 'Có lỗi xảy ra khi thêm chuyến bay',
+        title: 'Error',message: error.response?.data?.message || 'An error occurred while adding the flight',
         type: 'error'
       });
     } finally {
@@ -120,7 +119,7 @@ const FlightManagement = () => {
             value={flight.origin}
             onChange={(e) => setFlight({...flight, origin: e.target.value})}
             required
-            placeholder="Example: Hanoi (HAN)"
+            placeholder="Example: Hanoi"
           />
         </div>
         <div className="form-group">
@@ -130,7 +129,7 @@ const FlightManagement = () => {
             value={flight.destination}
             onChange={(e) => setFlight({...flight, destination: e.target.value})}
             required
-            placeholder="Example: Ho Chi Minh City (SGN)"
+            placeholder="Example: Ho Chi Minh City"
           />
         </div>
         <div className="form-group">
@@ -145,11 +144,11 @@ const FlightManagement = () => {
         <div className="form-group">
           <label>Duration</label>
           <input
-            type="string"
+            type="text"
             value={flight.duration}
-            onChange={(e) => setFlight({...flight, duration: parseInt(e.target.value)})}
+            onChange={(e) => setFlight({...flight, duration: e.target.value})}
             required
-            placeholder="For example: 1H20"
+            placeholder="Example: 1h 20"
           />
         </div>
         <div className="form-group">

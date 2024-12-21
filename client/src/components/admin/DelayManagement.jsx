@@ -70,8 +70,8 @@ const DelayManagement = () => {
       
       setDialog({
         isOpen: true,
-        title: 'Thành công',
-        message: 'Cập nhật thời gian bay và tạo thông báo thành công',
+        title: 'Success',
+        message: 'Update flight time and create success message',
         type: 'success'
       });
       setFlightNumber('');
@@ -80,8 +80,8 @@ const DelayManagement = () => {
     } catch (error) {
       setDialog({
         isOpen: true,
-        title: 'Lỗi',
-        message: error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật thời gian bay',
+        title: 'Error',
+        message: error.response?.data?.message || 'An error occurred while updating flight times.',
         type: 'error'
       });
     } finally {

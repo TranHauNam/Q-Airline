@@ -52,8 +52,8 @@ const AdminAccountManagement = () => {
     if (formData.password !== formData.confirmPassword) {
       setDialog({
         isOpen: true,
-        title: 'Lỗi',
-        message: 'Mật khẩu xác nhận không khớp',
+        title: 'Error',
+        message: 'Confirmation password does not match',
         type: 'error'
       });
       return;
@@ -64,8 +64,8 @@ const AdminAccountManagement = () => {
       const response = await adminApi.createAdmin(formData);
       setDialog({
         isOpen: true,
-        title: 'Thành công',
-        message: 'Tạo tài khoản admin thành công',
+        title: 'Success',
+        message: 'Admin account created successfully',
         type: 'success'
       });
       setFormData({
@@ -79,8 +79,8 @@ const AdminAccountManagement = () => {
     } catch (error) {
       setDialog({
         isOpen: true,
-        title: 'Lỗi',
-        message: error.response?.data?.message || 'Có lỗi xảy ra khi tạo tài khoản',
+        title: 'Error',
+        message: error.response?.data?.message || 'An error occurred while creating an account.',
         type: 'error'
       });
     } finally {
