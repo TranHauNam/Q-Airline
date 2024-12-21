@@ -87,10 +87,10 @@ module.exports.bookFlight = async (req, res) => {
                 departurePrivateInformation: {
                     seatsBooked: depatureSeatsToBook.map(seat => seat.seatNumber),
                     flightNumber: departureFlightNumber,
+                    departureTime: departureFlight.departureTime
                 },
                 additionalService: additionalService,
-                paymenMethod: paymenMethod,
-                departureFlight: departureFlight
+                paymenMethod: paymenMethod
             });
 
             res.status(201).json({

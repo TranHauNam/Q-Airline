@@ -90,8 +90,7 @@ const bookingSchema = new mongoose.Schema(
                 ref: 'Flight',
             },
             departureTime: {
-                type: Date,
-                required: true
+                type: Date
             }
         },
         additionalService: {
