@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { flightApi } from '../../services/modules/admin/flight/flight.api';
 import { planeApi } from '../../services/modules/admin/plane/plane.api';
-
+import './Admin.css';
 const FlightManagement = () => {
   const [flight, setFlight] = useState({
     flightNumber: '',
@@ -63,7 +63,7 @@ const FlightManagement = () => {
 
   return (
     <div className="form-container">
-   <h2>Add new flight</h2>
+   <h2 className='h2-admin'>Add new flight</h2>
       {error && <div className="error-message">{error}</div>}
       
       <form onSubmit={handleSubmit}>

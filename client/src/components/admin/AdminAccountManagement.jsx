@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { adminApi } from '../../services/modules/admin/admin.api';
 import { useNavigate } from 'react-router-dom';
+import './Admin.css';
 
 const AdminAccountManagement = () => {
   const [formData, setFormData] = useState({
@@ -77,7 +78,7 @@ const AdminAccountManagement = () => {
 
   return (
     <div className="form-container">
-      <h2>Create new Admin account</h2>
+      <h2 className='h2-admin'>Create new Admin account</h2>
       
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}

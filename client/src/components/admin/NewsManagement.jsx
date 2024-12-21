@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { postApi } from '../../services/modules/admin/post/post.api';
-
+import './Admin.css';
 const NewsManagement = () => {
   const [post, setPost] = useState({
     title: '',
@@ -27,7 +27,7 @@ const NewsManagement = () => {
 
   return (
     <div className="form-container">
-      <h1>Post</h1>
+      <h2 className='h2-admin'>Post</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Post Type</label>
