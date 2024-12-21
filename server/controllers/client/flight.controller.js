@@ -132,10 +132,11 @@ module.exports.searchFlight = async (req, res) => {
                 adult: adult,
                 children: children,
                 infant: infant,
-                expiresAt: Date.now()
+                expiresAt: Date.now(),
+                flightType: flightType
             });
 
-            res.status(200).json({ flights: response });
+            res.status(200).json({ departure: response });
         } else if (flightType == 'round-trip') {
             const returnFilter = {
                 origin: { $regex: destination, $options: 'i' },
@@ -289,7 +290,8 @@ module.exports.searchFlight = async (req, res) => {
                 adult: adult,
                 children: children,
                 infant: infant,
-                expiresAt: Date.now()
+                expiresAt: Date.now(),
+                flightType: flightType
             });
 
             res.status(200).json({ 
