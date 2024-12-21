@@ -171,10 +171,12 @@ module.exports.bookFlight = async (req, res) => {
                 departurePrivateInformation: {
                     seatsBooked: depatureSeatsToBook.map(seat => seat.seatNumber),
                     flightNumber: departureFlightNumber,
+                    departureTime: departureFlightNumber.departureTime
                 },
                 returnPrivateInformation: {
                     seatsBooked: returnSeatsToBook.map(seat => seat.seatNumber),
                     flightNumber: returnFlightNumber,
+                    departureTime: returnFlight.departureTime
                 },
                 departureFlight: departureFlight,
                 returnFlight: returnFlight
@@ -259,7 +261,7 @@ module.exports.getUserBookings = async (req, res) => {
 
         res.status(200).json({
             message: 'Lấy thông tin đặt vé thành công.',
-            bookings: bookings  
+            bookings: bookings 
         });
     } catch (error) {
         console.error("Lỗi lấy thông tin đặt vé:", error);
