@@ -114,8 +114,10 @@ const ReviewPaymentPage = () => {
                 throw new Error(data.message || 'Booking failed');
             }
 
+            console.log(data);
+
             // Booking successful
-            alert('Booking successful! Your booking code is: ' + data.booking.bookingCode);
+            //alert('Booking successful! Your booking code is: ' + data.booking.bookingCode);
             navigate('/booking-confirmation', { 
                 state: { 
                     booking: data.booking,
