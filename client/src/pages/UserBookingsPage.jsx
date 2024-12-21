@@ -7,6 +7,8 @@ const UserBookingsPage = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -42,6 +44,29 @@ const UserBookingsPage = () => {
         fetchUserBookings();
     }, [navigate]);
 
+    const handleCancelBooking = async (bookingId) => {
+        try {
+            const response = await fetch(`/api/booking/cancel/${bookingId}`, {
+                method: 'PUT'
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Cannot cancel booking');
+            }
+
+            // Update the bookings list
+            setBookings(bookings.map(booking => 
+                booking._id === bookingId 
+                    ? { ...booking, status: 'CANCELLED' } 
+                    : booking
+            ));
+            setShowModal(false);
+        } catch (err) {
+            alert(err.message);
+        }
+    };
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleString('en-US', {
             year: 'numeric',
@@ -57,6 +82,101 @@ const UserBookingsPage = () => {
             style: 'currency',
             currency: 'VND'
         }).format(price);
+    };
+
+    const BookingDetailsModal = ({ booking, onClose, onCancel }) => {
+        if (!booking) return null;
+
+        return (
+            <div className="modal-overlay" onClick={onClose}>
+                <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="modal-header">
+                        <h2>Booking Details</h2>
+                        <button className="close-button" onClick={onClose}>&times;</button>
+                    </div>
+                    
+                    <div className="modal-body">
+                        <div className="booking-status-section">
+                            <div className="status-header">
+                                <h3>Booking Code: {booking.bookingCode}</h3>
+                                <span className={`booking-status ${booking.bookingStatus}`}>
+                                    {booking.bookingStatus === 'Confirmed' ? 'Confirmed' : 'Cancelled'}
+                                </span>
+                            </div>
+                            <p className="booking-date">Booked on {formatDate(booking.createdAt)}</p>
+                        </div>
+
+                        <div className="flight-section">
+                            <h3>Flight Information</h3>
+                            <div className="flight-details-modal">
+                                <div className="flight-info-item">
+                                    <h4>Departure Flight</h4>
+                                    <p><strong>Flight Number:</strong> {booking.departurePrivateInformation.flightNumber}</p>
+                                    <p><strong>From:</strong> {booking.departurePrivateInformation.origin}</p>
+                                    <p><strong>To:</strong> {booking.departurePrivateInformation.destination}</p>
+                                    <p><strong>Departure:</strong> {formatDate(booking.departurePrivateInformation.departureTime)}</p>
+                                    <p><strong>Seat(s):</strong> {booking.departurePrivateInformation.seatsBooked.join(', ')}</p>
+                                </div>
+
+                                {booking.returnPrivateInformation.length > 0 && (
+                                    <div className="flight-info-item">
+                                        <h4>Return Flight</h4>
+                                        <p><strong>Flight Number:</strong> {booking.returnPrivateInformation.flightNumber}</p>
+                                        <p><strong>From:</strong> {booking.returnPrivateInformation.origin}</p>
+                                        <p><strong>To:</strong> {booking.returnPrivateInformation.destination}</p>
+                                        <p><strong>Departure:</strong> {formatDate(booking.returnPrivateInformation.departureTime)}</p>
+                                        <p><strong>Seat(s):</strong> {booking.returnPrivateInformation.seatsBooked.join(', ')}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {booking.additionalService && (
+                            <div className="services-section">
+                                <h3>Additional Services</h3>
+                                <div className="service-tags">
+                                    {booking.additionalService.split(',').map((service, index) => (
+                                        <span key={index} className="service-tag">{service.trim()}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="price-section">
+                            <h3>Price Details</h3>
+                            <div className="price-details">
+                                <div className="price-row">
+                                    <span>Base Fare</span>
+                                    <span>{formatPrice(booking.totalPrice * 0.8)}</span>
+                                </div>
+                                <div className="price-row">
+                                    <span>Taxes & Fees</span>
+                                    <span>{formatPrice(booking.totalPrice * 0.2)}</span>
+                                </div>
+                                <div className="price-row total">
+                                    <span>Total Amount</span>
+                                    <span>{formatPrice(booking.totalPrice)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="modal-footer">
+                        {booking.bookingStatus === 'Confirmed' && (
+                            <button 
+                                className="cancel-button"
+                                onClick={() => onCancel(booking._id)}
+                            >
+                                Cancel Booking
+                            </button>
+                        )}
+                        <button className="close-button-secondary" onClick={onClose}>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     if (loading) {
@@ -125,7 +245,9 @@ const UserBookingsPage = () => {
                                         <div className="booking-info">
                                             <div className="booking-code">
                                                 <h3>Booking Code: <span>{booking.bookingCode}</span></h3>
-                                                <span className={`booking-status ${booking.status}`}></span>
+                                                <span className={`booking-status ${booking.status}`}>
+                                                    {booking.status === 'CONFIRMED' ? 'Confirmed' : 'Cancelled'}
+                                                </span>
                                             </div>
                                             <div className="booking-date">
                                                 Booked on {formatDate(booking.createdAt)}
@@ -214,17 +336,12 @@ const UserBookingsPage = () => {
                                             <span className="total-price">{formatPrice(booking.totalPrice)}</span>
                                         </div>
                                         <div className="booking-actions">
-                                            {(
-                                                <button 
-                                                    className="cancel-button"
-                                                    onClick={() => navigate(`/booking/${booking._id}/cancel`)}
-                                                >
-                                                    Cancel Booking
-                                                </button>
-                                            )}
                                             <button 
                                                 className="details-button"
-                                                onClick={() => navigate(`/booking/${booking._id}`)}
+                                                onClick={() => {
+                                                    setSelectedBooking(booking);
+                                                    setShowModal(true);
+                                                }}
                                             >
                                                 View Details
                                             </button>
@@ -236,6 +353,16 @@ const UserBookingsPage = () => {
                     </div>
                 )}
             </div>
+            {showModal && (
+                <BookingDetailsModal 
+                    booking={selectedBooking}
+                    onClose={() => {
+                        setShowModal(false);
+                        setSelectedBooking(null);
+                    }}
+                    onCancel={handleCancelBooking}
+                />
+            )}
         </div>
     );
 };
