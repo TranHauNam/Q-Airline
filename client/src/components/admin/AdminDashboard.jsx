@@ -1,5 +1,6 @@
 import React from 'react';
 import { BarChart, Activity, Users, Package, Clock, Bell } from 'lucide-react';
+import './Admin.css';
 
 const AdminDashboard = ({ selectedModule, renderModuleContent, welcomeImage }) => {
   if (selectedModule) {
@@ -26,10 +27,24 @@ const AdminDashboard = ({ selectedModule, renderModuleContent, welcomeImage }) =
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2  gap-6 mb-8">
           {[
             { title: 'Total Bookings', value: '1,234', icon: Package, color: 'text-blue-600' },
             { title: 'Active Flights', value: '42', icon: Activity, color: 'text-green-600' },
+          ].map((stat, index) => (
+            <div key={index} className="bg-white rounded-xl shadow-md p-6 flex items-center">
+              <div className={`p-4 rounded-lg ${stat.color} bg-opacity-10`}>
+                <stat.icon className={`h-6 w-6 ${stat.color}`} />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm text-gray-600">{stat.title}</p>
+                <p className="text-2xl font-semibold text-gray-800">{stat.value}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2  gap-6 mb-8">
+          {[
             { title: 'Total Users', value: '5,678', icon: Users, color: 'text-purple-600' },
             { title: 'On-time Rate', value: '95%', icon: Clock, color: 'text-orange-600' }
           ].map((stat, index) => (
