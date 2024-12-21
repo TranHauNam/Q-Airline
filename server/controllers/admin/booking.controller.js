@@ -18,7 +18,7 @@ module.exports.getBookingStatistics = async (req, res) => {
         ]);
 
         // Thống kê theo tháng trong năm hiện tại
-  const currentYear = new Date().getFullYear();
+        const currentYear = new Date().getFullYear();
         const monthlyBookings = await Booking.aggregate([
             {
                 $addFields: {
