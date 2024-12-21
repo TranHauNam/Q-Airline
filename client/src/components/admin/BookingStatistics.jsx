@@ -12,6 +12,7 @@ import {
   Legend
 } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
+import { AlignLeft } from 'lucide-react';
 
 ChartJS.register(
   ArcElement,
@@ -67,17 +68,24 @@ const BookingStatistics = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'right',
-      },
-      title: {
-        display: true,
-        // text: 'Flight Statistics by Route',
-        // color: '#c41e3a',
-        font: {
-          size: 16,
-          weight: 'bold'
+        position: 'bottom',
+        labels: {
+          font: {
+            //căn trái
+          
+            size: 10,
+          }
         }
       },
+      // title: {
+      //   display: true,
+      //   // text: 'Flight Statistics by Route',
+      //   // color: '#c41e3a',
+      //   font: {
+      //     size: 16,
+      //     weight: 'bold'
+      //   }
+      // },
     },
     maintainAspectRatio: false
   };
@@ -126,7 +134,7 @@ const BookingStatistics = () => {
 
       <div className="stat-section">
         <h3>Flight Statistics by Route Chart</h3>
-        <div className="chart-container" style={{ height: '400px', marginBottom: '30px' }}>
+        <div className="chart-container" style={{ height: '550px',width: '550px', marginBottom: '30px', marginRight: '0px',}}>
           <Pie options={flightChartOptions} data={flightChartData} />
         </div>
         <div className="flight-stats-summary">
