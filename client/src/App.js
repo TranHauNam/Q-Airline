@@ -12,6 +12,7 @@ import AdminLogin from './pages/AdminLogin';
 import BookingPage from './pages/BookingPage';
 import ReviewPaymentPage from './pages/ReviewPaymentPage';
 import BookingManagementPage from './pages/BookingManagementPage';
+import BookingConfirmationPage from './pages/BookingConfirmationPage';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
         <Route path="/booking" element={<BookingPage />} />
         <Route path="/booking-management" element={<BookingManagementPage />} />
         <Route path="/review-payment" element={<ReviewPaymentPage />} />
-
+        <Route path="/booking-confirmation" element={<BookingConfirmationPage />} />
       </Routes>
     </AuthProvider>
   );
