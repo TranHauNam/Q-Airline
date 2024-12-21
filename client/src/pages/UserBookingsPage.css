@@ -184,8 +184,11 @@
     margin-top: 5px;
 }
 
-.flight-details {
+.ub-flight-details {
     padding: 20px;
+    /* display: flex;
+    flex-direction: column;
+    gap: 10px; */
 }
 
 .flight-header {

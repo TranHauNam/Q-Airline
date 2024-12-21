@@ -274,7 +274,7 @@ const UserBookingsPage = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flight-details">
+                                    <div className="ub-flight-details">
                                         <div className="departure-flight">
                                             <div className="flight-header">
                                                 <h4>Departure Flight</h4>

@@ -303,7 +303,7 @@
   filter: brightness(90%);
 }
 
-.flight-details {
+.fr-flight-details {
   display: flex;
   justify-content: space-between;
   align-items: center;

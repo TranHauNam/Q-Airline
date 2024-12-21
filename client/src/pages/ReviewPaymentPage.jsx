@@ -45,23 +45,8 @@ const ReviewPaymentPage = () => {
     // Lấy giá vé cơ bản
     const getBasePrice = () => {
         if (!flight || !selectedClass) return 0;
-        
-        // Map trực tiếp class với property name trong flight object
-        // const priceKeys = {
-        //     'ECONOMY': 'priceEconomy',
-        //     'PREMIUM ECONOMY': 'pricePremiumEconomy',
-        //     'BUSINESS': 'priceBusiness',
-        //     'FIRST': 'priceFirst'
-        // };
-
-        // const priceKey = priceKeys[selectedClass];
-        // const price = flight[priceKey];
-   
-        // console.log('Selected Class:', selectedClass);
-        // console.log('Price Key:', priceKey);
-        // console.log('Flight Object:', flight);
-        // console.log('Selected Price:', price);
-        
+    
+        console.log('Location State Review Payment:', location.state);
         return flight.totalBasePrice || 0;
     };
 
@@ -76,11 +61,17 @@ const ReviewPaymentPage = () => {
         return total;
     };
 
+    const calculateTaxes = () => {
+        const basePrice = getBasePrice();
+        const addOnsTotal = calculateAddOnsTotal();
+        return (basePrice + addOnsTotal) * 0.06;
+    };
+
     // Tính tổng tiền
     const calculateTotal = () => {
         const basePrice = getBasePrice();
         const addOnsTotal = calculateAddOnsTotal();
-        const taxes = basePrice * 0.1;
+        const taxes = calculateTaxes();
         return basePrice + addOnsTotal + taxes;
     };
 
@@ -125,7 +116,11 @@ const ReviewPaymentPage = () => {
                     passengerDetails,
                     selectedClass,
                     selectedSeats,
-                    addOns
+                    addOns, 
+                    basePrice: getBasePrice(),
+                    taxes: calculateTaxes(),
+                    addOnsTotal: calculateAddOnsTotal(),
+                    totalPrice: calculateTotal()
                 } 
             });
         } catch (error) {
@@ -238,7 +233,7 @@ const ReviewPaymentPage = () => {
                                             isSelected && (
                                                 <div key={service} className="service-item">
                                                     <span className="service-name">
-                                                        {service.replace(/([A-Z])/g, ' $1').trim()}
+                                                        {service.replace(/([A-Z])/g, ' $1').trim().toLocaleLowerCase()}
                                                     </span>
                                                     <span className="service-price">
                                                         {formatPrice(
@@ -272,8 +267,8 @@ const ReviewPaymentPage = () => {
                                         </div>
                                     )}
                                     <div className="price-item">
-                                        <label>Taxes & Fees (10%)</label>
-                                        <span>{formatPrice(getBasePrice() * 0.1)}</span>
+                                        <label>Taxes & Fees (6%)</label>
+                                        <span>{formatPrice(calculateTaxes())}</span>
                                     </div>
                                     <div className="price-item total">
                                         <label>Total Amount</label>
