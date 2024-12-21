@@ -4,7 +4,7 @@ const postSchema = new mongoose.Schema(
     {
         postType: {
             type: String,
-            enum: ['Tin tức', 'Khuyến mãi', 'Thông báo'],
+            enum: ['News', 'Promotion', 'Notification'],
             required: true
         },
         title: {

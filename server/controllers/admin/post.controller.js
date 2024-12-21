@@ -19,7 +19,7 @@ module.exports.createPost = async (req, res) => {
         });
 
         res.status(201).json({
-            message: "Tạo bài viết thành công!",
+            message: "Creat post successfully",
             post: newPost
         });
     } catch (error) {

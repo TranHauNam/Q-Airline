@@ -7,5 +7,6 @@ export const bookingApi = {
   
   getBookingStatistics: () => {
     return axiosClient.get('/admin/booking/statistics');
+    
   }
 }; 
