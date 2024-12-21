@@ -34,9 +34,9 @@ module.exports.bookFlight = async (req, res) => {
         if (!searched || !searched.flightData) {
             return res.status(404).json({ message: 'The search data is expired or does not exist.' });
         }
-        if (searched.flightData.flightType === 'one-way') {
+        if (searched.flightData[0].flightType === 'one-way') {
             const flightSearched = searched.flightData.find(f => f.flightNumber === departureFlightNumber);
-            console.log(flightSearched);
+            //console.log(flightSearched);
             const classType = flightSearched.classType;
             const departureFlight = await Flight.findOne({flightNumber: departureFlightNumber});
 
