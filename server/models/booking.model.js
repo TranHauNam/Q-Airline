@@ -75,6 +75,10 @@ const bookingSchema = new mongoose.Schema(
                 type: String,
                 ref: 'Flight',
                 required: true
+            },
+            departureTime: {
+                type: Date,
+                required: true
             }
         },
         returnPrivateInformation: {
@@ -84,6 +88,10 @@ const bookingSchema = new mongoose.Schema(
             flightNumber: {
                 type: String,
                 ref: 'Flight',
+            },
+            departureTime: {
+                type: Date,
+                required: true
             }
         },
         additionalService: {
