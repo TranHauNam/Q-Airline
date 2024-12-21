@@ -11,23 +11,23 @@ module.exports.bookFlight = async (req, res) => {
         const userId = res.locals.user ? res.locals.user._id : null;
         
         if (!userId) {
-            return res.status(401).json({ message: 'Bạn phải đăng nhập để đặt vé.' });
+            return res.status(401).json({ message: 'You must log in to book tickets.' });
         }
 
         const user = await User.findById(userId);
 
         const searched = await TemporarySearch.findOne({ userId: userId });
         if (!searched || !searched.flightData) {
-            return res.status(404).json({ message: 'Dữ liệu tìm kiếm đã hết hạn hoặc không tồn tại.' });
+            return res.status(404).json({ message: 'The search data is expired or does not exist.' });
         }
         if (searched.flightData[0].flightType === 'one-way') {
             const flightSearched = searched.flightData.find(f => f.flightNumber === departureFlightNumber);
-            //console.log(flightSearched);
+            console.log(flightSearched);
             const classType = flightSearched.classType;
             const departureFlight = await Flight.findOne({flightNumber: departureFlightNumber});
 
             if (!departureFlight) {
-                return res.status(400).json({ message: 'Không tìm thấy chuyến bay!' });       
+                return res.status(400).json({ message: 'Flight not found!' });       
             }
         
             //Đánh dấu các ghế đã đặt
@@ -40,7 +40,7 @@ module.exports.bookFlight = async (req, res) => {
                 });
                 if (seatIndex === -1) {
                     return res.status(400).json({
-                        message: `Ghế ${seatNumber} không khả dụng hoặc đã được đặt.`,
+                        message: `Seat ${seatNumber} unavailable or booked.`,
                     });
                 }
 
@@ -94,7 +94,7 @@ module.exports.bookFlight = async (req, res) => {
             });
 
             res.status(201).json({
-                message: 'Đặt vé thành công!',
+                message: 'Booking successful!',
                 booking: booking
             });
         } else if (searched.flightData[0].flightType === 'round-trip') {
@@ -103,7 +103,7 @@ module.exports.bookFlight = async (req, res) => {
             const classType = flightSearched.classType;
             const departureFlight = await Flight.findOne({flightNumber: departureFlightNumber});
             if (!departureFlight) {
-                return res.status(400).json({ message: 'Không tìm thấy chuyến bay!' });       
+                return res.status(400).json({ message: 'Flight not found!' });       
             }
 
             //Đánh dấu các ghế đã đặt
@@ -115,7 +115,7 @@ module.exports.bookFlight = async (req, res) => {
                 });
                 if (seatIndex === -1) {
                     return res.status(400).json({
-                        message: `Ghế ${seatNumber} không khả dụng hoặc đã được đặt.`,
+                        message: `Seat ${seatNumber} unavailable or booked.`,
                     });
                 }
 
@@ -134,7 +134,7 @@ module.exports.bookFlight = async (req, res) => {
             const returnFlight = await Flight.findOne({flightNumber: returnFlightNumber});
 
             if (!returnFlight) {
-                return res.status(400).json({ message: 'Không tìm thấy chuyến bay!' });       
+                return res.status(400).json({ message: 'Flight not found!' });       
             }
 
             //Đánh dấu các ghế đã đặt
@@ -146,7 +146,7 @@ module.exports.bookFlight = async (req, res) => {
                 });
                 if (seatIndex === -1) {
                     return res.status(400).json({
-                        message: `Ghế ${seatNumber} không khả dụng hoặc đã được đặt.`,
+                        message: `Seat ${seatNumber} unavailable or booked.`,
                     });
                 }
 
@@ -183,28 +183,28 @@ module.exports.bookFlight = async (req, res) => {
             });
 
             res.status(201).json({
-                message: 'Đặt vé thành công!',
+                message: 'Booking successful!',
                 booking: booking
             });
         }
         
     } catch (error) {
-        console.error("Lỗi đặt vé:", error);
+        console.error("Booking error:", error);
         res.status(500).json({ 
-            message: 'Có lỗi xảy ra, vui lòng thử lại sau.' ,
+            message: 'An error occurred, please try again later.' ,
             error: error.message
         });
     }
 };
 
-// [DELETE] /api/booking/cancel/:bookingCode
+// [POST] /api/booking/cancel/:bookingCode
 module.exports.cancelBooking = async (req, res) => {
     try {
         const bookingCode = req.params.bookingCode;
 
         const booking = await Booking.findOne({bookingCode});
         if (!booking) {
-            return res.status(404).json({ message: 'Không tìm thấy vé.' });
+            return res.status(404).json({ message: 'Ticket not found.' });
         }
 
         const userId = res.locals.user ? res.locals.user._id : null;
@@ -213,7 +213,7 @@ module.exports.cancelBooking = async (req, res) => {
         // Tìm thông tin chuyến bay tương ứng
         const flight = await Flight.findOne({ flightNumber: booking.departurePrivateInformation.flightNumber });
         if (!flight) {
-            return res.status(404).json({ message: 'Không tìm thấy chuyến bay tương ứng.' });
+            return res.status(404).json({ message: 'No matching flight found.' });
         }
 
         // Kiểm tra thời gian hiện tại và thời gian khởi hành
@@ -223,7 +223,7 @@ module.exports.cancelBooking = async (req, res) => {
 
         if (currentTime > cancelDeadline) {
             return res.status(400).json({
-                message: 'Đã quá thời hạn hủy vé (12 tiếng trước giờ khởi hành).'
+                message: 'Cancellation deadline has passed (12 hours before departure time).'
             });
         }
 
@@ -235,21 +235,22 @@ module.exports.cancelBooking = async (req, res) => {
         const srtClassType = arrClassType.join('');
         const seatField = `availableSeats${srtClassType}`;
 
-        flight[seatField] = booking.departurePrivateInformation.seatsBooked.length + booking.returnPrivateInformation.seatsBooked.length;
+        flight[seatField] = flight[seatField] + booking.departurePrivateInformation.seatsBooked.length + booking.returnPrivateInformation.seatsBooked.length;
         await flight.save();
 
         res.status(200).json({
-            message: 'Hủy vé thành công.',
-            booking: {
-                bookingCode: bookingCode,
-                flightNumber: booking.departurePrivateInformation.flightNumber,
-                status: booking.bookingStatus,
-                totalPrice: booking.totalPrice,
-            }
+            message: 'Ticket cancellation successful.',
+            // bookings: {
+            //     bookingCode: bookingCode,
+            //     flightNumber: booking.departurePrivateInformation.flightNumber,
+            //     status: booking.bookingStatus,
+            //     totalPrice: booking.totalPrice,
+            // }
+            booking: booking
         });
     } catch (error) {
-        console.error("Lỗi hủy đặt vé:", error);
-        res.status(500).json({ message: 'Có lỗi xảy ra, vui lòng thử lại sau.' });
+        console.error("Error canceling ticket:", error);
+        res.status(500).json({ message: 'An error occurred, please try again later.' });
     }
 };
 
@@ -260,11 +261,11 @@ module.exports.getUserBookings = async (req, res) => {
         const bookings = await Booking.find({ userId: userId });
 
         res.status(200).json({
-            message: 'Lấy thông tin đặt vé thành công.',
-            bookings: bookings 
+            message: 'Get ticket booking information successfully.',
+            bookings: bookings
         });
     } catch (error) {
-        console.error("Lỗi lấy thông tin đặt vé:", error);
-        res.status(500).json({ message: 'Có lỗi xảy ra, vui lòng thử lại sau.' });
+        console.error("Error retrieving booking information:", error);
+        res.status(500).json({ message: 'An error occurred, please try again later.' });
     }
 };

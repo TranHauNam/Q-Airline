@@ -15,7 +15,7 @@ module.exports.register = async (req, res) => {
 
         if (existEmail) {
             return res.status(400).json({
-                message: "Email đã tồn tại!"
+                message: "Email already exists!"
             });
         }
 
@@ -34,7 +34,7 @@ module.exports.register = async (req, res) => {
         });
 
         res.status(200).json({
-            message: "Đăng ký thành công",
+            message: "Registration successful",
             token: user.token,
             user: {
                 fullName: user.fullName,
@@ -45,11 +45,11 @@ module.exports.register = async (req, res) => {
         console.error("Register error:", error);
         if (error.name === 'ValidationError') {
             return res.status(400).json({ 
-                message: "Dữ liệu không hợp lệ" 
+                message: "Invalid data" 
             });
         }
         res.status(500).json({ 
-            message: "Có lỗi xảy ra, vui lòng thử lại sau" 
+            message: "An error occurred, please try again later" 
         });
     }
 };
@@ -68,19 +68,19 @@ module.exports.login = async (req, res) => {
 
         if (!user) {
             return res.status(401).json({ 
-                message: "Email không tồn tại!" 
+                message: "Email does not exist!" 
             });
         }
 
         if (hashedPassword != user.password) {
             return res.status(401).json({ 
-                message: "Sai mật khẩu" 
+                message: "Wrong password" 
             });
         }
 
         if (user.status == "inactive") {
             return res.status(401).json({ 
-                message: "Tài khoản đang bị khóa" 
+                message: "Account is locked" 
             });
         }
 
@@ -95,7 +95,7 @@ module.exports.login = async (req, res) => {
         });
 
         res.status(200).json({
-            message: "Đăng nhập thành công",
+            message: "Login successful",
             token: user.token,
             user: {
                 id: user._id,
@@ -105,7 +105,7 @@ module.exports.login = async (req, res) => {
         });
     } catch (error) {
         console.error("Login error:", error);
-        res.status(500).json({ message: "Lỗi server" });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
@@ -113,10 +113,10 @@ module.exports.login = async (req, res) => {
 module.exports.logout = async (req, res) => {
     try {
         res.clearCookie("token");    
-        res.status(200).json({ message: "Đăng xuất thành công" });
+        res.status(200).json({ message: "Logout successful" });
     } catch (error) {
         console.error("Logout error:", error);
-        res.status(500).json({ message: "Có lỗi xảy ra, vui lòng thử lại sau" });
+        res.status(500).json({ message: "An error occurred, please try again later" });
     }
 };
 

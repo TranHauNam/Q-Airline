@@ -129,7 +129,7 @@ module.exports.getBookingStatistics = async (req, res) => {
         ]);
 
         return res.status(200).json({
-            success: true,
+            message: "Success statistics",
             data: {
                 totalBookings,
                 bookingsByClass,
@@ -141,7 +141,7 @@ module.exports.getBookingStatistics = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Lỗi khi lấy thống kê",
+            message: "Error getting statistics",
             error: error.message
         });
     }
