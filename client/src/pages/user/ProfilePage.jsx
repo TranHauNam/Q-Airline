@@ -130,7 +130,7 @@ const ProfilePage = () => {
                 />
               </div>
 
-              {/* <div className="form-group">
+              <div className="form-group">
                 <label>Số điện thoại</label>
                 <input
                   type="tel"
@@ -138,7 +138,7 @@ const ProfilePage = () => {
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   disabled={!isEditing || loading}
                 />
-              </div> */}
+              </div>
 
               {!isEditing ? (
                 <button 
@@ -146,7 +146,7 @@ const ProfilePage = () => {
                   className="edit-button"
                   onClick={() => setIsEditing(true)}
                 >
-                  Chỉnh sửa thông tin
+                  Edit information
                 </button>
               ) : (
                 <div className="button-group">
