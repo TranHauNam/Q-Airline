@@ -106,10 +106,6 @@ const bookingSchema = new mongoose.Schema(
                 type: String
             }
         },
-        // additionalService: {
-        //     type: String,
-        //     enum: ['Extra Baggage', 'Special Meal', 'Travel Insurance', 'Priority Boarding']
-        // },
         extraBaggage: Boolean,
         specialMeal: Boolean,
         travelInsurance: Boolean,
