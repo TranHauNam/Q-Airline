@@ -7,7 +7,7 @@ const generateBookingCode = require('../../helpers/generateBookingCode');
 // [POST] /api/booking/
 module.exports.bookFlight = async (req, res) => {
     try {
-        const { departureFlightNumber, returnFlightNumber, passengers, departureSeatsRequested, returnSeatsRequested  } = req.body;
+        const { departureFlightNumber, returnFlightNumber, passengers, departureSeatsRequested, returnSeatsRequested, additionalService, paymenMethod  } = req.body;
         const userId = res.locals.user ? res.locals.user._id : null;
         
         if (!userId) {
@@ -58,6 +58,23 @@ module.exports.bookFlight = async (req, res) => {
 
             const totalPrice = flightSearched.totalBasePrice;
 
+            switch (additionalService) {
+                case "Extra Baggage":
+                    totalPrice += 300000;
+                    break;
+                case "Special Meal":
+                    totalPrice += 150000;
+                    break;
+                case "Travel Insurance":
+                    totalPrice += 200000;
+                    break;
+                case "Priority Boarding":
+                    totalPrice += 100000;
+                    break;
+                default:
+                    break;
+            }
+
             const bookingCode = generateBookingCode();
 
             //Tạo bản ghi đặt vé
@@ -70,7 +87,9 @@ module.exports.bookFlight = async (req, res) => {
                 departurePrivateInformation: {
                     seatsBooked: depatureSeatsToBook.map(seat => seat.seatNumber),
                     flightNumber: departureFlightNumber,
-                }
+                },
+                additionalService: additionalService,
+                paymenMethod: paymenMethod
             });
 
             res.status(201).json({
@@ -173,12 +192,12 @@ module.exports.bookFlight = async (req, res) => {
     }
 };
 
-// [DELETE] /api/booking/cancel/:bookingId
+// [DELETE] /api/booking/cancel/:bookingCode
 module.exports.cancelBooking = async (req, res) => {
     try {
-        const bookingId = req.params.bookingId;
+        const bookingId = req.params.bookingCode;
 
-        const booking = await Booking.findById(bookingId);
+        const booking = await Booking.findById(bookingCode);
         if (!booking) {
             return res.status(404).json({ message: 'Không tìm thấy vé.' });
         }
