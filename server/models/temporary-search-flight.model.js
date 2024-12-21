@@ -16,8 +16,7 @@ const temporarySearchSchema = new mongoose.Schema({
     },
     adult: Number,
     children: Number,
-    infant: Number,
-    flightType: String
+    infant: Number
 });
 
 const TemporarySearch = mongoose.model('TemporarySearch', temporarySearchSchema, 'temporary-search-flight');

@@ -34,8 +34,7 @@ module.exports.bookFlight = async (req, res) => {
         if (!searched || !searched.flightData) {
             return res.status(404).json({ message: 'The search data is expired or does not exist.' });
         }
-        console.log(searched);
-        if (searched.flightType === 'one-way') {
+        if (searched.flightData[0].flightType === 'one-way') {
             const flightSearched = searched.flightData.find(f => f.flightNumber === departureFlightNumber);
             //console.log(flightSearched);
             const classType = flightSearched.classType;
@@ -47,7 +46,7 @@ module.exports.bookFlight = async (req, res) => {
         
             //Đánh dấu các ghế đã đặt
             const depatureSeatsToBook = [];
-            //console.log(departureFlight);
+            console.log(departureFlight);
             for (let i = 0; i < departureSeatsRequested.length; i++) {
                 const seatNumber = departureSeatsRequested[i];
                 const seatIndex = departureFlight.seats.findIndex(seat => {
@@ -103,7 +102,7 @@ module.exports.bookFlight = async (req, res) => {
                 message: 'Booking successful!',
                 booking: booking
             });
-        } else if (searched.flightType === 'round-trip') {
+        } else if (searched.flightData.flightType === 'round-trip') {
             //console.log(searched.flightData);
             const flightSearched = searched.flightData.departure.find(f => f.flightNumber === departureFlightNumber);
             const classType = searched.flightData.classType;
@@ -259,7 +258,7 @@ module.exports.cancelBooking = async (req, res) => {
             }
         }
          // Nếu là vé khứ hồi, cập nhật cả ghế chuyến về
-        if (booking.returnPrivateInformation,length) {
+        if (booking.returnPrivateInformation.length) {
             const returnFlight = await Flight.findOne({ 
                 flightNumber: booking.returnPrivateInformation.flightNumber 
             });
