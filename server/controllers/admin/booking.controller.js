@@ -129,6 +129,7 @@ module.exports.getBookingStatistics = async (req, res) => {
         ]);
 
         return res.status(200).json({
+            success: true,
             message: "Success statistics",
             data: {
                 totalBookings,
