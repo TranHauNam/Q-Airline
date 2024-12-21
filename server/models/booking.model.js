@@ -23,11 +23,11 @@ const bookingSchema = new mongoose.Schema(
                     type: String,
                     required: true
                 },
-                birthday: {
+                dateOfBirth: {
                     type: Date,
                     required: true
                 },
-                national: {
+                nationality: {
                     type: String,
                     required: true
                 },
@@ -35,7 +35,7 @@ const bookingSchema = new mongoose.Schema(
                     type: String,
                     required: true
                 },
-                passportExpireDate: {
+                passportExpiry: {
                     type: Date,
                     required: true
                 },
@@ -43,7 +43,7 @@ const bookingSchema = new mongoose.Schema(
                     type: String,
                     required: true
                 },
-                phoneNumber: {
+                phone: {
                     type: String,
                     required: true
                 }
