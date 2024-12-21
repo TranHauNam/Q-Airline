@@ -36,9 +36,9 @@ const NewsManagement = () => {
             onChange={(e) => setPost({...post, postType: e.target.value})}
             required
           >
-            <option value="Tin tức">News</option>
-            <option value="Khuyến mãi">Promotion</option>
-            <option value="Thông báo">Notification</option>
+            <option value="News">News</option>
+            <option value="Promotion">Promotion</option>
+            <option value="Notification">Notification</option>
           </select>
         </div>
 
