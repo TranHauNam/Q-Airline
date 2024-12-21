@@ -114,10 +114,10 @@ const bookingSchema = new mongoose.Schema(
         specialMeal: Boolean,
         travelInsurance: Boolean,
         priorityBoarding: Boolean,
-        paymenMethod: {
+        paymentMethod: {
             type: String,
-            enum: ['Credit/Debit Card', 'Internet Banking', 'E-Wallet'],
-            default: 'Credit/Debit Card'
+            enum: ['Credit/Debit Card', 'Internet Banking', 'E-Wallet']
+            //default: 'Credit/Debit Card'
         },
         bookingStatus: {
             type: String,

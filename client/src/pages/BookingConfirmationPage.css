@@ -346,4 +346,329 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin-bottom: 20px;
     padding: 30px;
+}
+
+/* Printable Ticket Styles */
+@media print {
+    /* Set up A4 page */
+    @page {
+        size: A4;
+        margin: 15mm; /* Standard margin for A4 */
+    }
+
+    /* Hide everything except the ticket */
+    body * {
+        visibility: hidden;
+    }
+
+    .printable-ticket,
+    .printable-ticket * {
+        visibility: visible;
+    }
+
+    .printable-ticket {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 180mm; /* A4 width minus margins */
+        height: auto;
+        margin: 0 auto;
+        padding: 0;
+        border: none;
+        background: white;
+        box-shadow: none;
+    }
+
+    /* Remove unnecessary elements */
+    .header,
+    .confirmation-container,
+    .confirmation-actions,
+    .confirmation-footer {
+        display: none !important;
+    }
+
+    /* Adjust ticket layout for printing */
+    .ticket-body {
+        padding: 15mm;
+        page-break-inside: avoid;
+    }
+
+    /* Adjust font sizes for print */
+    .airline-logo {
+        font-size: 20pt;
+    }
+
+    .ticket-type {
+        font-size: 14pt;
+    }
+
+    .ticket-label {
+        font-size: 8pt;
+    }
+
+    .ticket-value {
+        font-size: 10pt;
+    }
+
+    .airport-code {
+        font-size: 18pt;
+    }
+
+    .airport-city {
+        font-size: 10pt;
+    }
+
+    .plane-icon-print {
+        font-size: 16pt;
+    }
+
+    .barcode {
+        font-size: 12pt;
+    }
+
+    .ticket-notice {
+        font-size: 8pt;
+        margin-top: 10mm;
+    }
+}
+
+.printable-ticket {
+    display: none;
+    width: 180mm;
+    margin: 20px auto;
+    background: white;
+    border: 2px solid #e31837;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.ticket-header {
+    background: linear-gradient(135deg, #e31837, #c41230);
+    color: white;
+    padding: 8mm 10mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ticket-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1));
+}
+
+.airline-logo {
+    font-size: 20pt;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.ticket-type {
+    font-size: 12pt;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(255,255,255,0.2);
+    padding: 2mm 4mm;
+    border-radius: 3mm;
+}
+
+.ticket-body {
+    padding: 8mm;
+    background: linear-gradient(to bottom, #fff, #f8f9fa);
+}
+
+.ticket-main-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8mm;
+    padding-bottom: 8mm;
+    border-bottom: 1px dashed #ccc;
+}
+
+.ticket-main-info::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #ccc;
+    border-bottom: 1px dashed #eee;
+}
+
+.passenger-info, .booking-info {
+    flex: 1;
+}
+
+.booking-info {
+    text-align: right;
+}
+
+.ticket-label {
+    font-size: 8pt;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 1mm;
+}
+
+.ticket-value {
+    font-size: 10pt;
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 4mm;
+}
+
+.flight-info-print {
+    background: #f8f9fa;
+    border-radius: 4mm;
+    margin: 8mm 0;
+    padding: 6mm;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.airport-info {
+    text-align: center;
+    flex: 1;
+    padding: 0 4mm;
+}
+
+.airport-code {
+    font-size: 16pt;
+    font-weight: bold;
+    color: #e31837;
+    margin-bottom: 1mm;
+}
+
+.airport-city {
+    font-size: 8pt;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.flight-path-print {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0 6mm;
+}
+
+.flight-path-line {
+    height: 2px;
+    background: linear-gradient(to right, #ccc 50%, transparent 50%);
+    background-size: 8px 2px;
+    flex-grow: 1;
+}
+
+.plane-icon-print {
+    font-size: 14pt;
+    color: #e31837;
+    margin: 0 3mm;
+}
+
+.flight-details-print {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6mm;
+    margin-top: 8mm;
+    padding: 6mm;
+    background: #f8f9fa;
+    border-radius: 4mm;
+}
+
+.detail-item-print {
+    text-align: center;
+    padding: 3mm;
+    background: white;
+    border-radius: 3mm;
+}
+
+.ticket-footer {
+    padding: 6mm;
+    margin-top: 8mm;
+    border-top: 1px dashed #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+}
+
+.barcode {
+    font-size: 12pt;
+    letter-spacing: 2px;
+    padding: 2mm;
+}
+
+.qr-code {
+    width: 20mm;
+    height: 20mm;
+    padding: 2mm;
+}
+
+.ticket-notice {
+    font-size: 8pt;
+    color: #666;
+    text-align: center;
+    padding: 4mm;
+    border-top: 1px solid #eee;
+    background: #f8f9fa;
+    line-height: 1.4;
+}
+
+/* Print-specific styles */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 10mm;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    .printable-ticket,
+    .printable-ticket * {
+        visibility: visible;
+    }
+
+    .printable-ticket {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 190mm; /* A4 width minus margins */
+        height: 277mm; /* A4 height minus margins */
+        margin: 0;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    /* Ensure backgrounds print */
+    .ticket-header,
+    .flight-info-print,
+    .flight-details-print,
+    .detail-item-print,
+    .ticket-footer {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Remove box shadows in print */
+    * {
+        box-shadow: none !important;
+    }
 } 

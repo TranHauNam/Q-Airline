@@ -3,6 +3,93 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/common/Header';
 import './BookingConfirmationPage.css';
 
+const PrintableTicket = ({ booking, flightDetails, passengerDetails, selectedClass, selectedSeats }) => {
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    return (
+        <div className="printable-ticket">
+            <div className="ticket-header">
+                <div className="airline-logo">Q-AIRLINE</div>
+                <div className="ticket-type">Boarding Pass</div>
+            </div>
+            
+            <div className="ticket-body">
+                <div className="ticket-main-info">
+                    <div className="passenger-info">
+                        <div className="ticket-label">Passenger Name</div>
+                        <div className="ticket-value">
+                            {`${passengerDetails.title} ${passengerDetails.firstName} ${passengerDetails.lastName}`}
+                        </div>
+                        <div className="ticket-label">Passport Number</div>
+                        <div className="ticket-value">{passengerDetails.passportNumber}</div>
+                    </div>
+                    <div className="booking-info">
+                        <div className="ticket-label">Booking Reference</div>
+                        <div className="ticket-value">{booking.bookingCode}</div>
+                        <div className="ticket-label">Class</div>
+                        <div className="ticket-value">{selectedClass}</div>
+                    </div>
+                </div>
+
+                <div className="flight-info-print">
+                    <div className="airport-info">
+                        <div className="airport-code">{flightDetails.origin}</div>
+                        <div className="airport-city">Departure</div>
+                        <div className="ticket-value">{formatDate(flightDetails.departureTime)}</div>
+                    </div>
+                    <div className="flight-path-print">
+                        <div className="flight-path-line"></div>
+                        <span className="plane-icon-print">✈</span>
+                        <div className="flight-path-line"></div>
+                    </div>
+                    <div className="airport-info">
+                        <div className="airport-code">{flightDetails.destination}</div>
+                        <div className="airport-city">Arrival</div>
+                        <div className="ticket-value">{formatDate(flightDetails.arrivalTime)}</div>
+                    </div>
+                </div>
+
+                <div className="flight-details-print">
+                    <div className="detail-item-print">
+                        <div className="ticket-label">Flight</div>
+                        <div className="ticket-value">{flightDetails.flightNumber}</div>
+                    </div>
+                    <div className="detail-item-print">
+                        <div className="ticket-label">Gate</div>
+                        <div className="ticket-value">--</div>
+                    </div>
+                    <div className="detail-item-print">
+                        <div className="ticket-label">Seat(s)</div>
+                        <div className="ticket-value">{selectedSeats.join(', ')}</div>
+                    </div>
+                    <div className="detail-item-print">
+                        <div className="ticket-label">Boarding Time</div>
+                        <div className="ticket-value">30 mins before departure</div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="ticket-footer">
+                <div className="barcode">*{booking.bookingCode}*</div>
+                <div className="qr-code">QR</div>
+            </div>
+
+            <div className="ticket-notice">
+                Please arrive at the airport at least 2 hours before departure time.
+                This is an electronic ticket, please present this along with a valid ID at check-in.
+            </div>
+        </div>
+    );
+};
+
 const BookingConfirmationPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -201,6 +288,14 @@ const BookingConfirmationPage = () => {
                     <p>For any assistance, please contact our support team</p>
                 </div>
             </div>
+
+            <PrintableTicket 
+                booking={booking}
+                flightDetails={flightDetails}
+                passengerDetails={passengerDetails}
+                selectedClass={selectedClass}
+                selectedSeats={selectedSeats}
+            />
         </div>
     );
 };
