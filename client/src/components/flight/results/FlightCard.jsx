@@ -92,9 +92,9 @@ const FlightCard = ({ flight }) => {
             </div>
             <div className="flight-details">
                 <button className="view-details">View Flight Details</button>
-                <div className="flight-info">
+                {/* <div className="flight-info">
                     <span>Aircraft: {flight.planeCode}</span>
-                </div>
+                </div> */}
             </div>
         </div>
     );
