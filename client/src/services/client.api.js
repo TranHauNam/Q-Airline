@@ -47,7 +47,7 @@ Client.interceptors.response.use(
           // Xử lý lỗi unauthorized
           localStorage.removeItem('token');
           localStorage.removeItem('user');
-          window.location.href = '/login';
+          window.location.href = '/sign';
           break;
         case 403:
           // Xử lý lỗi forbidden

@@ -22,7 +22,7 @@ const Header = () => {
     try {
       await accountService.logout();
       setUser(null);
-      navigate('/login');
+      navigate('/sign');
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -94,19 +94,19 @@ const Header = () => {
                     <div className="menu-items">
                       <Link to="/profile" className="menu-item">
                         <i className="fas fa-user"></i>
-                        Thông tin cá nhân
+                        Personal Information
                       </Link>
-                      <Link to="/orders" className="menu-item">
+                      <Link to="/my-bookings" className="menu-item">
                         <i className="fas fa-shopping-bag"></i>
-                        Đơn hàng
+                        My Bookings
                       </Link>
                       <Link to="/settings" className="menu-item">
                         <i className="fas fa-cog"></i>
-                        Cài đặt
+                        Settings
                       </Link>
                       <button onClick={handleLogout} className="menu-item logout">
                         <i className="fas fa-sign-out-alt"></i>
-                        Đăng xuất
+                        Logout
                       </button>
                     </div>
                   </div>
