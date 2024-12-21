@@ -91,7 +91,7 @@ const BookingManagementPage = () => {
         );
     }
 
-    return (
+  return (
         <div className="booking-management-page">
             <div className="page-header">
                 <h1>My Bookings</h1>
@@ -184,8 +184,8 @@ const BookingManagementPage = () => {
                     ))
                 )}
             </div>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default BookingManagementPage; 
