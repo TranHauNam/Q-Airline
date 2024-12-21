@@ -13,6 +13,7 @@ import FlightManagement from '../components/admin/FlightManagement';
 import BookingStatistics from '../components/admin/BookingStatistics';
 import DelayManagement from '../components/admin/DelayManagement';
 import AdminAccountManagement from '../components/admin/AdminAccountManagement';
+import AdminDashboard from '../components/admin/AdminDashboard';
 
 const Admin = () => {
   const [selectedModule, setSelectedModule] = useState(null);
@@ -169,11 +170,20 @@ const Admin = () => {
       <div className="adm-main">
         <div className="adm-content">
           {!selectedModule ? (
-            <div className="adm-welcome-screen">
-              <h2>Welcome to the Admin Panel</h2>
-              <img src={welcomeImage} alt="Welcome" />
-            </div>
-          ) : (
+
+            // (
+              //   <div className="adm-welcome-screen">
+              //     <h2>Welcome to the Admin Panel</h2>
+              //     <img src={welcomeImage} alt="Welcome" />
+              //   </div>
+              // ) 
+<AdminDashboard 
+  selectedModule={selectedModule}
+  // renderModuleContent={renderModuleContent}
+  // welcomeImage={welcomeImage}
+/>
+)
+          : (
             <div className="adm-content-area">
               {renderModuleContent()}
             </div>
