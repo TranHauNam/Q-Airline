@@ -13,6 +13,7 @@ import BookingPage from './pages/BookingPage';
 import ReviewPaymentPage from './pages/ReviewPaymentPage';
 import BookingConfirmationPage from './pages/BookingConfirmationPage';
 import UserBookingsPage from './pages/UserBookingsPage';
+
 function App() {
   return (
     <AuthProvider>
@@ -29,6 +30,7 @@ function App() {
         <Route path="/review-payment" element={<ReviewPaymentPage />} />
         <Route path="/booking-confirmation" element={<BookingConfirmationPage />} />
         <Route path="/my-bookings" element={<UserBookingsPage />} />
+
       </Routes>
     </AuthProvider>
   );

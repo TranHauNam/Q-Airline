@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { planeApi } from '../../services/modules/admin/plane/plane.api';
-
+import './Admin.css';
 const AircraftManagement = () => {
   const [plane, setPlane] = useState({
     code: '',
@@ -48,7 +48,7 @@ const AircraftManagement = () => {
 
   return (
     <div className="form-container">
-      <h2>Add new aircraft</h2>
+      <h2 className='h2-admin'>Add new aircraft</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Aircraft code</label>

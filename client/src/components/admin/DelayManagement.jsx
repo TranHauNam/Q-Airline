@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { flightApi } from '../../services/modules/admin/flight/flight.api';
 import { postApi } from '../../services/modules/admin/post/post.api';
-
+import './Admin.css';
 const DelayManagement = () => {
   const [flightNumber, setFlightNumber] = useState('');
   const [newDepartureTime, setNewDepartureTime] = useState('');
@@ -74,7 +74,7 @@ const DelayManagement = () => {
 
   return (
     <div className="form-container">
-      <h2>Update Departure Time</h2>
+      <h2 className='h2-admin'>Update Departure Time</h2>
       {error && <div className="error-message">{error}</div>}
       
       <form onSubmit={handleSubmit}>
