@@ -27,7 +27,7 @@ const AircraftManagement = () => {
         setDialog({
           isOpen: true,
           title: 'error',
-          message: 'Số ghế hạng phổ thông phải chia hết cho 6',
+          message: 'The number of economy class seats must be divisible by 6.',
           type: 'error'
         });
         return;
@@ -36,7 +36,7 @@ const AircraftManagement = () => {
         setDialog({
           isOpen: true,
           title: 'error',
-          message: 'Số ghế hạng phổ thông cao cấp phải chia hết cho 6',
+          message: 'The number of premium economy seats must be divisible by 6.',
           type: 'error'
         });
         return;
@@ -45,16 +45,16 @@ const AircraftManagement = () => {
         setDialog({
           isOpen: true,
           title: 'error',
-          message: 'Số ghế hạng thương gia phải chia hết cho 4',
+          message: 'The number of business class seats must be divisible by 4.',
           type: 'error'
         });
         return;
       }
-      if (plane.firstSeats % 4 !== 0) {
+      if (plane.firstSeats % 6 !== 0) {
         setDialog({
           isOpen: true,
           title: 'error',
-          message: 'Số ghế hạng nhất phải chia hết cho 6',
+          message: 'The number of first class seats must be divisible by 4.',
           type: 'error'
         });
         return;
@@ -63,8 +63,8 @@ const AircraftManagement = () => {
       const response = await planeApi.addPlane(plane);
       setDialog({
         isOpen: true,
-        title: 'Thành công',
-        message: 'Thêm máy bay mới thành công',
+        title: 'Success',
+        message: 'New aircraft added successfully',
         type: 'success'
       });
       setPlane({
