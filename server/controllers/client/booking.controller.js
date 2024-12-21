@@ -248,8 +248,8 @@ module.exports.cancelBooking = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error("Lỗi hủy đặt vé:", error);
-        res.status(500).json({ message: 'Có lỗi xảy ra, vui lòng thử lại sau.' });
+        console.error("Error canceling ticket:", error);
+        res.status(500).json({ message: 'An error occurred, please try again later.' });
     }
 };
 

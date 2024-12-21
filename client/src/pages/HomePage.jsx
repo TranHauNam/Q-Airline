@@ -18,7 +18,7 @@ const Homepage = () => {
       <News/>
 
       <Footer/>
-      <SphereBackground/>
+      {/* <SphereBackground/> */}
     </div>
   )
 }
