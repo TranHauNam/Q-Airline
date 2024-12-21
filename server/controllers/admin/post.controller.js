@@ -23,9 +23,9 @@ module.exports.createPost = async (req, res) => {
             post: newPost
         });
     } catch (error) {
-        console.error("Lỗi tạo bài viết:", error);
+        console.error("Error creating post:", error);
         res.status(500).json({
-            message: "Lỗi tạo bài viết",
+            message: "Error creating post:",
             error: error.message
         });
     }

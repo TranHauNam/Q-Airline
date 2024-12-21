@@ -15,7 +15,7 @@ module.exports.addPlane = async (req, res) => {
     
         if(existPlane) {
             return res.status(400).json({
-                message: 'Mã tàu bay đã tồn tại'
+                message: 'Aircraft code already exists'
             });
         }
     
@@ -30,11 +30,11 @@ module.exports.addPlane = async (req, res) => {
         });
     
         res.status(201).json({
-            message: 'Thêm tàu bay thành công',
+            message: 'Add aircraft successfully',
             plane: newPlane
         });
     } catch (error) {
-        console.error("Lỗi thêm tàu bay:", error);
+        console.error("Error adding aircraft:", error);
 
         res.status(500).json({
             message: 'Lỗi server',
@@ -52,15 +52,15 @@ module.exports.getAllPlanes = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Lấy danh sách máy bay thành công',
+            message: 'Get list of aircraft successfully',
             planes: planes
         });
 
     } catch (error) {
-        console.error("Lỗi khi lấy danh sách máy bay:", error);
+        console.error("Error while getting aircraft list:", error);
         res.status(500).json({
             success: false,
-            message: 'Lỗi khi lấy danh sách máy bay',
+            message: 'Error getting aircraft list',
             error: error.message
         });
     }

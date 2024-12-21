@@ -17,7 +17,7 @@ module.exports.create = async (req, res) => {
 
         if (existEmail) {
             return res.status(400).json({
-                message: "Email đã tồn tại!"
+                message: "Email already exists!"
             });
         }
 
@@ -37,7 +37,7 @@ module.exports.create = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: "Tạo tài khoản admin thành công",
+            message: "Admin account created successfully",
             admin: {
                 fullName: admin.fullName,
                 email: admin.email,
@@ -49,7 +49,7 @@ module.exports.create = async (req, res) => {
         console.error("Create admin error:", error);
         res.status(500).json({ 
             success: false,
-            message: "Có lỗi xảy ra khi tạo tài khoản admin",
+            message: "An error occurred while creating an admin account.",
             error: error.message 
         });
     }
@@ -69,19 +69,19 @@ module.exports.login = async (req, res) => {
 
         if (!admin) {
             return res.status(401).json({ 
-                message: "Email không tồn tại!" 
+                message: "Email does not exist!" 
             });
         }
         if (hashedPassword != admin.password) {
             return res.status(401).json({ 
-                message: "Sai mật khẩu" 
+                message: "Wrong password!" 
             });
         }
         
 
         if (admin.status == "inactive") {
             return res.status(401).json({ 
-                message: "Tài khoản đang bị khóa" 
+                message: "Account is locked" 
             });
         }
         
@@ -98,7 +98,7 @@ module.exports.login = async (req, res) => {
         });
 
         res.status(200).json({
-            message: "Đăng nhập thành công",
+            message: "Login successful",
             adminToken: adminToken,
             admin: {
                 fullName: admin.fullName,
@@ -108,7 +108,7 @@ module.exports.login = async (req, res) => {
         
     } catch (error) {
         console.error("Login error:", error);
-        res.status(500).json({ message: "Lỗi server" });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
@@ -122,12 +122,12 @@ module.exports.logout = async (req, res) => {
         });
 
         res.status(200).json({
-            message: "Đăng xuất thành công"
+            message: "Logout successful"
         });
     } catch (error) {
         console.error("Logout error:", error);
         res.status(500).json({
-            message: "Có lỗi xảy ra khi đăng xuất"
+            message: "An error occurred while logging out."
         });
     }
 };

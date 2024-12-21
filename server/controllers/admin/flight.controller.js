@@ -8,12 +8,12 @@ module.exports.addFlight = async (req, res) => {
 
         const existFlight = await Flight.findOne({flightNumber: flightNumber});
         if(existFlight) {
-            return res.status(400).json({ message: 'Mã chuyến bay đã tồn tại' });
+            return res.status(400).json({ message: 'Flight code already exists' });
         }
 
         const existPlane = await Plane.findOne({code: planeCode});
         if(!existPlane) {
-            return res.status(400).json({ message: 'Không tìm thấy tàu bay' });
+            return res.status(400).json({ message: 'No plane found' });
         }
         
         const seats = existPlane.seats.map(seat => ({
@@ -40,15 +40,15 @@ module.exports.addFlight = async (req, res) => {
         });
 
         res.status(200).json({
-            message: 'Thêm chuyến bay thành công',
+            message: 'Flight added successfully',
             flight: newFlight
         });
 
     } catch (error) {
-        console.log("Lỗi thêm chuyến bay", error);
+        console.log("Error adding flight", error);
         
         res.status(500).json({ 
-            message: 'Lỗi thêm chuyến bay', 
+            message: 'Error adding flight', 
             error: error.message 
         });
     }
@@ -100,7 +100,7 @@ module.exports.getAllFlights = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Lỗi khi lấy danh sách chuyến bay",
+      message: "Error while getting flight list",
       error: error.message
     });
   }

@@ -94,7 +94,7 @@ module.exports.searchFlight = async (req, res) => {
 
             if (availableFlights.length === 0) {
                 return res.status(404).json({
-                    message: 'Không có chuyến bay phù hợp với yêu cầu của bạn.',
+                    message: 'There are no flights matching your request.',
                 });
             }
 
@@ -201,7 +201,7 @@ module.exports.searchFlight = async (req, res) => {
 
             if (availableDepartureFlights.length === 0 || availableReturnFlights.length === 0) {
                 return res.status(404).json({
-                    message: 'Không có chuyến bay phù hợp với yêu cầu của bạn.',
+                    message: 'There are no flights matching your request.',
                 });
             }
 
@@ -281,7 +281,7 @@ module.exports.searchFlight = async (req, res) => {
         console.error("Error searching flight", error);
 
         res.status(500).json({
-            message: 'Lỗi server',
+            message: 'Server error',
             error: error.message
         });
     }

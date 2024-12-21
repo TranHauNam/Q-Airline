@@ -7,9 +7,9 @@ module.exports.getPost = async (req, res) => {
             posts
         });
     } catch (error) {
-        console.log("Lỗi lấy bài đăng", error.message);
+        console.log("Error getting post", error.message);
         res.status(500).json({
-            message: "Lỗi server",
+            message: "Server error",
             error: error.message
         });
     }
