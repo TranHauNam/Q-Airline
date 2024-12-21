@@ -15,8 +15,8 @@
 .adm-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  padding: 20px;
+  gap: 24x;
+  padding: 208px;
 }
 
 .adm-module {
@@ -429,13 +429,14 @@
 .adm-main {
   flex: 1;
   /* margin-left: 280px; */
-  padding: 20px;
+  padding-left: 50px;
   align-items: center;
 }
 
 .adm-content {
-  max-width: 1200px;
-  margin: 0 auto;
+  padding-left: 100px;
+  /* max-width: 1000px; */
+  margin: 0;
 }
 
 .adm-welcome-screen {
@@ -449,8 +450,8 @@
 }
 
 .adm-welcome-screen img {
-  max-width: 600px;
-  width: 100%;
+  max-width: 200px;
+  width: 80%;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
@@ -458,7 +459,8 @@
 .adm-content-area {
   background: white;
   border-radius: 12px;
-  padding: 24px;
+  padding-left: 120px;
+  padding-top: 10px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
@@ -681,3 +683,5 @@
 .form-group select option {
   padding: 12px;
 }
+
+
