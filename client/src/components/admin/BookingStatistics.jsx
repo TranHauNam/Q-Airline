@@ -71,8 +71,8 @@ const BookingStatistics = () => {
       },
       title: {
         display: true,
-        text: 'Flight Statistics by Route',
-        color: '#c41e3a',
+        // text: 'Flight Statistics by Route',
+        // color: '#c41e3a',
         font: {
           size: 16,
           weight: 'bold'
@@ -270,7 +270,7 @@ const BookingStatistics = () => {
         </table>
 
         <div style={{ height: '400px', marginTop: '20px' }}>
-          <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Revenue Chart by Month</h4>
+          {/* <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Revenue Chart by Month</h4> */}
           <Bar
             data={{
               labels: statistics.monthlyBookings[0]?.months.map(
@@ -317,7 +317,7 @@ const BookingStatistics = () => {
         </div>
 
         <div style={{ height: '400px', marginTop: '40px' }}>
-          <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Booking Chart by Month</h4>
+          {/* <h4 style={{ textAlign: 'center', marginBottom: '20px' }}>Booking Chart by Month</h4> */}
           <Bar
             data={{
               labels: statistics.monthlyBookings[0]?.months.map(

@@ -127,7 +127,9 @@ const Admin = () => {
         <div className="adm-sidebar-header">
           <div className="adm-brand">
             <img src={logo} alt="Q-Airline Logo" className="adm-logo" />
-            <div className="adm-brand-text">
+            <div className="adm-brand-text"onClick={() => setSelectedModule(null)}
+  style={{ cursor: 'pointer' }}>
+              
               <span className="adm-brand-name">Q-AIRLINE</span>
               <span className="adm-brand-slogan">ADMINISTRATOR PANEL</span>
             </div>
