@@ -30,7 +30,7 @@ const UserBookingsPage = () => {
                 if (!response.ok) {
                     throw new Error(data.message || 'Cannot get booking information');
                 }
-
+                console.log("data", data);
                 setBookings(data.bookings);
                 setLoading(false);
             } catch (err) {
