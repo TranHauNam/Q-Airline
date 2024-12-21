@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { adminApi } from '../../services/modules/admin/admin.api';
 import { useNavigate } from 'react-router-dom';
 import './Admin.css';
+import Dialog from '../common/Dialog';
 
 const AdminAccountManagement = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,12 @@ const AdminAccountManagement = () => {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(null);
+  const [dialog, setDialog] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
 
   useEffect(() => {
     const checkRole = async () => {
@@ -42,24 +49,25 @@ const AdminAccountManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-    setLoading(true);
-
-    try {
-      // Log để debug
-      console.log('Sending data:', formData);
-      
-      const response = await adminApi.createAdmin({
-        fullName: formData.fullName,
-        email: formData.email,
-        password: formData.password,
-        phone: formData.phone,
-        role: formData.role
+    if (formData.password !== formData.confirmPassword) {
+      setDialog({
+        isOpen: true,
+        title: 'Lỗi',
+        message: 'Mật khẩu xác nhận không khớp',
+        type: 'error'
       });
+      return;
+    }
 
-      console.log('Response:', response);
-      setSuccess('Tạo tài khoản admin thành công!');
+    setLoading(true);
+    try {
+      const response = await adminApi.createAdmin(formData);
+      setDialog({
+        isOpen: true,
+        title: 'Thành công',
+        message: 'Tạo tài khoản admin thành công',
+        type: 'success'
+      });
       setFormData({
         fullName: '',
         email: '',
@@ -69,8 +77,12 @@ const AdminAccountManagement = () => {
         role: 'admin'
       });
     } catch (error) {
-      console.error('Error details:', error.response?.data || error);
-      setError(error.response?.data?.message || 'Có lỗi xảy ra khi tạo tài khoản');
+      setDialog({
+        isOpen: true,
+        title: 'Lỗi',
+        message: error.response?.data?.message || 'Có lỗi xảy ra khi tạo tài khoản',
+        type: 'error'
+      });
     } finally {
       setLoading(false);
     }
@@ -164,6 +176,14 @@ const AdminAccountManagement = () => {
           {loading ? 'Creating...' : 'Create account'}
         </button>
       </form>
+
+      <Dialog
+        isOpen={dialog.isOpen}
+        onClose={() => setDialog({ ...dialog, isOpen: false })}
+        title={dialog.title}
+        message={dialog.message}
+        type={dialog.type}
+      />
     </div>
   );
 };

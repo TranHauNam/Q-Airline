@@ -128,7 +128,7 @@ const BookingStatistics = () => {
   return (
     <div className="statistics-container">
       <div className="stat-section">
-      <h2 className='h2-admin'> Booking Statistics</h2>
+      {/* <h2 className='h2-admin'> Booking Statistics</h2> */}
         <h3>Total Bookings: {statistics.totalBookings}</h3>
       </div>
 

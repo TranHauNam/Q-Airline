@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { flightApi } from '../../services/modules/admin/flight/flight.api';
 import { planeApi } from '../../services/modules/admin/plane/plane.api';
 import './Admin.css';
+import Dialog from '../common/Dialog';
+
 const FlightManagement = () => {
   const [flight, setFlight] = useState({
     flightNumber: '',
@@ -19,6 +21,12 @@ const FlightManagement = () => {
   const [planes, setPlanes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [dialog, setDialog] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
 
   // Fetch danh sách máy bay khi component mount
   useEffect(() => {
@@ -41,7 +49,12 @@ const FlightManagement = () => {
 
     try {
       const response = await flightApi.addFlight(flight);
-      alert(response.data.message);
+      setDialog({
+        isOpen: true,
+        title: 'Thành công',
+        message: 'Thêm chuyến bay mới thành công',
+        type: 'success'
+      });
       setFlight({
         flightNumber: '',
         planeCode: '',
@@ -55,7 +68,12 @@ const FlightManagement = () => {
         priceFirst: 0
       });
     } catch (error) {
-      setError(error.response?.data?.message || 'Có lỗi xảy ra');
+      setDialog({
+        isOpen: true,
+        title: 'Lỗi',
+        message: error.response?.data?.message || 'Có lỗi xảy ra khi thêm chuyến bay',
+        type: 'error'
+      });
     } finally {
       setLoading(false);
     }
@@ -63,7 +81,7 @@ const FlightManagement = () => {
 
   return (
     <div className="form-container">
-   <h2 className='h2-admin'>Add new flight</h2>
+   {/* <h2 className='h2-admin'>Add new flight</h2> */}
       {error && <div className="error-message">{error}</div>}
       
       <form onSubmit={handleSubmit}>
@@ -125,13 +143,13 @@ const FlightManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Flight time (minutes)</label>
+          <label>Duration</label>
           <input
-            type="number"
+            type="string"
             value={flight.duration}
             onChange={(e) => setFlight({...flight, duration: parseInt(e.target.value)})}
             required
-            placeholder="Ví dụ: 120"
+            placeholder="For example: 1H20"
           />
         </div>
         <div className="form-group">
@@ -145,7 +163,7 @@ const FlightManagement = () => {
           />
         </div>
         <div className="form-group">
-          <label>Premium Economy Class Ticket Prices</label>
+          <label>Premium Economy class fare</label>
           <input
             type="number"
             value={flight.pricePremiumEconomy}
@@ -182,6 +200,13 @@ const FlightManagement = () => {
           {loading ? 'Adding...' : 'Add flight'}
         </button>
       </form>
+      <Dialog
+        isOpen={dialog.isOpen}
+        onClose={() => setDialog({ ...dialog, isOpen: false })}
+        title={dialog.title}
+        message={dialog.message}
+        type={dialog.type}
+      />
     </div>
   );
 };
